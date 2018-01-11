@@ -1,23 +1,23 @@
 export default abstract class Vec {
-    abstract data: Float32Array;
+    data: Float32Array;
 
-    abstract add(rhs: Vec): Vec;
-    abstract add2(lhs: Vec, rhs: Vec): Vec;
+    abstract add(b: Vec): Vec;
+    abstract add2(a: Vec, b: Vec): Vec;
     abstract clone(): Vec;
-    abstract copy(rhs: Vec): Vec;
-    abstract cross(lhs: Vec, rhs: Vec): Vec;
-    abstract dot(rhs: Vec): number;
-    abstract equals(rhs: Vec): boolean;
+    abstract copy(b: Vec): Vec;
+    abstract cross(a: Vec, b: Vec): Vec;
+    abstract dot(b: Vec): number;
+    abstract equals(b: Vec): boolean;
     abstract length(): number;
     abstract lengthSq(): number;
-    abstract lerp(lhs: Vec, rhs: Vec, alpha: number): Vec;
-    abstract mul(rhs: Vec): Vec;
-    abstract mul2(lhs: Vec, rhs: Vec): Vec;
+    abstract lerp(a: Vec, b: Vec, alpha: number): Vec;
+    abstract mul(b: Vec): Vec;
+    abstract mul2(a: Vec, b: Vec): Vec;
     abstract normalize(): Vec;
-    abstract project(rhs: Vec): Vec;
+    abstract project(b: Vec): Vec;
     abstract scale(scalar: number): Vec;
     abstract set(x: number, y: number, z: number): Vec;
-    abstract sub(rhs: Vec): Vec;
-    abstract sub2(lhs: Vec, rhs: Vec): Vec;
+    abstract sub(b: Vec): Vec;
+    abstract sub2(a: Vec, b: Vec): Vec;
     abstract toString(): string;
 }
