@@ -14,7 +14,7 @@ export default interface Vec {
     normalize(): Vec;
     project?(b: Vec): Vec;
     scale(scalar: number): Vec;
-    set(x: number, y: number, z: number): Vec;
+    set(x: number, y: number, z: number, w: number): Vec;
     sub(b: Vec): Vec;
     sub2(a: Vec, b: Vec): Vec;
     toString(): string;
