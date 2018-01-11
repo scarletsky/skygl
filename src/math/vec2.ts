@@ -104,7 +104,7 @@ export default class Vec2 implements Vec {
     }
 
     normalize() {
-        let lengthSq = this.x * this.x + this.y * this.y;
+        let lengthSq = this.lengthSq();
         if (lengthSq > 0) {
             let invLength = 1 / Math.sqrt(lengthSq);
             this.x *= invLength;
