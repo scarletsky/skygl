@@ -1,11 +1,11 @@
-import Mat from './mat';
-import Mat3 from './mat3';
-import Vec3 from './vec3';
-import Vec4 from './vec4';
-import Quat from './quat';
-import { RAD_TO_DEG, DEG_TO_RAD } from './math';
+import Mat from "./mat";
+import Mat3 from "./mat3";
+import Vec3 from "./vec3";
+import Vec4 from "./vec4";
+import Quat from "./quat";
+import { RAD_TO_DEG, DEG_TO_RAD } from "./math";
 
-export default class Mat4 implements Mat {
+export default class Mat4 extends Mat {
     data: Float32Array;
 
     static readonly IDENTITY = new Mat4();
@@ -48,6 +48,7 @@ export default class Mat4 implements Mat {
         v13?: number,
         v14?: number,
         v15?: number) {
+        super();
 
         this.data = new Float32Array(16);
 

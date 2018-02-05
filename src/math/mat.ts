@@ -1,13 +1,13 @@
-import Vec from './vec';
+import Vec from "./vec";
 
-export default interface Mat {
-    add(b: Mat): Mat;
-    add2(a: Mat, b: Mat): Mat;
-    clone(): Mat;
-    equals(b: Mat): boolean;
-    isIdentity(): boolean;
-    mul(b: Mat): Mat;
-    mul2(a: Mat, b: Mat): Mat;
-    transformPoint(vec: Vec, res?: Vec): Vec;
-    transformVector(vec: Vec, res?: Vec): Vec;
+export default abstract class Mat {
+    public abstract add(b: Mat): Mat;
+    public abstract add2(a: Mat, b: Mat): Mat;
+    public abstract clone(): Mat;
+    public abstract equals(b: Mat): boolean;
+    public abstract isIdentity(): boolean;
+    public abstract mul(b: Mat): Mat;
+    public abstract mul2(a: Mat, b: Mat): Mat;
+    public abstract transformPoint(vec: Vec, res?: Vec): Vec;
+    public abstract transformVector(vec: Vec, res?: Vec): Vec;
 }

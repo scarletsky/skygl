@@ -1,6 +1,6 @@
-import Vec from './vec';
+import Vec from "./vec";
 
-export default class Vec3 implements Vec {
+export default class Vec3 extends Vec {
 
     data: Float32Array;
 
@@ -17,6 +17,7 @@ export default class Vec3 implements Vec {
     constructor(x: number[]);
     constructor(x: number, y: number, z: number);
     constructor(x?: number[] | number, y?: number, z?: number) {
+        super();
         this.data = new Float32Array(3);
 
         if (Array.isArray(x)) {

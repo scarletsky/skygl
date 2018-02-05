@@ -1,21 +1,19 @@
-export default interface Vec {
-    add(b: Vec): Vec;
-    add2(a: Vec, b: Vec): Vec;
-    clone(): Vec;
-    copy(b: Vec): Vec;
-    cross?(a: Vec, b: Vec): Vec;
-    dot(b: Vec): number;
-    equals(b: Vec): boolean;
-    length(): number;
-    lengthSq(): number;
-    lerp(a: Vec, b: Vec, alpha: number): Vec;
-    mul(b: Vec): Vec;
-    mul2(a: Vec, b: Vec): Vec;
-    normalize(): Vec;
-    project?(b: Vec): Vec;
-    scale(scalar: number): Vec;
-    set(x: number, y: number, z: number, w: number): Vec;
-    sub(b: Vec): Vec;
-    sub2(a: Vec, b: Vec): Vec;
-    toString(): string;
+export default abstract class Vec {
+    public abstract add(rhs: Vec): Vec;
+    public abstract add2(lhs: Vec, rhs: Vec): Vec;
+    public abstract clone(): Vec;
+    public abstract copy(rhs: Vec): Vec;
+    public abstract dot(rhs: Vec): number;
+    public abstract equals(rhs: Vec): boolean;
+    public abstract length(): number;
+    public abstract lengthSq(): number;
+    public abstract lerp(lhs: Vec, rhs: Vec, alphlhs: number): Vec;
+    public abstract mul(rhs: Vec): Vec;
+    public abstract mul2(lhs: Vec, rhs: Vec): Vec;
+    public abstract normalize(): Vec;
+    public abstract scale(scalar: number): Vec;
+    public abstract set(x: number, y: number, z: number, w: number): Vec;
+    public abstract sub(rhs: Vec): Vec;
+    public abstract sub2(lhs: Vec, rhs: Vec): Vec;
+    public abstract toString(): string;
 }
