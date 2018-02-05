@@ -5,8 +5,12 @@ export const intToBytes = intToBytes32;
 export const bytesToInt = bytesToInt32;
 
 export function clamp(value: number, min: number, max: number): number {
-    if (value >= max) return max;
-    if (value <= min) return min;
+    if (value >= max) {
+        return max;
+    }
+    if (value <= min) {
+        return min;
+    }
     return value;
 }
 
@@ -89,8 +93,12 @@ export function random(min: number, max: number): number {
 }
 
 export function smoothstep(min: number, max: number, x: number): number {
-    if (x <= min) return 0;
-    if (x >= max) return 1;
+    if (x <= min) {
+        return 0;
+    }
+    if (x >= max) {
+        return 1;
+    }
 
     x = (x - min) / (max - min);
 
@@ -98,8 +106,12 @@ export function smoothstep(min: number, max: number, x: number): number {
 }
 
 export function smootherstep(min: number, max: number, x: number): number {
-    if (x <= min) return 0;
-    if (x >= max) return 1;
+    if (x <= min) {
+        return 0;
+    }
+    if (x >= max) {
+        return 1;
+    }
 
     x = (x - min) / (max - min);
 
@@ -124,4 +136,4 @@ export default {
     random,
     smoothstep,
     smootherstep
-}
+};

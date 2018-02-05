@@ -1,13 +1,13 @@
 import Vec from "./vec";
 
 export default class Vec4 extends Vec {
-    data: Float32Array;
 
-    static readonly ONE = new Vec4(1, 1, 1, 1);
-    static readonly ZERO = new Vec4(0, 0, 0, 0);
+    public static readonly ONE = new Vec4(1, 1, 1, 1);
+    public static readonly ZERO = new Vec4(0, 0, 0, 0);
 
-    constructor();
-    constructor(x: number[]);
+    public data: Float32Array;
+
+    constructor(x?: number[]);
     constructor(x: number, y: number, z: number, w: number);
     constructor(x?: number[] | number, y?: number, z?: number, w?: number) {
         super();
@@ -55,85 +55,85 @@ export default class Vec4 extends Vec {
         this.data[3] = value;
     }
 
-    add(b: Vec4) {
-        this.x += b.x;
-        this.y += b.y;
-        this.z += b.z;
-        this.w += b.w;
+    public add(rhs: Vec4) {
+        this.x += rhs.x;
+        this.y += rhs.y;
+        this.z += rhs.z;
+        this.w += rhs.w;
 
         return this;
     }
 
-    add2(a: Vec4, b: Vec4) {
-        this.x = a.x + b.x;
-        this.y = a.y + b.y;
-        this.z = a.z + b.z;
-        this.w = a.w + b.w;
+    public add2(lhs: Vec4, rhs: Vec4) {
+        this.x = lhs.x + rhs.x;
+        this.y = lhs.y + rhs.y;
+        this.z = lhs.z + rhs.z;
+        this.w = lhs.w + rhs.w;
 
         return this;
     }
 
-    clone() {
+    public clone() {
         return new Vec4().copy(this);
     }
 
-    copy(b: Vec4) {
-        this.x = b.x;
-        this.y = b.y;
-        this.z = b.z;
-        this.w = b.w;
+    public copy(rhs: Vec4) {
+        this.x = rhs.x;
+        this.y = rhs.y;
+        this.z = rhs.z;
+        this.w = rhs.w;
 
         return this;
     }
 
-    dot(b: Vec4) {
-        return this.x * b.x + this.y * b.y + this.z * b.z + this.w * b.w;
+    public dot(rhs: Vec4) {
+        return this.x * rhs.x + this.y * rhs.y + this.z * rhs.z + this.w * rhs.w;
     }
 
-    equals(b: Vec4) {
-        return this.x === b.x && this.y === b.y && this.z === b.z && this.w === b.w;
+    public equals(rhs: Vec4) {
+        return this.x === rhs.x && this.y === rhs.y && this.z === rhs.z && this.w === rhs.w;
     }
 
-    length() {
+    public length() {
         return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w);
     }
 
-    lengthSq() {
+    public lengthSq() {
         return this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
     }
 
-    lerp(a: Vec4, b: Vec4, alpha: number) {
-        this.x = a.x + alpha * (b.x - a.x);
-        this.y = a.y + alpha * (b.y - a.y);
-        this.z = a.z + alpha * (b.z - a.z);
-        this.w = a.w + alpha * (b.w - a.w);
+    public lerp(lhs: Vec4, rhs: Vec4, alpha: number) {
+        this.x = lhs.x + alpha * (rhs.x - lhs.x);
+        this.y = lhs.y + alpha * (rhs.y - lhs.y);
+        this.z = lhs.z + alpha * (rhs.z - lhs.z);
+        this.w = lhs.w + alpha * (rhs.w - lhs.w);
 
         return this;
     }
 
-    mul(b: Vec4) {
-        this.x *= b.x;
-        this.y *= b.y;
-        this.z *= b.z;
-        this.w *= b.w;
+    public mul(rhs: Vec4) {
+        this.x *= rhs.x;
+        this.y *= rhs.y;
+        this.z *= rhs.z;
+        this.w *= rhs.w;
 
         return this;
     }
 
-    mul2(a: Vec4, b: Vec4) {
-        this.x = a.x * b.x;
-        this.y = a.y * b.y;
-        this.z = a.z * b.z;
-        this.w = a.w * b.w;
+    public mul2(lhs: Vec4, rhs: Vec4) {
+        this.x = lhs.x * rhs.x;
+        this.y = lhs.y * rhs.y;
+        this.z = lhs.z * rhs.z;
+        this.w = lhs.w * rhs.w;
 
         return this;
     }
 
-    normalize() {
-        let lengthSq = this.lengthSq();
+    public normalize() {
+        const lengthSq = this.lengthSq();
 
         if (lengthSq > 0) {
-            let invLength = 1 / Math.sqrt(lengthSq);
+            const invLength = 1 / Math.sqrt(lengthSq);
             this.x *= invLength;
             this.y *= invLength;
             this.z *= invLength;
@@ -143,7 +143,7 @@ export default class Vec4 extends Vec {
         return this;
     }
 
-    scale(scalar: number) {
+    public scale(scalar: number) {
         this.x *= scalar;
         this.y *= scalar;
         this.z *= scalar;
@@ -152,7 +152,7 @@ export default class Vec4 extends Vec {
         return this;
     }
 
-    set(x: number, y: number, z: number, w: number) {
+    public set(x: number, y: number, z: number, w: number) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -161,25 +161,25 @@ export default class Vec4 extends Vec {
         return this;
     }
 
-    sub(b: Vec4) {
-        this.x -= b.x;
-        this.y -= b.y;
-        this.z -= b.z;
-        this.w -= b.w;
+    public sub(rhs: Vec4) {
+        this.x -= rhs.x;
+        this.y -= rhs.y;
+        this.z -= rhs.z;
+        this.w -= rhs.w;
 
         return this;
     }
 
-    sub2(a: Vec4, b: Vec4) {
-        this.x = a.x - b.x;
-        this.y = a.y - b.y;
-        this.z = a.z - b.z;
-        this.w = a.w - b.w;
+    public sub2(lhs: Vec4, rhs: Vec4) {
+        this.x = lhs.x - rhs.x;
+        this.y = lhs.y - rhs.y;
+        this.z = lhs.z - rhs.z;
+        this.w = lhs.w - rhs.w;
 
         return this;
     }
 
-    toString() {
+    public toString() {
         return `[${this.x}, ${this.y}, ${this.z}, ${this.w}]`;
     }
 }

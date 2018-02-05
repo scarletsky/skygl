@@ -6,13 +6,12 @@ import Quat from "./quat";
 import { RAD_TO_DEG, DEG_TO_RAD } from "./math";
 
 export default class Mat4 extends Mat {
-    data: Float32Array;
+    public static readonly IDENTITY = new Mat4();
+    public static readonly ZERO = new Mat4(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
-    static readonly IDENTITY = new Mat4();
-    static readonly ZERO = new Mat4(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    public data: Float32Array;
 
-    constructor();
-    constructor(v0: number[]);
+    constructor(v0?: number[]);
     constructor(
         v0: number,
         v1: number,
@@ -76,11 +75,11 @@ export default class Mat4 extends Mat {
         }
     }
 
-    add(b: Mat4): Mat4 {
+    public add(b: Mat4): Mat4 {
         return this.add2(this, b);
     }
 
-    add2(a: Mat4, b: Mat4): Mat4 {
+    public add2(a: Mat4, b: Mat4): Mat4 {
         this.data[0] = a.data[0] + b.data[0];
         this.data[1] = a.data[1] + b.data[1];
         this.data[2] = a.data[2] + b.data[2];
@@ -101,11 +100,11 @@ export default class Mat4 extends Mat {
         return this;
     }
 
-    clone(): Mat4 {
+    public clone(): Mat4 {
         return new Mat4().copy(this);
     }
 
-    copy(b: Mat4): Mat4 {
+    public copy(b: Mat4): Mat4 {
         this.data[0] = b.data[0];
         this.data[1] = b.data[1];
         this.data[2] = b.data[2];
@@ -126,7 +125,7 @@ export default class Mat4 extends Mat {
         return this;
     }
 
-    equals(b: Mat4): boolean {
+    public equals(b: Mat4): boolean {
         return (
             (this.data[0] === b.data[0]) &&
             (this.data[1] === b.data[1]) &&
@@ -146,7 +145,7 @@ export default class Mat4 extends Mat {
             (this.data[15] === b.data[15]));
     }
 
-    isIdentity(): boolean {
+    public isIdentity(): boolean {
         return (
             (this.data[0] === 1) &&
             (this.data[1] === 0) &&
@@ -166,11 +165,11 @@ export default class Mat4 extends Mat {
             (this.data[15] === 1));
     }
 
-    mul(b: Mat4): Mat4 {
+    public mul(b: Mat4): Mat4 {
         return this.mul2(this, b);
     }
 
-    mul2(a: Mat4, b: Mat4) {
+    public mul2(a: Mat4, b: Mat4) {
         let a00, a01, a02, a03,
             a10, a11, a12, a13,
             a20, a21, a22, a23,
@@ -233,10 +232,10 @@ export default class Mat4 extends Mat {
         return this;
     }
 
-    transformPoint(vec: Vec3, res?: Vec3): Vec3 {
-        let x, y, z,
-            m = this.data,
-            v = vec.data;
+    public transformPoint(vec: Vec3, res?: Vec3): Vec3 {
+        let x, y, z;
+        const m = this.data;
+        const v = vec.data;
 
         res = (res === undefined) ? new Vec3() : res;
 
@@ -258,10 +257,10 @@ export default class Mat4 extends Mat {
         return res.set(x, y, z);
     }
 
-    transformVector(vec: Vec3, res?: Vec3): Vec3 {
-        let x, y, z,
-            m = this.data,
-            v = vec.data;
+    public transformVector(vec: Vec3, res?: Vec3): Vec3 {
+        let x, y, z;
+        const m = this.data;
+        const v = vec.data;
 
         res = (res === undefined) ? new Vec3() : res;
 
@@ -280,10 +279,10 @@ export default class Mat4 extends Mat {
         return res.set(x, y, z);
     }
 
-    transformVec4(vec: Vec4, res?: Vec4): Vec4 {
-        let x, y, z, w,
-            m = this.data,
-            v = vec.data;
+    public transformVec4(vec: Vec4, res?: Vec4): Vec4 {
+        let x, y, z, w;
+        const m = this.data;
+        const v = vec.data;
 
         res = (res === undefined) ? new Vec4() : res;
 
@@ -310,10 +309,10 @@ export default class Mat4 extends Mat {
         return res.set(x, y, z, w);
     }
 
-    setLookAt(position: Vec3, target: Vec3, up: Vec3): Mat4 {
-        let x = new Vec3();
-        let y = new Vec3();
-        let z = new Vec3()
+    public setLookAt(position: Vec3, target: Vec3, up: Vec3): Mat4 {
+        const x = new Vec3();
+        const y = new Vec3();
+        const z = new Vec3();
 
         z.sub2(position, target).normalize();
         y.copy(up).normalize();
@@ -340,7 +339,7 @@ export default class Mat4 extends Mat {
         return this;
     }
 
-    setFrustum(left: number, right: number, bottom: number, top: number, znear: number, zfar: number): Mat4 {
+    public setFrustum(left: number, right: number, bottom: number, top: number, znear: number, zfar: number): Mat4 {
         let temp1, temp2, temp3, temp4;
 
         temp1 = 2 * znear;
@@ -368,7 +367,7 @@ export default class Mat4 extends Mat {
         return this;
     }
 
-    setPerspective(fovy: number, aspect: number, znear: number, zfar: number, fovIsHorizontal?: boolean): Mat4 {
+    public setPerspective(fovy: number, aspect: number, znear: number, zfar: number, fovIsHorizontal?: boolean): Mat4 {
         let xmax, ymax;
 
         if (!fovIsHorizontal) {
@@ -382,7 +381,7 @@ export default class Mat4 extends Mat {
         return this.setFrustum(-xmax, xmax, -ymax, ymax, znear, zfar);
     }
 
-    setOrtho(left: number, right: number, bottom: number, top: number, near: number, far: number): Mat4 {
+    public setOrtho(left: number, right: number, bottom: number, top: number, near: number, far: number): Mat4 {
         this.data[0] = 2 / (right - left);
         this.data[1] = 0;
         this.data[2] = 0;
@@ -403,7 +402,7 @@ export default class Mat4 extends Mat {
         return this;
     }
 
-    setFromAxisAngle(axis: Vec3, angle: number): Mat4 {
+    public setFromAxisAngle(axis: Vec3, angle: number): Mat4 {
         let x, y, z, c, s, t, tx, ty;
 
         angle *= DEG_TO_RAD;
@@ -437,8 +436,8 @@ export default class Mat4 extends Mat {
         return this;
     }
 
-    setTranslate(tx: number, ty: number, tz: number): Mat4 {
-        let m = this.data;
+    public setTranslate(tx: number, ty: number, tz: number): Mat4 {
+        const m = this.data;
 
         m[0] = 1;
         m[1] = 0;
@@ -460,8 +459,8 @@ export default class Mat4 extends Mat {
         return this;
     }
 
-    setScale(sx: number, sy: number, sz: number): Mat4 {
-        let m = this.data;
+    public setScale(sx: number, sy: number, sz: number): Mat4 {
+        const m = this.data;
 
         m[0] = sx;
         m[1] = 0;
@@ -483,7 +482,7 @@ export default class Mat4 extends Mat {
         return this;
     }
 
-    invert(): Mat4 {
+    public invert(): Mat4 {
         let a00, a01, a02, a03,
             a10, a11, a12, a13,
             a20, a21, a22, a23,
@@ -554,8 +553,8 @@ export default class Mat4 extends Mat {
         return this;
     }
 
-    set(b: number[]): Mat4 {
-        let m = this.data;
+    public set(b: number[]): Mat4 {
+        const m = this.data;
         m[0] = b[0];
         m[1] = b[1];
         m[2] = b[2];
@@ -576,8 +575,8 @@ export default class Mat4 extends Mat {
         return this;
     }
 
-    setIdentity() {
-        let m = this.data;
+    public setIdentity() {
+        const m = this.data;
 
         m[0] = 1;
         m[1] = 0;
@@ -599,7 +598,7 @@ export default class Mat4 extends Mat {
         return this;
     }
 
-    setTRS(t: Vec3, r: Quat, s: Vec3): Mat4 {
+    public setTRS(t: Vec3, r: Quat, s: Vec3): Mat4 {
         let tx, ty, tz, qx, qy, qz, qw, sx, sy, sz,
             x2, y2, z2, xx, xy, xz, yy, yz, zz, wx, wy, wz, m;
 
@@ -654,8 +653,9 @@ export default class Mat4 extends Mat {
         return this;
     }
 
-    transpose() {
-        let tmp, m = this.data;
+    public transpose() {
+        let tmp;
+        const m = this.data;
 
         tmp = m[1];
         m[1] = m[4];
@@ -684,24 +684,24 @@ export default class Mat4 extends Mat {
         return this;
     }
 
-    invertTo3x3(res?: Mat3): Mat3 {
+    public invertTo3x3(res?: Mat3): Mat3 {
         let a11, a21, a31, a12, a22, a32, a13, a23, a33,
             m, r, det, idet;
 
         m = this.data;
         r = res.data;
 
-        let m0 = m[0];
-        let m1 = m[1];
-        let m2 = m[2];
-        // let m3 = m[3];
-        let m4 = m[4];
-        let m5 = m[5];
-        let m6 = m[6];
-        // let m7 = m[7];
-        let m8 = m[8];
-        let m9 = m[9];
-        let m10 = m[10];
+        const m0 = m[0];
+        const m1 = m[1];
+        const m2 = m[2];
+        // const m3 = m[3];
+        const m4 = m[4];
+        const m5 = m[5];
+        const m6 = m[6];
+        // const m7 = m[7];
+        const m8 = m[8];
+        const m9 = m[9];
+        const m10 = m[10];
 
         a11 = m10 * m5 - m6 * m9;
         a21 = -m10 * m1 + m2 * m9;
@@ -734,31 +734,31 @@ export default class Mat4 extends Mat {
         return this;
     }
 
-    getTranslation(t?: Vec3): Vec3 {
+    public getTranslation(t?: Vec3): Vec3 {
         t = (t === undefined) ? new Vec3() : t;
 
         return t.set(this.data[12], this.data[13], this.data[14]);
     }
 
-    getX(x?: Vec3): Vec3 {
+    public getX(x?: Vec3): Vec3 {
         x = (x === undefined) ? new Vec3() : x;
 
         return x.set(this.data[0], this.data[1], this.data[2]);
     }
 
-    getY(y?: Vec3): Vec3 {
+    public getY(y?: Vec3): Vec3 {
         y = (y === undefined) ? new Vec3() : y;
 
         return y.set(this.data[4], this.data[5], this.data[6]);
     }
 
-    getZ(z?: Vec3): Vec3 {
+    public getZ(z?: Vec3): Vec3 {
         z = (z === undefined) ? new Vec3() : z;
 
         return z.set(this.data[8], this.data[9], this.data[10]);
     }
 
-    getScale(scale?: Vec3): Vec3 {
+    public getScale(scale?: Vec3): Vec3 {
         let x, y, z;
 
         x = new Vec3();
@@ -775,7 +775,7 @@ export default class Mat4 extends Mat {
         return scale;
     }
 
-    setFromEulerAngles(ex: number, ey: number, ez: number): Mat4 {
+    public setFromEulerAngles(ex: number, ey: number, ez: number): Mat4 {
         let s1, c1, s2, c2, s3, c3, m;
 
         ex *= DEG_TO_RAD;
@@ -816,9 +816,9 @@ export default class Mat4 extends Mat {
         return this;
     }
 
-    getEulerAngles(eulers?: Vec3): Vec3 {
-        let scale = new Vec3();
+    public getEulerAngles(eulers?: Vec3): Vec3 {
         let x, y, z, sx, sy, sz, m, halfPi;
+        const scale = new Vec3();
 
         eulers = (eulers === undefined) ? new Vec3() : eulers;
 
@@ -848,5 +848,5 @@ export default class Mat4 extends Mat {
         }
 
         return eulers.set(x, y, z).scale(RAD_TO_DEG);
-    };
+    }
 }
