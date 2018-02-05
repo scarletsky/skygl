@@ -9,8 +9,6 @@ export default class Mat4 extends Mat {
     public static readonly IDENTITY = new Mat4();
     public static readonly ZERO = new Mat4(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
-    public data: Float32Array;
-
     constructor(v0?: number[]);
     constructor(
         v0: number,

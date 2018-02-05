@@ -9,8 +9,6 @@ export default class Vec2 extends Vec {
     public static readonly ONE = new Vec2(1, 1);
     public static readonly ZERO = new Vec2(0, 0);
 
-    public data: Float32Array;
-
     constructor(x?: number[]);
     constructor(x: number, y: number);
     constructor(x?: number[] | number, y?: number) {

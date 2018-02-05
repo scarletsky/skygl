@@ -5,8 +5,6 @@ export default class Vec4 extends Vec {
     public static readonly ONE = new Vec4(1, 1, 1, 1);
     public static readonly ZERO = new Vec4(0, 0, 0, 0);
 
-    public data: Float32Array;
-
     constructor(x?: number[]);
     constructor(x: number, y: number, z: number, w: number);
     constructor(x?: number[] | number, y?: number, z?: number, w?: number) {

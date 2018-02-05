@@ -11,8 +11,6 @@ export default class Vec3 extends Vec {
     public static readonly UP = new Vec3(0, 1, 0);
     public static readonly ZERO = new Vec3(0, 0, 0);
 
-    public data: Float32Array;
-
     constructor(x?: number[]);
     constructor(x: number, y: number, z: number);
 
