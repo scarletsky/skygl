@@ -1,4 +1,5 @@
 import Device from "./device";
+import ShaderInput from "./shader-input";
 
 function createShader(gl: WebGLRenderingContext, type: number, src: string) {
     const shader = gl.createShader(type);
@@ -30,6 +31,9 @@ interface ShaderDefinition {
 
 export default class Shader {
     public ready = false;
+    public attributes: ShaderInput[] = [];
+    public uniforms: ShaderInput[] = [];
+    public samplers: ShaderInput[] = [];
 
     private device: Device;
     private definition: ShaderDefinition;
@@ -52,9 +56,53 @@ export default class Shader {
 
     public link() {
         const gl = this.device.gl;
+
         gl.linkProgram(this.program);
+
+        if (!gl.getShaderParameter(this.vshader, gl.COMPILE_STATUS)) {
+            console.error("Failed to compile vertex shader:\n\n", gl.getShaderInfoLog(this.vshader));
+        }
+
+        if (!gl.getShaderParameter(this.fshader, gl.COMPILE_STATUS)) {
+            console.error("Failed to compile fragment shader:\n\n", gl.getShaderInfoLog(this.fshader));
+        }
+
+        if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
+            console.error("Failed to link shader program:\n\n", gl.getProgramInfoLog(this.program));
+        }
+
         gl.deleteShader(this.vshader);
         gl.deleteShader(this.fshader);
+
+        let info: WebGLActiveInfo;
+        let location: number | WebGLUniformLocation;
+        let i = 0;
+        const numAttributes = gl.getProgramParameter(this.program, gl.ACTIVE_ATTRIBUTES);
+        while (i < numAttributes) {
+            info = gl.getActiveAttrib(this.program, i++);
+            location = gl.getAttribLocation(this.program, info.name);
+            this.attributes.push(
+                new ShaderInput(
+                    this.device,
+                    this.definition.attributes[info.name],
+                    info.type,
+                    location
+                )
+            );
+        }
+
+        i = 0;
+        const numUniforms = gl.getProgramParameter(this.program, gl.ACTIVE_UNIFORMS);
+        while (i < numUniforms) {
+            info = gl.getActiveUniform(this.program, i++);
+            location = gl.getUniformLocation(this.program, info.name);
+            if (info.type === gl.SAMPLER_2D || info.type === gl.SAMPLER_CUBE) {
+                this.samplers.push(new ShaderInput(this.device, info.name, info.type, location));
+            } else {
+                this.uniforms.push(new ShaderInput(this.device, info.name, info.type, location));
+            }
+        }
+
         this.ready = true;
     }
 
