@@ -40,6 +40,7 @@ export default class Shader {
     constructor(device: Device, definition: ShaderDefinition) {
         this.device = device;
         this.definition = definition;
+        this.compile();
     }
 
     public compile() {
@@ -55,5 +56,13 @@ export default class Shader {
         gl.deleteShader(this.vshader);
         gl.deleteShader(this.fshader);
         this.ready = true;
+    }
+
+    public destroy() {
+        if (this.program) {
+            const gl = this.device.gl;
+            gl.deleteProgram(this.program);
+            this.program = null;
+        }
     }
 }
