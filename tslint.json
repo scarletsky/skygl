@@ -12,7 +12,8 @@
         "one-variable-per-declaration": false,
         "no-console": false,
         "object-literal-sort-keys": false,
-        "trailing-comma": false
+        "trailing-comma": false,
+        "curly": false
     },
     "rulesDirectory": []
 }
