@@ -2,7 +2,7 @@ export default class ScopeId {
     public name: string;
     public value: any;
 
-    constructor(name) {
+    constructor(name: string) {
         this.name = name;
         this.value = null;
     }
