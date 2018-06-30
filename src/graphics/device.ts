@@ -1,7 +1,12 @@
 import ScopeSpace from "./scope-space";
+import ShaderInput from "./shader-input";
 
 interface DeviceOptions extends WebGLContextAttributes {
     preferWebgl2?: true
+}
+
+interface DeviceCommitFunction {
+    [dataType: number]: (uniform: ShaderInput, value: any) => void;
 }
 
 export default class Device {
@@ -9,11 +14,25 @@ export default class Device {
     public gl: WebGLRenderingContext;
     public webgl2: boolean;
     public scope: ScopeSpace;
+    private defaultClearOptions: any;
+    private glAddress: number[];
+    private glBlendEquation: number[];
+    private glBlendFunction: number[];
+    private glComparison: number[];
+    private glStencilOp: number[];
+    private glClearFlag: number[];
+    private glCull: number[];
+    private glFront: number[];
+    private glFilter: number[];
+    private glPrimitive: number[];
+    private glType: number[];
+    private commitFunction: DeviceCommitFunction = {};
 
     constructor(canvas: HTMLCanvasElement, options: DeviceOptions = {}) {
         this.canvas = canvas;
         this.scope = new ScopeSpace();
         this.initializeContext(options);
+        this.initializeDevice();
         this.initializeExtensions();
         this.initializeCapabilities();
         this.initializeRenderState();
@@ -37,6 +56,182 @@ export default class Device {
         }
 
         if (!gl) throw new Error("Browser do not support WebGL.");
+    }
+
+    private initializeDevice() {
+        const gl = this.gl;
+
+        this.glAddress = [
+            gl.REPEAT,
+            gl.CLAMP_TO_EDGE,
+            gl.MIRRORED_REPEAT
+        ];
+
+        this.glBlendEquation = [
+            gl.FUNC_ADD,
+            gl.FUNC_SUBTRACT,
+            gl.FUNC_REVERSE_SUBTRACT,
+            // this.webgl2 ? gl.MIN : this.extBlendMinmax ? this.extBlendMinmax.MIN_EXT : gl.FUNC_ADD,
+            // this.webgl2 ? gl.MAX : this.extBlendMinmax ? this.extBlendMinmax.MAX_EXT : gl.FUNC_ADD
+        ];
+
+        this.glBlendFunction = [
+            gl.ZERO,
+            gl.ONE,
+            gl.SRC_COLOR,
+            gl.ONE_MINUS_SRC_COLOR,
+            gl.DST_COLOR,
+            gl.ONE_MINUS_DST_COLOR,
+            gl.SRC_ALPHA,
+            gl.SRC_ALPHA_SATURATE,
+            gl.ONE_MINUS_SRC_ALPHA,
+            gl.DST_ALPHA,
+            gl.ONE_MINUS_DST_ALPHA
+        ];
+
+        this.glComparison = [
+            gl.NEVER,
+            gl.LESS,
+            gl.EQUAL,
+            gl.LEQUAL,
+            gl.GREATER,
+            gl.NOTEQUAL,
+            gl.GEQUAL,
+            gl.ALWAYS
+        ];
+
+        this.glStencilOp = [
+            gl.KEEP,
+            gl.ZERO,
+            gl.REPLACE,
+            gl.INCR,
+            gl.INCR_WRAP,
+            gl.DECR,
+            gl.DECR_WRAP,
+            gl.INVERT
+        ];
+
+        this.glClearFlag = [
+            0,
+            gl.COLOR_BUFFER_BIT,
+            gl.DEPTH_BUFFER_BIT,
+            gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
+            gl.STENCIL_BUFFER_BIT,
+            gl.STENCIL_BUFFER_BIT | gl.COLOR_BUFFER_BIT,
+            gl.STENCIL_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
+            gl.STENCIL_BUFFER_BIT | gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT
+        ];
+
+        this.glCull = [
+            0,
+            gl.BACK,
+            gl.FRONT,
+            gl.FRONT_AND_BACK
+        ];
+
+        this.glFront = [
+            gl.CCW,
+            gl.CW
+        ];
+
+        this.glFilter = [
+            gl.NEAREST,
+            gl.LINEAR,
+            gl.NEAREST_MIPMAP_NEAREST,
+            gl.NEAREST_MIPMAP_LINEAR,
+            gl.LINEAR_MIPMAP_NEAREST,
+            gl.LINEAR_MIPMAP_LINEAR
+        ];
+
+        this.glPrimitive = [
+            gl.POINTS,
+            gl.LINES,
+            gl.LINE_LOOP,
+            gl.LINE_STRIP,
+            gl.TRIANGLES,
+            gl.TRIANGLE_STRIP,
+            gl.TRIANGLE_FAN
+        ];
+
+        this.glType = [
+            gl.BYTE,
+            gl.UNSIGNED_BYTE,
+            gl.SHORT,
+            gl.UNSIGNED_SHORT,
+            gl.INT,
+            gl.UNSIGNED_INT,
+            gl.FLOAT
+        ];
+
+        this.commitFunction[gl.FLOAT] = function (uniform, value) {
+            if (uniform.value !== value) {
+                gl.uniform1f(uniform.locationId, value);
+                uniform.value = value;
+            }
+        };
+        this.commitFunction[gl.FLOAT_VEC2] = function (uniform, value) {
+            let uniformValue = uniform.value;
+            if (uniformValue[0] !== value[0] || uniformValue[1] !== value[1]) {
+                gl.uniform2f(uniform.locationId, value[0], value[1]);
+                uniformValue[0] = value[0];
+                uniformValue[1] = value[1];
+            }
+        };
+        this.commitFunction[gl.FLOAT_VEC3] = function (uniform, value) {
+            let uniformValue = uniform.value;
+            if (uniformValue[0] !== value[0] || uniformValue[1] !== value[1] || uniformValue[2] !== value[2]) {
+                gl.uniform3f(uniform.locationId, value[0], value[1], value[2]);
+                uniformValue[0] = value[0];
+                uniformValue[1] = value[1];
+                uniformValue[2] = value[2];
+            }
+        };
+        this.commitFunction[gl.FLOAT_VEC4] = function (uniform, value) {
+            let uniformValue = uniform.value;
+            if (uniformValue[0] !== value[0] || uniformValue[1] !== value[1] || uniformValue[2] !== value[2] || uniformValue[3] !== value[3]) {
+                gl.uniform4f(uniform.locationId, value[0], value[1], value[2], value[3]);
+                uniformValue[0] = value[0];
+                uniformValue[1] = value[1];
+                uniformValue[2] = value[2];
+                uniformValue[3] = value[3];
+            }
+        };
+        this.commitFunction[gl.BOOL] = this.commitFunction[gl.INT] = function (uniform, value) {
+            if (uniform.value !== value) {
+                gl.uniform1i(uniform.locationId, value);
+                uniform.value = value;
+            }
+        };
+        this.commitFunction[gl.BOOL_VEC2] = this.commitFunction[gl.INT_VEC2] = function (uniform, value) {
+            let uniformValue = uniform.value;
+            if (uniformValue[0] !== value[0] || uniformValue[1] !== value[1]) {
+                gl.uniform2i(uniform.locationId, value[0], value[1]);
+                uniformValue[0] = value[0];
+                uniformValue[1] = value[1];
+            }
+        };
+        this.commitFunction[gl.BOOL_VEC3] = this.commitFunction[gl.INT_VEC3] = function (uniform, value) {
+            let uniformValue = uniform.value;
+            if (uniformValue[0] !== value[0] || uniformValue[1] !== value[1] || uniformValue[2] !== value[2]) {
+                gl.uniform3i(uniform.locationId, value[0], value[1], value[2]);
+                uniformValue[0] = value[0];
+                uniformValue[1] = value[1];
+                uniformValue[2] = value[2];
+            }
+        };
+        this.commitFunction[gl.BOOL_VEC4] = this.commitFunction[gl.INT_VEC4] = function (uniform, value) {
+            let uniformValue = uniform.value;
+            if (uniformValue[0] !== value[0] || uniformValue[1] !== value[1] || uniformValue[2] !== value[2] || uniformValue[3] !== value[3]) {
+                gl.uniform4i(uniform.locationId, value[0], value[1], value[2], value[3]);
+                uniformValue[0] = value[0];
+                uniformValue[1] = value[1];
+                uniformValue[2] = value[2];
+                uniformValue[3] = value[3];
+            }
+        };
+        this.commitFunction[gl.FLOAT_MAT2] = function (uniform, value) { gl.uniformMatrix2fv(uniform.locationId, false, value); };
+        this.commitFunction[gl.FLOAT_MAT3] = function (uniform, value) { gl.uniformMatrix3fv(uniform.locationid, false, value); };
+        this.commitFunction[gl.FLOAT_MAT4] = function (uniform, value) { gl.uniformMatrix4fv(uniform.locationId, false, value); };
     }
 
     private initializeExtensions() {
