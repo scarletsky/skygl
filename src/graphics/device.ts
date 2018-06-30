@@ -230,7 +230,7 @@ export default class Device {
             }
         };
         this.commitFunction[gl.FLOAT_MAT2] = function (uniform, value) { gl.uniformMatrix2fv(uniform.locationId, false, value); };
-        this.commitFunction[gl.FLOAT_MAT3] = function (uniform, value) { gl.uniformMatrix3fv(uniform.locationid, false, value); };
+        this.commitFunction[gl.FLOAT_MAT3] = function (uniform, value) { gl.uniformMatrix3fv(uniform.locationId, false, value); };
         this.commitFunction[gl.FLOAT_MAT4] = function (uniform, value) { gl.uniformMatrix4fv(uniform.locationId, false, value); };
     }
 
