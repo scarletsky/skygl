@@ -34,12 +34,12 @@ export default class Shader {
     public attributes: ShaderInput[] = [];
     public uniforms: ShaderInput[] = [];
     public samplers: ShaderInput[] = [];
+    public program: WebGLProgram;
 
     private device: Device;
     private definition: ShaderDefinition;
     private vshader: WebGLShader;
     private fshader: WebGLShader;
-    private program: WebGLProgram;
 
     constructor(device: Device, definition: ShaderDefinition) {
         this.device = device;
@@ -61,14 +61,17 @@ export default class Shader {
 
         if (!gl.getShaderParameter(this.vshader, gl.COMPILE_STATUS)) {
             console.error("Failed to compile vertex shader:\n\n", gl.getShaderInfoLog(this.vshader));
+            return false;
         }
 
         if (!gl.getShaderParameter(this.fshader, gl.COMPILE_STATUS)) {
             console.error("Failed to compile fragment shader:\n\n", gl.getShaderInfoLog(this.fshader));
+            return false;
         }
 
         if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
             console.error("Failed to link shader program:\n\n", gl.getProgramInfoLog(this.program));
+            return false;
         }
 
         gl.deleteShader(this.vshader);
@@ -96,6 +99,7 @@ export default class Shader {
         while (i < numUniforms) {
             info = gl.getActiveUniform(this.program, i++);
             location = gl.getUniformLocation(this.program, info.name);
+            // TODO support webgl2: gl.SAMPLER_2D_SHADOE, gl.SAMPLER_CUBE_SHADOW, gl.SAMPLER_3D
             if (info.type === gl.SAMPLER_2D || info.type === gl.SAMPLER_CUBE) {
                 this.samplers.push(new ShaderInput(this.device, info.name, info.type, location));
             } else {
@@ -104,6 +108,8 @@ export default class Shader {
         }
 
         this.ready = true;
+
+        return true;
     }
 
     public destroy() {

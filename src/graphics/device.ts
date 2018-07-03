@@ -1,5 +1,8 @@
 import ScopeSpace from "./scope-space";
 import ShaderInput from "./shader-input";
+import Shader from "./shader";
+import Mesh from "../scene/mesh";
+import VertexBuffer from "./vertex-buffer";
 
 interface DeviceOptions extends WebGLContextAttributes {
     preferWebgl2?: true
@@ -14,6 +17,11 @@ export default class Device {
     public gl: WebGLRenderingContext;
     public webgl2: boolean;
     public scope: ScopeSpace;
+
+    private boundShader: Shader;
+    private boundVertexBuffer: WebGLBuffer;
+    private boundIndexBuffer: WebGLBuffer;
+    private enabledAttributes: Uint8Array;
     private defaultClearOptions: any;
     private glAddress: number[];
     private glBlendEquation: number[];
@@ -24,7 +32,6 @@ export default class Device {
     private glCull: number[];
     private glFront: number[];
     private glFilter: number[];
-    private glPrimitive: number[];
     private glType: number[];
     private commitFunction: DeviceCommitFunction = {};
 
@@ -60,6 +67,12 @@ export default class Device {
 
     private initializeDevice() {
         const gl = this.gl;
+        const maxVertexAttributes = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
+
+        this.boundShader = null;
+        this.boundVertexBuffer = null;
+        this.boundIndexBuffer = null;
+        this.enabledAttributes = new Uint8Array(maxVertexAttributes);
 
         this.glAddress = [
             gl.REPEAT,
@@ -143,26 +156,6 @@ export default class Device {
             gl.LINEAR_MIPMAP_LINEAR
         ];
 
-        this.glPrimitive = [
-            gl.POINTS,
-            gl.LINES,
-            gl.LINE_LOOP,
-            gl.LINE_STRIP,
-            gl.TRIANGLES,
-            gl.TRIANGLE_STRIP,
-            gl.TRIANGLE_FAN
-        ];
-
-        this.glType = [
-            gl.BYTE,
-            gl.UNSIGNED_BYTE,
-            gl.SHORT,
-            gl.UNSIGNED_SHORT,
-            gl.INT,
-            gl.UNSIGNED_INT,
-            gl.FLOAT
-        ];
-
         this.commitFunction[gl.FLOAT] = function (uniform, value) {
             if (uniform.value !== value) {
                 gl.uniform1f(uniform.locationId, value);
@@ -234,15 +227,71 @@ export default class Device {
         this.commitFunction[gl.FLOAT_MAT4] = function (uniform, value) { gl.uniformMatrix4fv(uniform.locationId, false, value); };
     }
 
-    private initializeExtensions() {
+    private initializeCapabilities() {
 
     }
 
-    private initializeCapabilities() {
+    private initializeExtensions() {
 
     }
 
     private initializeRenderState() {
 
+    }
+
+    public setShader(shader: Shader) {
+        if (this.boundShader !== shader) {
+            this.boundShader = shader;
+
+            if (!shader.ready && !shader.link()) {
+                throw new Error('Can not link shader.');
+            }
+            this.gl.useProgram(shader.program);
+        }
+    }
+
+    public draw(mesh: Mesh) {
+        const gl = this.gl;
+        const attributes = this.boundShader.attributes;
+        const vertexBuffers = mesh.vertexBuffers;
+        const indexBuffer = mesh.indexBuffer;
+        let bufferId, locationId, scopeId;
+        let vertexBuffer;
+
+        // bind vertex buffers
+        for (let attribute of attributes) {
+            scopeId = attribute.scopeId;
+            locationId = attribute.locationId as number;
+            vertexBuffer = vertexBuffers[scopeId.name];
+            bufferId = vertexBuffer._glBufferId;
+            if (this.boundVertexBuffer !== bufferId) {
+                this.boundVertexBuffer = bufferId;
+                gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
+            }
+            if (!this.enabledAttributes[locationId]) {
+                this.enabledAttributes[locationId] = 1;
+                gl.enableVertexAttribArray(locationId);
+            }
+            gl.vertexAttribPointer(
+                locationId,
+                VertexBuffer.ATTRIBUTE_SIZE_MAP[scopeId.name],
+                vertexBuffer.type,
+                vertexBuffer.normalized,
+                vertexBuffer.stride,
+                vertexBuffer.offset
+            );
+        }
+
+        // set index buffer
+        if (this.boundIndexBuffer !== indexBuffer) {
+            this.boundIndexBuffer = indexBuffer;
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer ? indexBuffer._glBufferId : null);
+        }
+
+        if (indexBuffer) {
+            gl.drawElements(mesh.primitive, indexBuffer.count, indexBuffer.type, indexBuffer.offset);
+        } else {
+            gl.drawArrays(mesh.primitive, mesh.drawFirst, mesh.drawCount);
+        }
     }
 }

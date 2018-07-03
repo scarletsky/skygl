@@ -13,7 +13,9 @@
         "no-console": false,
         "object-literal-sort-keys": false,
         "trailing-comma": false,
-        "curly": false
+        "curly": false,
+        "variable-name": false,
+        "max-classes-per-file": false
     },
     "rulesDirectory": []
 }
