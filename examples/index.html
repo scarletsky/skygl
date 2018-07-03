@@ -2,10 +2,63 @@
 <html>
     <head>
         <title>Engine</title>
-        <script type="text/javascript" src="../dist/engine.js"></script>
+        <style>
+            html, body { margin: 0; padding: 0; }
+            canvas { width: 100vw; height: 100vh; }
+        </style>
     </head>
 
     <body>
         <canvas id="application"></canvas>
+        <script type="text/javascript" src="../dist/engine.js"></script>
+        <script id="vshader" type="application/x-glsl">
+attribute vec3 aPosition;
+attribute vec4 aColor;
+varying vec4 vColor;
+void main() {
+    vColor = aColor;
+    gl_Position = vec4(aPosition, 1.0);
+}
+        </script>
+        <script id="fshader" type="application/x-glsl">
+precision highp float;
+varying vec4 vColor;
+void main() {
+    gl_FragColor = vColor;
+}
+        </script>
+        <script type="text/javascript">
+var canvas = document.getElementById('application');
+var vshader = document.getElementById('vshader').innerHTML;
+var fshader = document.getElementById('fshader').innerHTML;
+var device = new engine.Device(canvas);
+var gl = device.gl;
+var mesh = new engine.Mesh();
+var shader = new engine.Shader(device, {
+    attributes: {
+        aPosition: engine.VertexBuffer.ATTRIBUTE_POSITION,
+        aColor: engine.VertexBuffer.ATTRIBUTE_COLOR
+    },
+    vshader: vshader,
+    fshader: fshader
+});
+var vertices = new Float32Array([
+  0.0, 0.5, 0.0,
+  -0.5, -0.5, 0.0,
+  0.5, -0.5, 0.0
+]);
+var colors = new Float32Array([
+  1, 0, 0, 1,
+  0, 1, 0, 1,
+  0, 0, 1, 1
+]);
+var indices = new Uint8Array([0, 1, 2]);
+mesh.vertexBuffers.POSITION = new engine.VertexBuffer(device, vertices, engine.VertexBuffer.FLOAT);
+mesh.vertexBuffers.COLOR = new engine.VertexBuffer(device, colors, engine.VertexBuffer.FLOAT);
+mesh.indexBuffer = new engine.IndexBuffer(device, indices, engine.VertexBuffer.UNSIGNED_BYTE, 3);
+
+device.setShader(shader);
+device.draw(mesh);
+        </script>
     </body>
 </html>
