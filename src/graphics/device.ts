@@ -1,7 +1,7 @@
 import ScopeSpace from "./scope-space";
 import ShaderInput from "./shader-input";
 import Shader from "./shader";
-import Mesh from "../scene/mesh";
+import Geometry from "../scene/geometry";
 import VertexBuffer from "./vertex-buffer";
 
 interface DeviceOptions extends WebGLContextAttributes {
@@ -250,11 +250,11 @@ export default class Device {
         }
     }
 
-    public draw(mesh: Mesh) {
+    public draw(geometry: Geometry) {
         const gl = this.gl;
         const attributes = this.boundShader.attributes;
-        const vertexBuffers = mesh.vertexBuffers;
-        const indexBuffer = mesh.indexBuffer;
+        const vertexBuffers = geometry.vertexBuffers;
+        const indexBuffer = geometry.indexBuffer;
         let bufferId, locationId, scopeId;
         let vertexBuffer;
 
@@ -289,9 +289,9 @@ export default class Device {
         }
 
         if (indexBuffer) {
-            gl.drawElements(mesh.primitive, indexBuffer.count, indexBuffer.type, indexBuffer.offset);
+            gl.drawElements(geometry.primitive, indexBuffer.count, indexBuffer.type, indexBuffer.offset);
         } else {
-            gl.drawArrays(mesh.primitive, mesh.drawFirst, mesh.drawCount);
+            gl.drawArrays(geometry.primitive, geometry.drawFirst, geometry.drawCount);
         }
     }
 }

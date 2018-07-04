@@ -35,7 +35,7 @@ var vshader = document.getElementById('vshader').innerHTML;
 var fshader = document.getElementById('fshader').innerHTML;
 var device = new engine.Device(canvas);
 var gl = device.gl;
-var mesh = new engine.Mesh();
+var geometry = new engine.Geometry();
 var shader = new engine.Shader(device, {
     attributes: {
         aPosition: engine.VertexBuffer.ATTRIBUTE_POSITION,
@@ -55,12 +55,12 @@ var colors = new Float32Array([
   0, 0, 1, 1
 ]);
 var indices = new Uint8Array([0, 1, 2]);
-mesh.vertexBuffers.POSITION = new engine.VertexBuffer(device, vertices, engine.VertexBuffer.FLOAT);
-mesh.vertexBuffers.COLOR = new engine.VertexBuffer(device, colors, engine.VertexBuffer.FLOAT);
-mesh.indexBuffer = new engine.IndexBuffer(device, indices, engine.VertexBuffer.UNSIGNED_BYTE, 3);
+geometry.vertexBuffers.POSITION = new engine.VertexBuffer(device, vertices, engine.VertexBuffer.FLOAT);
+geometry.vertexBuffers.COLOR = new engine.VertexBuffer(device, colors, engine.VertexBuffer.FLOAT);
+geometry.indexBuffer = new engine.IndexBuffer(device, indices, engine.VertexBuffer.UNSIGNED_BYTE, 3);
 
 device.setShader(shader);
-device.draw(mesh);
+device.draw(geometry);
         </script>
     </body>
 </html>
