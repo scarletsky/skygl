@@ -212,10 +212,14 @@ export default class Quat {
         return this;
     }
 
-    public setFromEulerAngles(ex: number, ey: number, ez: number) {
-        let sx, cx, sy, cy, sz, cz, halfToRad;
+    public setFromEulerAngles(eulers: Vec3) {
+        let ex, ey, ez, sx, cx, sy, cy, sz, cz, halfToRad;
 
         halfToRad = 0.5 * DEG_TO_RAD;
+
+        ex = eulers.data[0];
+        ey = eulers.data[1];
+        ez = eulers.data[2];
         ex *= halfToRad;
         ey *= halfToRad;
         ez *= halfToRad;
