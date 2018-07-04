@@ -253,6 +253,7 @@ export default class Device {
     public draw(geometry: Geometry) {
         const gl = this.gl;
         const attributes = this.boundShader.attributes;
+        const uniforms = this.boundShader.uniforms;
         const vertexBuffers = geometry.vertexBuffers;
         const indexBuffer = geometry.indexBuffer;
         let bufferId, locationId, scopeId;
@@ -286,6 +287,14 @@ export default class Device {
         if (this.boundIndexBuffer !== indexBuffer) {
             this.boundIndexBuffer = indexBuffer;
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer ? indexBuffer._glBufferId : null);
+        }
+
+        // set uniform
+        for (let uniform of uniforms) {
+            scopeId = uniform.scopeId;
+            if (scopeId.value !== null) {
+                this.commitFunction[uniform.dataType](uniform, scopeId.value);
+            }
         }
 
         if (indexBuffer) {
