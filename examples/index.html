@@ -29,6 +29,8 @@ void main() {
         </script>
         <script type="text/javascript">
 var canvas = document.getElementById('application');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 var vshader = document.getElementById('vshader').innerHTML;
 var fshader = document.getElementById('fshader').innerHTML;
 var device = new engine.Device(canvas);
