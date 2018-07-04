@@ -117,23 +117,3 @@ export function smootherstep(min: number, max: number, x: number): number {
 
     return x * x * x * (x * (x * 6 - 15) + 10);
 }
-
-export default {
-    DEG_TO_RAD,
-    RAD_TO_DEG,
-    INV_LOG,
-    clamp,
-    intToBytes,
-    intToBytes24,
-    intToBytes32,
-    bytesToInt,
-    bytesToInt24,
-    bytesToInt32,
-    lerp,
-    lerpAngle,
-    powerOfTwo,
-    nextPowerOfTwo,
-    random,
-    smoothstep,
-    smootherstep
-};
