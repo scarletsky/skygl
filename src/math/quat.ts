@@ -7,25 +7,53 @@ export default class Quat {
     public static readonly IDENTITY = new Quat();
     public static readonly ZERO = new Quat(0, 0, 0, 0);
 
-    public x: number;
-    public y: number;
-    public z: number;
-    public w: number;
+    public data: Float32Array;
 
     constructor(x?: number[]);
     constructor(x: number, y: number, z: number, w: number);
     constructor(x?: number[] | number, y?: number, z?: number, w?: number) {
+        this.data = new Float32Array(4);
+
         if (Array.isArray(x)) {
-            this.x = x[0];
-            this.y = x[1];
-            this.z = x[2];
-            this.w = x[3];
+            this.data.set(x);
         } else {
             this.x = (x === undefined) ? 0 : x;
             this.y = (y === undefined) ? 0 : y;
             this.z = (z === undefined) ? 0 : z;
             this.w = (w === undefined) ? 1 : w;
         }
+    }
+
+    get x() {
+        return this.data[0];
+    }
+
+    set x(value: number) {
+        this.data[0] = value;
+    }
+
+    get y() {
+        return this.data[1];
+    }
+
+    set y(value: number) {
+        this.data[1] = value;
+    }
+
+    get z() {
+        return this.data[2];
+    }
+
+    set z(value: number) {
+        this.data[2] = value;
+    }
+
+    get w() {
+        return this.data[3];
+    }
+
+    set w(value: number) {
+        this.data[3] = value;
     }
 
     public clone() {
