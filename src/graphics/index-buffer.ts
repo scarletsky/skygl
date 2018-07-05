@@ -1,7 +1,7 @@
 import Device from "./device";
+import Buffer from "./buffer";
 
-export default class IndexBuffer {
-    public data: ArrayBuffer;
+export default class IndexBuffer extends Buffer {
     public type: number;
     public offset: number;
     public count: number;
@@ -16,8 +16,9 @@ export default class IndexBuffer {
         count: number,
         offset: number = 0
     ) {
+        super(data);
+
         this.device = device;
-        this.data = data;
         this.type = type;
         this.count = count;
         this.offset = offset;
