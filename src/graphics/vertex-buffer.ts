@@ -20,21 +20,6 @@ export default class VertexBuffer extends Buffer {
         [VertexBuffer.ATTRIBUTE_TEXCOORD_0]: 2
     } as { [attribute: string]: number };
 
-    public static getBufferType(data: ArrayBuffer) {
-        let type = Buffer.FLOAT;
-
-        if (data instanceof Float32Array) type = Buffer.FLOAT;
-        if (data instanceof Int16Array) type = Buffer.SHORT;
-        if (data instanceof Uint16Array) type = Buffer.UNSIGNED_SHORT;
-        if (data instanceof Int8Array) type = Buffer.BYTE;
-        if (data instanceof Uint8Array) type = Buffer.UNSIGNED_BYTE;
-        if (data instanceof Uint8ClampedArray) type = Buffer.UNSIGNED_BYTE;
-        if (data instanceof Int32Array) type = Buffer.INT;
-        if (data instanceof Uint32Array) type = Buffer.UNSIGNED_INT;
-
-        return type;
-    }
-
     public stride: number;
     public offset: number;
     public type: number;

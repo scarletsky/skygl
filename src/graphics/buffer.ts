@@ -10,6 +10,21 @@ export default class Buffer {
     public static readonly ELEMENT_ARRAY_BUFFER = 0x8893;
     public static readonly ARRAY_BUFFER = 0x8892;
 
+    public static getBufferType(data: ArrayBuffer) {
+        let type = Buffer.FLOAT;
+
+        if (data instanceof Float32Array) type = Buffer.FLOAT;
+        if (data instanceof Int16Array) type = Buffer.SHORT;
+        if (data instanceof Uint16Array) type = Buffer.UNSIGNED_SHORT;
+        if (data instanceof Int8Array) type = Buffer.BYTE;
+        if (data instanceof Uint8Array) type = Buffer.UNSIGNED_BYTE;
+        if (data instanceof Uint8ClampedArray) type = Buffer.UNSIGNED_BYTE;
+        if (data instanceof Int32Array) type = Buffer.INT;
+        if (data instanceof Uint32Array) type = Buffer.UNSIGNED_INT;
+
+        return type;
+    }
+
     public data: ArrayBuffer;
 
     constructor(data: ArrayBuffer) {
