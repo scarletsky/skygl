@@ -14,9 +14,8 @@ export default class Node {
     public parent: Node;
     public children: Node[];
     public position = new Vec3();
-    public rotation = new Vec3();
+    public rotation = new Quat();
     public scale = new Vec3(1, 1, 1);
-    public quaternion = new Quat();
     public worldMatrix = new Mat4();
     public localMatrix = new Mat4();
     public normalMatrix = new Mat3();
@@ -66,12 +65,12 @@ export default class Node {
 
     public rotate(vector: Vec3) {
         quatA.setFromEulerAngles(vector);
-        return this.setWorldQuaternion(quatA);
+        return this.setWorldRotation(quatA);
     }
 
     public rotateLocal(vector: Vec3) {
         quatA.setFromEulerAngles(vector);
-        this.quaternion.mul(quatA);
+        this.rotation.mul(quatA);
         return this;
     }
 
@@ -79,7 +78,7 @@ export default class Node {
         this.getWorldPosition(vecA);
         matA.setLookAt(vecA, target, this.up);
         quatA.setFromMat4(matA);
-        this.setWorldQuaternion(quatA);
+        this.setWorldRotation(quatA);
     }
 
     public getWorldPosition(res?: Vec3) {
@@ -98,35 +97,75 @@ export default class Node {
         return this;
     }
 
-    public getWorldRotation(res?: Vec3) {
+    public getLocalPosition(res?: Vec3) {
+        if (res === undefined) res = new Vec3();
+        this.updateLocalMatrix();
+        return this.localMatrix.getTranslation(res);
+    }
+
+    public setLocalPosition(localPosition: Vec3) {
+        this.position.copy(localPosition);
+        return this;
+    }
+
+    public getWorldEulerAngles(res?: Vec3) {
         if (res === undefined) res = new Vec3();
         this.updateWorldMatrix();
         return this.worldMatrix.getEulerAngles(res);
     }
 
-    public setWorldRotation(worldRotation: Vec3) {
+    public setWorldEulerAngles(worldEulerAngles: Vec3) {
         if (this.parent === null) {
-            this.quaternion.setFromEulerAngles(worldRotation);
+            this.rotation.setFromEulerAngles(worldEulerAngles);
         } else {
-            quatA.setFromEulerAngles(worldRotation);
-            this.setWorldQuaternion(quatA);
+            quatA.setFromEulerAngles(worldEulerAngles);
+            this.setWorldRotation(quatA);
         }
     }
 
-    public getWorldQuaternion(res?: Quat) {
+    public getLocalEulerAngles(res?: Vec3) {
+        if (res === undefined) res = new Vec3();
+        return this.rotation.getEulerAngles(res);
+    }
+
+    public setLocalEulerAngles(localEulerAngles: Vec3) {
+        this.rotation.setFromEulerAngles(localEulerAngles);
+        return this;
+    }
+
+    public getWorldRotation(res?: Quat) {
         if (res === undefined) res = new Quat();
         this.updateWorldMatrix();
         return res.setFromMat4(this.worldMatrix);
     }
 
-    public setWorldQuaternion(worldQuaternion: Quat) {
+    public setWorldRotation(worldRotation: Quat) {
         if (this.parent === null) {
-            this.quaternion.copy(worldQuaternion);
+            this.rotation.copy(worldRotation);
         } else {
-            quatA.copy(this.parent.getWorldQuaternion()).invert();
-            quatB.mul2(quatA, worldQuaternion);
-            this.quaternion.mul2(quatB, this.quaternion);
+            quatA.copy(this.parent.getWorldRotation()).invert();
+            quatB.mul2(quatA, worldRotation);
+            this.rotation.mul2(quatB, this.rotation);
         }
+        return this;
+    }
+
+    public getLocalRotation(res?: Quat) {
+        if (res === undefined) res = new Quat();
+        return res.copy(this.rotation);
+    }
+
+    public setLocalRotation(localRotation: Quat) {
+        this.rotation.copy(localRotation);
+    }
+
+    public getLocalScale(res?: Vec3) {
+        if (res === undefined) res = new Vec3();
+        return res.copy(this.scale);
+    }
+
+    public setLocalScale(localScale: Vec3) {
+        this.scale.copy(localScale);
         return this;
     }
 
@@ -153,7 +192,7 @@ export default class Node {
     }
 
     public updateLocalMatrix() {
-        this.localMatrix.setTRS(this.position, this.quaternion, this.scale);
+        this.localMatrix.setTRS(this.position, this.rotation, this.scale);
     }
 
     public updateWorldMatrix() {
