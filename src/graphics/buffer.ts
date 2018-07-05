@@ -25,9 +25,13 @@ export default class Buffer {
         return type;
     }
 
+    public target: number;
     public data: ArrayBuffer;
+    public _needsUpload: boolean;
+    public _glBufferId: WebGLBuffer;
 
-    constructor(data: ArrayBuffer) {
+    constructor(target: number, data: ArrayBuffer) {
+        this.target = target;
         this.data = data;
     }
 }

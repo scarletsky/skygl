@@ -1,6 +1,7 @@
 import ScopeSpace from "./scope-space";
 import ShaderInput from "./shader-input";
 import Shader from "./shader";
+import Buffer from "./buffer";
 import Geometry from "../scene/geometry";
 
 interface DeviceOptions extends WebGLContextAttributes {
@@ -260,7 +261,11 @@ export default class Device {
             scopeId = attribute.scopeId;
             locationId = attribute.locationId as number;
             vertexBuffer = vertexBuffers[scopeId.name];
+
+            if (vertexBuffer._needsUpload) this.uploadBuffer(vertexBuffer);
+
             bufferId = vertexBuffer._glBufferId;
+
             if (this.boundVertexBuffer !== bufferId) {
                 this.boundVertexBuffer = bufferId;
                 gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
@@ -292,6 +297,26 @@ export default class Device {
         }
     }
 
+    public uploadBuffer(buffer: Buffer) {
+        const gl = this.gl;
+        if (!buffer._glBufferId) {
+            buffer._glBufferId = gl.createBuffer();
+        }
+
+        gl.bindBuffer(buffer.target, buffer._glBufferId);
+        gl.bufferData(buffer.target, buffer.data, gl.STATIC_DRAW);
+
+        buffer._needsUpload = false;
+    }
+
+    public deleteBuffer(buffer: Buffer) {
+        const gl = this.gl;
+        if (buffer._glBufferId) {
+            gl.deleteBuffer(buffer._glBufferId);
+            buffer._glBufferId = null;
+        }
+    }
+
     public draw(geometry: Geometry) {
         const gl = this.gl;
         const primitive = geometry.primitive;
@@ -303,7 +328,12 @@ export default class Device {
         // set index buffer
         if (this.boundIndexBuffer !== indexBuffer) {
             this.boundIndexBuffer = indexBuffer;
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer ? indexBuffer._glBufferId : null);
+            if (indexBuffer) {
+                if (indexBuffer._needsUpload) this.uploadBuffer(indexBuffer);
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer._glBufferId);
+            } else {
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+            }
         }
 
         if (indexBuffer) {

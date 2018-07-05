@@ -28,13 +28,8 @@ export default class VertexBuffer extends Buffer {
     public interleaved: boolean;
     public data: ArrayBuffer;
 
-    public _glBufferId: WebGLBuffer;
-    public _needsUpload = true;
-
-    private device: Device;
-
     constructor(
-        device: Device,
+        target: number,
         data: ArrayBuffer,
         itemSize: number,
         type?: number,
@@ -43,36 +38,17 @@ export default class VertexBuffer extends Buffer {
         normalized: boolean = false,
         interleaved: boolean = false
     ) {
-        super(data);
-        this.device = device;
+        super(target, data);
         this.itemSize = itemSize;
         this.type = type !== undefined ? type : Buffer.getBufferType(data);
         this.stride = stride;
         this.offset = offset;
         this.normalized = normalized;
         this.interleaved = interleaved;
-
-        this.upload();
+        this._needsUpload = true;
     }
 
-    // TODO support gl.bufferData usage
     public upload() {
-        const gl = this.device.gl;
-        if (!this._glBufferId) {
-            this._glBufferId = gl.createBuffer();
-        }
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, this._glBufferId);
-        gl.bufferData(gl.ARRAY_BUFFER, this.data, gl.STATIC_DRAW);
-
-        this._needsUpload = false;
-    }
-
-    public destroy() {
-        const gl = this.device.gl;
-        if (this._glBufferId) {
-            gl.deleteBuffer(this._glBufferId);
-            this._glBufferId = null;
-        }
+        this._needsUpload = true;
     }
 }
