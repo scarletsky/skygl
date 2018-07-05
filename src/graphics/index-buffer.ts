@@ -3,8 +3,7 @@ import Buffer from "./buffer";
 
 export default class IndexBuffer extends Buffer {
     public type: number;
-    public offset: number;
-    public count: number;
+    public itemSize: number;
     public _glBufferId: WebGLBuffer;
 
     private device: Device;
@@ -12,16 +11,14 @@ export default class IndexBuffer extends Buffer {
     constructor(
         device: Device,
         data: ArrayBuffer,
-        type: number,
-        count: number,
-        offset: number = 0
+        itemSize: number,
+        type?: number
     ) {
         super(data);
 
         this.device = device;
-        this.type = type;
-        this.count = count;
-        this.offset = offset;
+        this.type = type !== undefined ? type : Buffer.getBufferType(data);
+        this.itemSize = itemSize;
         this.upload();
     }
 

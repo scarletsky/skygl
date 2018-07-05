@@ -20,9 +20,10 @@ export default class VertexBuffer extends Buffer {
         [VertexBuffer.ATTRIBUTE_TEXCOORD_0]: 2
     } as { [attribute: string]: number };
 
+    public itemSize: number;
+    public type: number;
     public stride: number;
     public offset: number;
-    public type: number;
     public normalized: boolean;
     public interleaved: boolean;
     public data: ArrayBuffer;
@@ -35,7 +36,8 @@ export default class VertexBuffer extends Buffer {
     constructor(
         device: Device,
         data: ArrayBuffer,
-        type: number,
+        itemSize: number,
+        type?: number,
         stride: number = 0,
         offset: number = 0,
         normalized: boolean = false,
@@ -43,7 +45,8 @@ export default class VertexBuffer extends Buffer {
     ) {
         super(data);
         this.device = device;
-        this.type = type;
+        this.itemSize = itemSize;
+        this.type = type !== undefined ? type : Buffer.getBufferType(data);
         this.stride = stride;
         this.offset = offset;
         this.normalized = normalized;

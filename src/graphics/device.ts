@@ -2,7 +2,6 @@ import ScopeSpace from "./scope-space";
 import ShaderInput from "./shader-input";
 import Shader from "./shader";
 import Geometry from "../scene/geometry";
-import VertexBuffer from "./vertex-buffer";
 
 interface DeviceOptions extends WebGLContextAttributes {
     preferWebgl2?: true
@@ -250,14 +249,11 @@ export default class Device {
         }
     }
 
-    public draw(geometry: Geometry) {
+    public setAttributes(geometry: Geometry) {
+        let bufferId, locationId, scopeId, vertexBuffer;
         const gl = this.gl;
         const attributes = this.boundShader.attributes;
-        const uniforms = this.boundShader.uniforms;
-        const vertexBuffers = geometry.vertexBuffers;
-        const indexBuffer = geometry.indexBuffer;
-        let bufferId, locationId, scopeId;
-        let vertexBuffer;
+        const vertexBuffers = geometry.attributes;
 
         // bind vertex buffers
         for (let attribute of attributes) {
@@ -275,20 +271,18 @@ export default class Device {
             }
             gl.vertexAttribPointer(
                 locationId,
-                VertexBuffer.ATTRIBUTE_SIZE_MAP[scopeId.name],
+                vertexBuffer.itemSize,
                 vertexBuffer.type,
                 vertexBuffer.normalized,
                 vertexBuffer.stride,
                 vertexBuffer.offset
             );
         }
+    }
 
-        // set index buffer
-        if (this.boundIndexBuffer !== indexBuffer) {
-            this.boundIndexBuffer = indexBuffer;
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer ? indexBuffer._glBufferId : null);
-        }
-
+    public setUniforms() {
+        let scopeId;
+        const uniforms = this.boundShader.uniforms;
         // set uniform
         for (let uniform of uniforms) {
             scopeId = uniform.scopeId;
@@ -296,11 +290,26 @@ export default class Device {
                 this.commitFunction[uniform.dataType](uniform, scopeId.value);
             }
         }
+    }
+
+    public draw(geometry: Geometry) {
+        const gl = this.gl;
+        const primitive = geometry.primitive;
+        const indexBuffer = primitive.indexBuffer;
+
+        this.setAttributes(geometry);
+        this.setUniforms();
+
+        // set index buffer
+        if (this.boundIndexBuffer !== indexBuffer) {
+            this.boundIndexBuffer = indexBuffer;
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer ? indexBuffer._glBufferId : null);
+        }
 
         if (indexBuffer) {
-            gl.drawElements(geometry.primitive, indexBuffer.count, indexBuffer.type, indexBuffer.offset);
+            gl.drawElements(primitive.mode, primitive.count, indexBuffer.type, primitive.offset);
         } else {
-            gl.drawArrays(geometry.primitive, geometry.drawFirst, geometry.drawCount);
+            gl.drawArrays(primitive.mode, primitive.first, primitive.count);
         }
     }
 }
