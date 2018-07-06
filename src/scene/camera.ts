@@ -8,4 +8,9 @@ export default class Camera extends Node {
     constructor() {
         super();
     }
+
+    public updateWorldMatrix(force: boolean = false) {
+        super.updateWorldMatrix(force);
+        this.viewMatrix.copy(this.worldMatrix).invert();
+    }
 }

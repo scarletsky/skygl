@@ -195,26 +195,21 @@ export default class Node {
         this.localMatrix.setTRS(this.position, this.rotation, this.scale);
     }
 
-    public updateWorldMatrix() {
-        if (this.parent === null) {
-            this.worldMatrix.copy(this.localMatrix);
-        } else {
-            this.worldMatrix.mul2(this.parent.worldMatrix, this.localMatrix);
-        }
-    }
-
-    public syncHierarchy(force: boolean = false) {
-        if (!this.enabled) return;
-
+    public updateWorldMatrix(force: boolean = false) {
         this.updateLocalMatrix();
 
         if (this.autoUpdate || force) {
-            this.updateWorldMatrix();
+            if (this.parent === null) {
+                this.worldMatrix.copy(this.localMatrix);
+            } else {
+                this.worldMatrix.mul2(this.parent.worldMatrix, this.localMatrix);
+            }
+
             force = true;
         }
 
         for (const child of this.children) {
-            child.syncHierarchy(force);
+            child.updateWorldMatrix(force);
         }
     }
 
