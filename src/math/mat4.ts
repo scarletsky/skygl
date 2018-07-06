@@ -365,18 +365,33 @@ export default class Mat4 extends Mat {
         return this;
     }
 
-    public setPerspective(fovy: number, aspect: number, znear: number, zfar: number, fovIsHorizontal?: boolean): Mat4 {
-        let xmax, ymax;
+    public setPerspective(fovy: number, aspect: number, znear: number, zfar: number): Mat4 {
+        let nf;
+        const f = 1.0 / Math.tan(fovy / 2);
 
-        if (!fovIsHorizontal) {
-            ymax = znear * Math.tan(fovy * Math.PI / 360);
-            xmax = ymax * aspect;
+        this.data[0] = f / aspect;
+        this.data[1] = 0;
+        this.data[2] = 0;
+        this.data[3] = 0;
+        this.data[4] = 0;
+        this.data[5] = f;
+        this.data[6] = 0;
+        this.data[7] = 0;
+        this.data[8] = 0;
+        this.data[9] = 0;
+        this.data[11] = -1;
+        this.data[12] = 0;
+        this.data[13] = 0;
+        this.data[15] = 0;
+        if (zfar != null && zfar !== Infinity) {
+            nf = 1 / (znear - zfar);
+            this.data[10] = (zfar + znear) * nf;
+            this.data[14] = (2 * zfar * znear) * nf;
         } else {
-            xmax = znear * Math.tan(fovy * Math.PI / 360);
-            ymax = xmax / aspect;
+            this.data[10] = -1;
+            this.data[14] = -2 * znear;
         }
-
-        return this.setFrustum(-xmax, xmax, -ymax, ymax, znear, zfar);
+        return this;
     }
 
     public setOrtho(left: number, right: number, bottom: number, top: number, near: number, far: number): Mat4 {
