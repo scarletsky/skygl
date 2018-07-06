@@ -15,9 +15,12 @@
 attribute vec3 aPosition;
 attribute vec4 aColor;
 varying vec4 vColor;
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
 void main() {
     vColor = aColor;
-    gl_Position = vec4(aPosition, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(aPosition, 1.0);
 }
         </script>
         <script id="fshader" type="application/x-glsl">
@@ -36,6 +39,8 @@ var fshader = document.getElementById('fshader').innerHTML;
 var device = new engine.Device(canvas);
 var gl = device.gl;
 var geometry = new engine.Geometry();
+var mesh = new engine.Mesh(geometry);
+var camera = new engine.Camera();
 var shader = new engine.Shader(device, {
     attributes: {
         aPosition: engine.VertexBuffer.ATTRIBUTE_POSITION,
@@ -55,12 +60,37 @@ var colors = new Float32Array([
   0, 0, 1, 1
 ]);
 var indices = new Uint8Array([0, 1, 2]);
-geometry.vertexBuffers.POSITION = new engine.VertexBuffer(device, vertices, engine.VertexBuffer.FLOAT);
-geometry.vertexBuffers.COLOR = new engine.VertexBuffer(device, colors, engine.VertexBuffer.FLOAT);
-geometry.indexBuffer = new engine.IndexBuffer(device, indices, engine.VertexBuffer.UNSIGNED_BYTE, 3);
+geometry.addAttribute(
+    'POSITION',
+    new engine.VertexBuffer(engine.Buffer.ARRAY_BUFFER, vertices, 3)
+);
+geometry.addAttribute(
+    'COLOR',
+    new engine.VertexBuffer(engine.Buffer.ARRAY_BUFFER, colors, 4)
+);
+geometry.primitive = new engine.Primitive(
+    engine.Primitive.TRIANGLES,
+    new engine.IndexBuffer(engine.Buffer.ELEMENT_ARRAY_BUFFER, indices, 3)
+);
+camera.position.set(0, 0, 5);
+camera.aspect = window.innerWidth / window.innerHeight;
 
-device.setShader(shader);
-device.draw(geometry);
+var euler = new engine.Vec3();
+
+function render() {
+    euler.add(engine.Vec3.ONE);
+    mesh.rotate(euler);
+    mesh.updateWorldMatrix();
+    camera.updateWorldMatrix();
+    device.scope.resolve("modelMatrix").setValue(mesh.worldMatrix.data);
+    device.scope.resolve("viewMatrix").setValue(camera.viewMatrix.data);
+    device.scope.resolve("projectionMatrix").setValue(camera.projectionMatrix.data);
+    device.setShader(shader);
+    device.draw(geometry);
+    window.requestAnimationFrame(render);
+}
+render();
+
         </script>
     </body>
 </html>
