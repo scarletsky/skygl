@@ -87,26 +87,19 @@ export default class Quat {
     }
 
     public getAxisAngle(axis: Vec3) {
-        let rad = Math.acos(this.w) * 2;
+        const rad = Math.acos(this.w) * 2;
         const s = Math.sin(rad / 2);
         if (s !== 0) {
             axis.x = this.x / s;
             axis.y = this.y / s;
             axis.z = this.z / s;
-            if (axis.x < 0 || axis.y < 0 || axis.z < 0) {
-                // Flip the sign
-                axis.x *= -1;
-                axis.y *= -1;
-                axis.z *= -1;
-                rad *= -1;
-            }
         } else {
             // If s is zero, return any axis (no rotation - axis does not matter)
             axis.x = 1;
             axis.y = 0;
             axis.z = 0;
         }
-        return rad * RAD_TO_DEG;
+        return rad;
     }
 
     public getEulerAngles(eulers: Vec3) {
@@ -224,13 +217,13 @@ export default class Quat {
         return this;
     }
 
-    public setFromAxisAngle(axis: Vec3, angle: number) {
+    public setFromAxisAngle(axis: Vec3, rad: number) {
         let sa, ca;
 
-        angle *= 0.5 * DEG_TO_RAD;
+        rad *= 0.5;
 
-        sa = Math.sin(angle);
-        ca = Math.cos(angle);
+        sa = Math.sin(rad);
+        ca = Math.cos(rad);
 
         this.x = sa * axis.x;
         this.y = sa * axis.y;
