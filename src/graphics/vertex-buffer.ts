@@ -12,14 +12,6 @@ export default class VertexBuffer extends Buffer {
     public static readonly ATTRIBUTE_COLOR = "COLOR";
     public static readonly ATTRIBUTE_TEXCOORD_0 = "TEXCOORD_0";
 
-    public static readonly ATTRIBUTE_SIZE_MAP = {
-        [VertexBuffer.ATTRIBUTE_POSITION]: 3,
-        [VertexBuffer.ATTRIBUTE_NORMAL]: 3,
-        [VertexBuffer.ATTRIBUTE_COLOR]: 4,
-        [VertexBuffer.ATTRIBUTE_TANGENT]: 4,
-        [VertexBuffer.ATTRIBUTE_TEXCOORD_0]: 2
-    } as { [attribute: string]: number };
-
     public itemSize: number;
     public type: number;
     public stride: number;
