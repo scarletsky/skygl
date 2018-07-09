@@ -3,6 +3,7 @@ import ShaderInput from "./shader-input";
 import Shader from "./shader";
 import Buffer from "./buffer";
 import Geometry from "../scene/geometry";
+import Mesh from "../scene/mesh";
 
 interface DeviceOptions extends WebGLContextAttributes {
     preferWebgl2?: true
@@ -317,8 +318,9 @@ export default class Device {
         }
     }
 
-    public draw(geometry: Geometry) {
+    public draw(mesh: Mesh) {
         const gl = this.gl;
+        const geometry = mesh.geometry;
         const primitive = geometry.primitive;
         const indexBuffer = primitive.indexBuffer;
 
