@@ -7,6 +7,7 @@ const vecA = new Vec3();
 const matA = new Mat4();
 const quatA = new Quat();
 const quatB = new Quat();
+const quatC = new Quat();
 
 export default class Node {
     public static readonly DEFAULT_NAME = "Untitled";
@@ -143,9 +144,9 @@ export default class Node {
         if (this.parent === null) {
             this.rotation.copy(worldRotation);
         } else {
-            quatA.copy(this.parent.getWorldRotation()).invert();
-            quatB.mul2(quatA, worldRotation);
-            this.rotation.mul2(quatB, this.rotation);
+            quatB.copy(this.parent.getWorldRotation()).invert();
+            quatC.mul2(quatB, worldRotation);
+            this.rotation.copy(quatC);
         }
         return this;
     }
