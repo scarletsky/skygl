@@ -38,6 +38,8 @@ var vshader = document.getElementById('vshader').innerHTML;
 var fshader = document.getElementById('fshader').innerHTML;
 var device = new engine.Device(canvas);
 var gl = device.gl;
+var renderer = new engine.ForwardRenderer(device);
+var scene = new engine.Scene();
 var geometry = new engine.Geometry();
 var mesh = new engine.Mesh(geometry);
 var camera = new engine.Camera();
@@ -74,19 +76,15 @@ geometry.primitive = new engine.Primitive(
 );
 camera.position.set(0, 0, 5);
 camera.aspect = window.innerWidth / window.innerHeight;
+scene.addChild(mesh);
 
 var euler = new engine.Vec3();
 
 function render() {
     euler.add(engine.Vec3.ONE);
     mesh.rotate(euler);
-    mesh.updateWorldMatrix();
-    camera.updateWorldMatrix();
-    device.scope.resolve("modelMatrix").setValue(mesh.worldMatrix.data);
-    device.scope.resolve("viewMatrix").setValue(camera.viewMatrix.data);
-    device.scope.resolve("projectionMatrix").setValue(camera.projectionMatrix.data);
     device.setShader(shader);
-    device.draw(geometry);
+    renderer.render(scene, camera);
     window.requestAnimationFrame(render);
 }
 render();
