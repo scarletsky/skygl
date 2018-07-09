@@ -1,4 +1,3 @@
-import Device from "./device";
 import Buffer from "./buffer";
 
 export default class IndexBuffer extends Buffer {
