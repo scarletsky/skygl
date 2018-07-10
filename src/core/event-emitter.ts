@@ -40,9 +40,11 @@ export default class EventEmitter {
             }
         }
 
-        if (index === -1) {
+        if (callback === undefined && index === -1) {
             this._callbacks[event].length = 0;
-        } else {
+        }
+
+        if (index > -1) {
             this._callbacks[event].splice(index, 1);
         }
     }
@@ -65,5 +67,10 @@ export default class EventEmitter {
         onceFuncIndices.forEach((index, i) => {
             callbacks.splice(index - i, 1);
         });
+    }
+
+    public hasEvent(event: string) {
+        if (this._callbacks[event] === undefined) return false;
+        return this._callbacks[event].length > 0;
     }
 }
