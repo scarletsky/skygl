@@ -4,15 +4,41 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "rollup --config --watch"
+    "start": "rollup --config --watch",
+    "test": "jest"
   },
   "author": "scarletsky <scarletsky1025@gmail.com> (https://github.com/scarletsky)",
   "license": "ISC",
   "devDependencies": {
+    "@types/jest": "^23.1.5",
+    "jest": "^23.3.0",
     "rollup": "^0.53.4",
     "rollup-plugin-json": "^2.3.0",
     "rollup-plugin-serve": "^0.4.2",
     "rollup-plugin-typescript": "^0.8.1",
+    "ts-jest": "^23.0.0",
     "typescript": "^2.6.2"
+  },
+  "jest": {
+    "transform": {
+       "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/tests/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "modulePaths": [
+        "<rootDir>/src"
+    ],
+    "globals": {
+      "ts-jest": {
+        "skipBabel": true
+      }
+    }
   }
 }
