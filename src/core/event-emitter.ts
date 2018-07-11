@@ -11,7 +11,7 @@ interface EventCallbackMap {
 }
 
 export default class EventEmitter {
-    private _callbacks: EventCallbackMap = {};
+    public _callbacks: EventCallbackMap = {};
 
     public on(event: string, callback: Callback, once: boolean = false) {
         if (this._callbacks[event] === undefined) {
