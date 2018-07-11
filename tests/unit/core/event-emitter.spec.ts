@@ -7,9 +7,9 @@ test("EventEmitter#on", function() {
     ee.on("event2", function() {});
     ee.on("event2", function() {});
 
-    expect(ee._callbacks["event1"].length).toBe(1);
-    expect(ee._callbacks["event2"].length).toBe(2);
-    expect(ee._callbacks["event3"]).toBeUndefined();
+    expect(ee._callbacks.event1.length).toBe(1);
+    expect(ee._callbacks.event2.length).toBe(2);
+    expect(ee._callbacks.event3).toBeUndefined();
 });
 
 test("EventEmitter#once", function() {
@@ -19,11 +19,11 @@ test("EventEmitter#once", function() {
     ee.on("event1", function() {});
     ee.once("event1", function() {});
 
-    expect(ee._callbacks["event1"].length).toBe(3);
+    expect(ee._callbacks.event1.length).toBe(3);
 
     ee.fire("event1");
 
-    expect(ee._callbacks["event1"].length).toBe(1);
+    expect(ee._callbacks.event1.length).toBe(1);
 });
 
 test("EventEmitter#off", function() {
@@ -36,23 +36,23 @@ test("EventEmitter#off", function() {
     ee.on("event1", function() {});
     ee.on("event1", function() {});
 
-    expect(ee._callbacks["event1"].length).toBe(4);
+    expect(ee._callbacks.event1.length).toBe(4);
 
     ee.off("event1", cb1);
 
-    expect(ee._callbacks["event1"].length).toBe(3);
+    expect(ee._callbacks.event1.length).toBe(3);
 
     ee.off("event1", cb1);
 
-    expect(ee._callbacks["event1"].length).toBe(3);
+    expect(ee._callbacks.event1.length).toBe(3);
 
     ee.off("event1", cb2);
 
-    expect(ee._callbacks["event1"].length).toBe(2);
-    
+    expect(ee._callbacks.event1.length).toBe(2);
+
     ee.off("event1");
 
-    expect(ee._callbacks["event1"].length).toBe(0);
+    expect(ee._callbacks.event1.length).toBe(0);
 });
 
 test("EventEmitter#fire", function() {
