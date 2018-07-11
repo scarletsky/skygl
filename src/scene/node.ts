@@ -2,6 +2,7 @@ import Vec3 from "../math/vec3";
 import Mat3 from "../math/mat3";
 import Mat4 from "../math/mat4";
 import Quat from "../math/quat";
+import EventEmitter from "../core/event-emitter";
 
 const vecA = new Vec3();
 const matA = new Mat4();
@@ -9,7 +10,7 @@ const quatA = new Quat();
 const quatB = new Quat();
 const quatC = new Quat();
 
-export default class Node {
+export default class Node extends EventEmitter {
     public static readonly DEFAULT_NAME = "Untitled";
     public name: string;
     public parent: Node;
@@ -24,6 +25,7 @@ export default class Node {
     public enabled = true;
 
     constructor() {
+        super();
         this.name = Node.DEFAULT_NAME;
         this.parent = null;
         this.children = [];
