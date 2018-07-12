@@ -6,7 +6,7 @@ import Geometry from "../scene/geometry";
 import Mesh from "../scene/mesh";
 
 interface DeviceOptions extends WebGLContextAttributes {
-    preferWebgl2?: true
+    preferWebgl2?: true;
 }
 
 interface DeviceCommitFunction {
@@ -23,17 +23,6 @@ export default class Device {
     private boundVertexBuffer: WebGLBuffer;
     private boundIndexBuffer: WebGLBuffer;
     private enabledAttributes: Uint8Array;
-    private defaultClearOptions: any;
-    private glAddress: number[];
-    private glBlendEquation: number[];
-    private glBlendFunction: number[];
-    private glComparison: number[];
-    private glStencilOp: number[];
-    private glClearFlag: number[];
-    private glCull: number[];
-    private glFront: number[];
-    private glFilter: number[];
-    private glType: number[];
     private commitFunction: DeviceCommitFunction = {};
 
     constructor(canvas: HTMLCanvasElement, options: DeviceOptions = {}) {
@@ -75,104 +64,22 @@ export default class Device {
         this.boundIndexBuffer = null;
         this.enabledAttributes = new Uint8Array(maxVertexAttributes);
 
-        this.glAddress = [
-            gl.REPEAT,
-            gl.CLAMP_TO_EDGE,
-            gl.MIRRORED_REPEAT
-        ];
-
-        this.glBlendEquation = [
-            gl.FUNC_ADD,
-            gl.FUNC_SUBTRACT,
-            gl.FUNC_REVERSE_SUBTRACT,
-            // this.webgl2 ? gl.MIN : this.extBlendMinmax ? this.extBlendMinmax.MIN_EXT : gl.FUNC_ADD,
-            // this.webgl2 ? gl.MAX : this.extBlendMinmax ? this.extBlendMinmax.MAX_EXT : gl.FUNC_ADD
-        ];
-
-        this.glBlendFunction = [
-            gl.ZERO,
-            gl.ONE,
-            gl.SRC_COLOR,
-            gl.ONE_MINUS_SRC_COLOR,
-            gl.DST_COLOR,
-            gl.ONE_MINUS_DST_COLOR,
-            gl.SRC_ALPHA,
-            gl.SRC_ALPHA_SATURATE,
-            gl.ONE_MINUS_SRC_ALPHA,
-            gl.DST_ALPHA,
-            gl.ONE_MINUS_DST_ALPHA
-        ];
-
-        this.glComparison = [
-            gl.NEVER,
-            gl.LESS,
-            gl.EQUAL,
-            gl.LEQUAL,
-            gl.GREATER,
-            gl.NOTEQUAL,
-            gl.GEQUAL,
-            gl.ALWAYS
-        ];
-
-        this.glStencilOp = [
-            gl.KEEP,
-            gl.ZERO,
-            gl.REPLACE,
-            gl.INCR,
-            gl.INCR_WRAP,
-            gl.DECR,
-            gl.DECR_WRAP,
-            gl.INVERT
-        ];
-
-        this.glClearFlag = [
-            0,
-            gl.COLOR_BUFFER_BIT,
-            gl.DEPTH_BUFFER_BIT,
-            gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
-            gl.STENCIL_BUFFER_BIT,
-            gl.STENCIL_BUFFER_BIT | gl.COLOR_BUFFER_BIT,
-            gl.STENCIL_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
-            gl.STENCIL_BUFFER_BIT | gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT
-        ];
-
-        this.glCull = [
-            0,
-            gl.BACK,
-            gl.FRONT,
-            gl.FRONT_AND_BACK
-        ];
-
-        this.glFront = [
-            gl.CCW,
-            gl.CW
-        ];
-
-        this.glFilter = [
-            gl.NEAREST,
-            gl.LINEAR,
-            gl.NEAREST_MIPMAP_NEAREST,
-            gl.NEAREST_MIPMAP_LINEAR,
-            gl.LINEAR_MIPMAP_NEAREST,
-            gl.LINEAR_MIPMAP_LINEAR
-        ];
-
-        this.commitFunction[gl.FLOAT] = function (uniform, value) {
+        this.commitFunction[gl.FLOAT] = function(uniform, value) {
             if (uniform.value !== value) {
                 gl.uniform1f(uniform.locationId, value);
                 uniform.value = value;
             }
         };
-        this.commitFunction[gl.FLOAT_VEC2] = function (uniform, value) {
-            let uniformValue = uniform.value;
+        this.commitFunction[gl.FLOAT_VEC2] = function(uniform, value) {
+            const uniformValue = uniform.value;
             if (uniformValue[0] !== value[0] || uniformValue[1] !== value[1]) {
                 gl.uniform2f(uniform.locationId, value[0], value[1]);
                 uniformValue[0] = value[0];
                 uniformValue[1] = value[1];
             }
         };
-        this.commitFunction[gl.FLOAT_VEC3] = function (uniform, value) {
-            let uniformValue = uniform.value;
+        this.commitFunction[gl.FLOAT_VEC3] = function(uniform, value) {
+            const uniformValue = uniform.value;
             if (uniformValue[0] !== value[0] || uniformValue[1] !== value[1] || uniformValue[2] !== value[2]) {
                 gl.uniform3f(uniform.locationId, value[0], value[1], value[2]);
                 uniformValue[0] = value[0];
@@ -180,8 +87,8 @@ export default class Device {
                 uniformValue[2] = value[2];
             }
         };
-        this.commitFunction[gl.FLOAT_VEC4] = function (uniform, value) {
-            let uniformValue = uniform.value;
+        this.commitFunction[gl.FLOAT_VEC4] = function(uniform, value) {
+            const uniformValue = uniform.value;
             if (uniformValue[0] !== value[0] || uniformValue[1] !== value[1] || uniformValue[2] !== value[2] || uniformValue[3] !== value[3]) {
                 gl.uniform4f(uniform.locationId, value[0], value[1], value[2], value[3]);
                 uniformValue[0] = value[0];
@@ -190,22 +97,22 @@ export default class Device {
                 uniformValue[3] = value[3];
             }
         };
-        this.commitFunction[gl.BOOL] = this.commitFunction[gl.INT] = function (uniform, value) {
+        this.commitFunction[gl.BOOL] = this.commitFunction[gl.INT] = function(uniform, value) {
             if (uniform.value !== value) {
                 gl.uniform1i(uniform.locationId, value);
                 uniform.value = value;
             }
         };
-        this.commitFunction[gl.BOOL_VEC2] = this.commitFunction[gl.INT_VEC2] = function (uniform, value) {
-            let uniformValue = uniform.value;
+        this.commitFunction[gl.BOOL_VEC2] = this.commitFunction[gl.INT_VEC2] = function(uniform, value) {
+            const uniformValue = uniform.value;
             if (uniformValue[0] !== value[0] || uniformValue[1] !== value[1]) {
                 gl.uniform2i(uniform.locationId, value[0], value[1]);
                 uniformValue[0] = value[0];
                 uniformValue[1] = value[1];
             }
         };
-        this.commitFunction[gl.BOOL_VEC3] = this.commitFunction[gl.INT_VEC3] = function (uniform, value) {
-            let uniformValue = uniform.value;
+        this.commitFunction[gl.BOOL_VEC3] = this.commitFunction[gl.INT_VEC3] = function(uniform, value) {
+            const uniformValue = uniform.value;
             if (uniformValue[0] !== value[0] || uniformValue[1] !== value[1] || uniformValue[2] !== value[2]) {
                 gl.uniform3i(uniform.locationId, value[0], value[1], value[2]);
                 uniformValue[0] = value[0];
@@ -213,8 +120,8 @@ export default class Device {
                 uniformValue[2] = value[2];
             }
         };
-        this.commitFunction[gl.BOOL_VEC4] = this.commitFunction[gl.INT_VEC4] = function (uniform, value) {
-            let uniformValue = uniform.value;
+        this.commitFunction[gl.BOOL_VEC4] = this.commitFunction[gl.INT_VEC4] = function(uniform, value) {
+            const uniformValue = uniform.value;
             if (uniformValue[0] !== value[0] || uniformValue[1] !== value[1] || uniformValue[2] !== value[2] || uniformValue[3] !== value[3]) {
                 gl.uniform4i(uniform.locationId, value[0], value[1], value[2], value[3]);
                 uniformValue[0] = value[0];
@@ -223,9 +130,9 @@ export default class Device {
                 uniformValue[3] = value[3];
             }
         };
-        this.commitFunction[gl.FLOAT_MAT2] = function (uniform, value) { gl.uniformMatrix2fv(uniform.locationId, false, value); };
-        this.commitFunction[gl.FLOAT_MAT3] = function (uniform, value) { gl.uniformMatrix3fv(uniform.locationId, false, value); };
-        this.commitFunction[gl.FLOAT_MAT4] = function (uniform, value) { gl.uniformMatrix4fv(uniform.locationId, false, value); };
+        this.commitFunction[gl.FLOAT_MAT2] = function(uniform, value) { gl.uniformMatrix2fv(uniform.locationId, false, value); };
+        this.commitFunction[gl.FLOAT_MAT3] = function(uniform, value) { gl.uniformMatrix3fv(uniform.locationId, false, value); };
+        this.commitFunction[gl.FLOAT_MAT4] = function(uniform, value) { gl.uniformMatrix4fv(uniform.locationId, false, value); };
     }
 
     private initializeCapabilities() {
