@@ -57,10 +57,10 @@ test("EventEmitter#off", function() {
 
 test("EventEmitter#fire", function() {
     const ee = new EventEmitter();
-    const cb1 = (data) => {
+    const cb1 = (data: any) => {
         expect(data).toBeUndefined();
     };
-    const cb2 = (a, b, c) => {
+    const cb2 = (a: number, b: number, c: number) => {
         expect(a).toBe(1);
         expect(b).toBe(2);
         expect(c).toBe(3);
