@@ -16,6 +16,8 @@
         "curly": false,
         "variable-name": false,
         "max-classes-per-file": false,
+        "max-line-length": false,
+        "member-ordering": false,
         "only-arrow-functions": false,
         "no-empty": false
     },
