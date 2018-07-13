@@ -1,0 +1,56 @@
+import Shader from "../graphics/shader";
+
+let idCounter = 0;
+
+export interface MaterialParameters {
+    alphaTest?: boolean;
+    depthTest?: boolean;
+    depthWrite?: boolean;
+    redWrite?: boolean;
+    greenWrite?: boolean;
+    blueWrite?: boolean;
+    alphaWrite?: boolean;
+    cullFace?: number;
+    [key: string]: any;
+}
+
+export default class Material {
+    public static readonly CULLFACE_NONE = 0;
+    public static readonly CULLFACE_BACK = 1;
+    public static readonly CULLFACE_FRONT = 2;
+    public static readonly CULLFACE_FRONT_AND_BACK = 3;
+
+    public shader: Shader;
+    public id = idCounter++;
+    public name = "Untitled";
+    public alphaTest = 0;
+    public alphaToCoverage = false;
+    public depthTest = true;
+    public depthWrite = true;
+    public redWrite = true;
+    public greenWrite = true;
+    public blueWrite = true;
+    public alphaWrite = true;
+    public cullFace = Material.CULLFACE_BACK;
+    [key: string]: any;
+
+    constructor(params: MaterialParameters = {}) {
+        this.id = idCounter++;
+        this.setParameters(params);
+    }
+
+    public setParameters(params: MaterialParameters) {
+        for (const key in params) {
+            const value = params[key];
+            this[key] = value;
+        }
+    }
+
+    public setShader(shader: Shader) {
+        this.shader = shader;
+    }
+
+    public update() {
+
+    }
+}
