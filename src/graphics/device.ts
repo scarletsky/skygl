@@ -3,6 +3,7 @@ import ShaderInput from "./shader-input";
 import Shader from "./shader";
 import Buffer from "./buffer";
 import Geometry from "../scene/geometry";
+import Material from "../scene/material";
 import Mesh from "../scene/mesh";
 
 interface DeviceOptions extends WebGLContextAttributes {
@@ -18,6 +19,13 @@ export default class Device {
     public gl: WebGLRenderingContext;
     public webgl2: boolean;
     public scope: ScopeSpace;
+    public blending: boolean;
+    public redWrite: boolean;
+    public greenWrite: boolean;
+    public blueWrite: boolean;
+    public alphaWrite: boolean;
+    public depthTest: boolean;
+    public cullFace: number;
 
     private boundShader: Shader;
     private boundVertexBuffer: WebGLBuffer;
@@ -144,7 +152,23 @@ export default class Device {
     }
 
     private initializeRenderState() {
+        const gl = this.gl;
 
+        this.blending = false;
+        gl.disable(gl.BLEND);
+
+        this.redWrite = true;
+        this.greenWrite = true;
+        this.blueWrite = true;
+        this.alphaWrite = true;
+        gl.colorMask(true, true, true, true);
+
+        this.depthTest = true;
+        gl.enable(gl.DEPTH_TEST);
+
+        this.cullFace = Material.CULLFACE_BACK;
+        gl.enable(gl.CULL_FACE);
+        gl.cullFace(gl.BACK);
     }
 
     public setShader(shader: Shader) {
@@ -205,6 +229,41 @@ export default class Device {
         }
     }
 
+    public setDepthTest(depthTest: boolean) {
+        if (this.depthTest !== depthTest) {
+            const gl = this.gl;
+            if (depthTest) {
+                gl.enable(gl.DEPTH_TEST);
+            } else {
+                gl.disable(gl.DEPTH_TEST);
+            }
+            this.depthTest = depthTest;
+        }
+    }
+
+    public setCullFace(cullFace: number) {
+        if (this.cullFace !== cullFace) {
+            const gl = this.gl;
+            if (cullFace === Material.CULLFACE_NONE) {
+                gl.disable(gl.CULL_FACE);
+            } else {
+                if (this.cullFace === Material.CULLFACE_NONE) {
+                    gl.enable(gl.CULL_FACE);
+                }
+
+                if (cullFace === Material.CULLFACE_BACK) {
+                    gl.cullFace(gl.BACK);
+                } else if (cullFace === Material.CULLFACE_FRONT)  {
+                    gl.cullFace(gl.FRONT);
+                } else if (cullFace === Material.CULLFACE_FRONT_AND_BACK) {
+                    gl.cullFace(gl.FRONT_AND_BACK);
+                }
+            }
+
+            this.cullFace = cullFace;
+        }
+    }
+
     public uploadBuffer(buffer: Buffer) {
         const gl = this.gl;
         if (!buffer._glBufferId) {
@@ -228,9 +287,11 @@ export default class Device {
     public draw(mesh: Mesh) {
         const gl = this.gl;
         const geometry = mesh.geometry;
+        const material = mesh.material;
         const primitive = geometry.primitive;
         const indexBuffer = primitive.indexBuffer;
 
+        this.setShader(material.shader);
         this.setAttributes(geometry);
         this.setUniforms();
 
