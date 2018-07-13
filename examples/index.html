@@ -41,7 +41,8 @@ var gl = device.gl;
 var renderer = new engine.ForwardRenderer(device);
 var scene = new engine.Scene();
 var geometry = new engine.Geometry();
-var mesh = new engine.Mesh(geometry);
+var material = new engine.Material();
+var mesh = new engine.Mesh(geometry, material);
 var camera = new engine.Camera();
 var shader = new engine.Shader(device, {
     attributes: {
@@ -74,6 +75,7 @@ geometry.primitive = new engine.Primitive(
     engine.Primitive.TRIANGLES,
     new engine.IndexBuffer(engine.Buffer.ELEMENT_ARRAY_BUFFER, indices, 3)
 );
+material.setShader(shader);
 camera.position.set(0, 0, 5);
 camera.aspect = window.innerWidth / window.innerHeight;
 scene.addChild(mesh);
@@ -83,7 +85,6 @@ var euler = new engine.Vec3();
 function render() {
     euler.add(engine.Vec3.ONE);
     mesh.rotate(euler);
-    device.setShader(shader);
     renderer.render(scene, camera);
     window.requestAnimationFrame(render);
 }
