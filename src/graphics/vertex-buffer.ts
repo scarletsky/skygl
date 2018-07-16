@@ -1,4 +1,4 @@
-import Buffer from "./buffer";
+import Buffer, { TypedArray } from "./buffer";
 
 export default class VertexBuffer extends Buffer {
     public static readonly STATIC_DRAW = 0x88e4;
@@ -17,11 +17,10 @@ export default class VertexBuffer extends Buffer {
     public offset: number;
     public normalized: boolean;
     public interleaved: boolean;
-    public data: ArrayBuffer;
 
     constructor(
         target: number,
-        data: ArrayBuffer,
+        data: TypedArray,
         itemSize: number,
         type?: number,
         stride: number = 0,

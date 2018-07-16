@@ -1,3 +1,5 @@
+export type TypedArray = Uint8Array | Uint8ClampedArray | Uint16Array | Uint32Array | Int8Array | Int16Array | Int32Array | Float32Array | Float64Array;
+
 export default class Buffer {
     public static readonly BYTE = 5120;
     public static readonly UNSIGNED_BYTE = 5121;
@@ -10,7 +12,7 @@ export default class Buffer {
     public static readonly ELEMENT_ARRAY_BUFFER = 0x8893;
     public static readonly ARRAY_BUFFER = 0x8892;
 
-    public static getBufferType(data: ArrayBuffer) {
+    public static getBufferType(data: TypedArray) {
         let type = Buffer.FLOAT;
 
         if (data instanceof Float32Array) type = Buffer.FLOAT;
@@ -26,11 +28,11 @@ export default class Buffer {
     }
 
     public target: number;
-    public data: ArrayBuffer;
+    public data: TypedArray;
     public _needsUpload: boolean;
     public _glBufferId: WebGLBuffer;
 
-    constructor(target: number, data: ArrayBuffer) {
+    constructor(target: number, data: TypedArray) {
         this.target = target;
         this.data = data;
     }

@@ -1,4 +1,4 @@
-import Buffer from "./buffer";
+import Buffer, { TypedArray } from "./buffer";
 
 export default class IndexBuffer extends Buffer {
     public type: number;
@@ -7,13 +7,13 @@ export default class IndexBuffer extends Buffer {
 
     constructor(
         target: number,
-        data: ArrayBuffer,
-        itemSize: number,
+        data: TypedArray,
+        itemSize?: number,
         type?: number
     ) {
         super(target, data);
+        this.itemSize = itemSize !== undefined ? itemSize : data.length;
         this.type = type !== undefined ? type : Buffer.getBufferType(data);
-        this.itemSize = itemSize;
         this._needsUpload = true;
     }
 }
