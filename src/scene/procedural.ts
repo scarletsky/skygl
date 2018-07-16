@@ -95,15 +95,15 @@ export function createBox() {
     generateFace(faces.LEFT);
 
     geometry.addAttribute(
-        VertexBuffer.ATTRIBUTE_POSITION,
+        Geometry.ATTRIBUTE_POSITION,
         new VertexBuffer(Buffer.ARRAY_BUFFER, new Float32Array(positions), 3)
     );
     geometry.addAttribute(
-        VertexBuffer.ATTRIBUTE_NORMAL,
+        Geometry.ATTRIBUTE_NORMAL,
         new VertexBuffer(Buffer.ARRAY_BUFFER, new Float32Array(normals), 3)
     );
     geometry.addAttribute(
-        VertexBuffer.ATTRIBUTE_TEXCOORD_0,
+        Geometry.ATTRIBUTE_TEXCOORD_0,
         new VertexBuffer(Buffer.ARRAY_BUFFER, new Float32Array(uvs), 2)
     );
     geometry.primitive = new Primitive(

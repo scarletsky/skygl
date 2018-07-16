@@ -45,8 +45,8 @@ var mesh = new engine.Mesh(geometry, material);
 var camera = new engine.Camera();
 var shader = new engine.Shader(device, {
     attributes: {
-        aPosition: engine.VertexBuffer.ATTRIBUTE_POSITION,
-        aNormal: engine.VertexBuffer.ATTRIBUTE_NORMAL,
+        aPosition: engine.Geometry.ATTRIBUTE_POSITION,
+        aNormal: engine.Geometry.ATTRIBUTE_NORMAL,
     },
     vshader: vshader,
     fshader: fshader
