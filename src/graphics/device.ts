@@ -189,7 +189,7 @@ export default class Device {
         const vertexBuffers = geometry.attributes;
 
         // bind vertex buffers
-        for (let attribute of attributes) {
+        for (const attribute of attributes) {
             scopeId = attribute.scopeId;
             locationId = attribute.locationId as number;
             vertexBuffer = vertexBuffers[scopeId.name];

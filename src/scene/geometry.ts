@@ -1,8 +1,9 @@
 import VertexBuffer from "../graphics/vertex-buffer";
 import Primitive from "../graphics/primitive";
+import { createBox } from "../scene/procedural";
 
 export default class Geometry {
-
+    public static createBox = createBox;
     public attributes: { [attribute: string]: VertexBuffer };
     public primitive: Primitive;
 
