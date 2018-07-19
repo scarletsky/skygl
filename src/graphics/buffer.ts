@@ -32,8 +32,7 @@ export default class Buffer {
     public _needsUpload: boolean;
     public _glBufferId: WebGLBuffer;
 
-    constructor(target: number, data: TypedArray) {
-        this.target = target;
+    constructor(data: TypedArray) {
         this.data = data;
     }
 }

@@ -13,7 +13,6 @@ export default class VertexBuffer extends Buffer {
     public interleaved: boolean;
 
     constructor(
-        target: number,
         data: TypedArray,
         itemSize: number,
         type?: number,
@@ -22,7 +21,8 @@ export default class VertexBuffer extends Buffer {
         normalized: boolean = false,
         interleaved: boolean = false
     ) {
-        super(target, data);
+        super(data);
+        this.target = Buffer.ARRAY_BUFFER;
         this.itemSize = itemSize;
         this.type = type !== undefined ? type : Buffer.getBufferType(data);
         this.stride = stride;

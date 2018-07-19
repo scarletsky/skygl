@@ -6,12 +6,12 @@ export default class IndexBuffer extends Buffer {
     public _glBufferId: WebGLBuffer;
 
     constructor(
-        target: number,
         data: TypedArray,
         itemSize?: number,
         type?: number
     ) {
-        super(target, data);
+        super(data);
+        this.target = Buffer.ELEMENT_ARRAY_BUFFER;
         this.itemSize = itemSize !== undefined ? itemSize : data.length;
         this.type = type !== undefined ? type : Buffer.getBufferType(data);
         this._needsUpload = true;

@@ -1,6 +1,5 @@
 import Vec3 from "../math/vec3";
 import Geometry from "./geometry";
-import Buffer from "../graphics/buffer";
 import VertexBuffer from "../graphics/vertex-buffer";
 import IndexBuffer from "../graphics/index-buffer";
 import Primitive from "../graphics/primitive";
@@ -96,19 +95,19 @@ export function createBox() {
 
     geometry.addAttribute(
         Geometry.ATTRIBUTE_POSITION,
-        new VertexBuffer(Buffer.ARRAY_BUFFER, new Float32Array(positions), 3)
+        new VertexBuffer(new Float32Array(positions), 3)
     );
     geometry.addAttribute(
         Geometry.ATTRIBUTE_NORMAL,
-        new VertexBuffer(Buffer.ARRAY_BUFFER, new Float32Array(normals), 3)
+        new VertexBuffer(new Float32Array(normals), 3)
     );
     geometry.addAttribute(
         Geometry.ATTRIBUTE_TEXCOORD_0,
-        new VertexBuffer(Buffer.ARRAY_BUFFER, new Float32Array(uvs), 2)
+        new VertexBuffer(new Float32Array(uvs), 2)
     );
     geometry.primitive = new Primitive(
         Primitive.TRIANGLES,
-        new IndexBuffer(Buffer.ELEMENT_ARRAY_BUFFER, new Uint8Array(indices))
+        new IndexBuffer(new Uint8Array(indices))
     );
 
     return geometry;
