@@ -17,6 +17,7 @@
     "noUnusedLocals": true
   },
   "include": [
+    "types",
     "src",
     "tests"
   ],
