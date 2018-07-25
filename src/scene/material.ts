@@ -14,7 +14,7 @@ export interface MaterialParameters {
     [key: string]: any;
 }
 
-export default class Material {
+export default abstract class Material {
     public static readonly CULLFACE_NONE = 0;
     public static readonly CULLFACE_BACK = 1;
     public static readonly CULLFACE_FRONT = 2;
