@@ -42,10 +42,10 @@ function parseDefines(defines: ShaderDefines) {
     for (let key in defines) {
         let value = defines[key];
         if (value === false) continue;
-        chunks.push(`#define ${key} ${value}`);
+        chunks.push(`#define ${key} ${value}\n`);
     }
 
-    return chunks.join("\n");
+    return chunks.join();
 }
 
 function filterEmptyLine(str: string) {
@@ -83,8 +83,8 @@ export default class Shader {
 
     public compile() {
         const gl = this.device.gl;
-        const vshader = parseIncludes(this.definition.vshader);
-        const fshader = parseIncludes(this.definition.fshader);
+        const vshader = parseDefines(this.definition.defines) + parseIncludes(this.definition.vshader);
+        const fshader = parseDefines(this.definition.defines) + parseIncludes(this.definition.fshader);
 
         console.log("vs: ", vshader);
         console.log("fs: ", fshader);
