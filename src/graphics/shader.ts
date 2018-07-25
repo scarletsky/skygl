@@ -1,5 +1,6 @@
 import Device from "./device";
 import ShaderInput from "./shader-input";
+import * as ShaderChunks from "./program-lib/shader-chunks";
 
 function createShader(gl: WebGLRenderingContext, type: number, src: string) {
     const shader = gl.createShader(type);
@@ -19,12 +20,45 @@ function createProgram(gl: WebGLRenderingContext, vertexShader: WebGLShader, fra
     return program;
 }
 
-interface ShaderAttributes {
-    [attribute: string]: string;
+function parseIncludes(source: string) {
+    let pattern = /^[ \t]*#include <([\w\d.]+)>/gm;
+
+    function replacement(_: string, ...args: any[]): string {
+        let include = args[0];
+        let chunk = ShaderChunks[include as keyof typeof ShaderChunks];
+        if (chunk === undefined) {
+            throw new Error(`Can not resolve #include <${chunk}>`);
+        }
+
+        return parseIncludes(chunk);
+    }
+
+    return source.replace(pattern, replacement);
+}
+
+function parseDefines(defines: ShaderDefines) {
+    let chunks = [];
+
+    for (let key in defines) {
+        let value = defines[key];
+        if (value === false) continue;
+        chunks.push(`#define ${key} ${value}`);
+    }
+
+    return chunks.join("\n");
+}
+
+function filterEmptyLine(str: string) {
+    return str !== "";
+}
+
+interface ShaderDefines {
+    [define: string]: any
 }
 
 interface ShaderDefinition {
-    attributes: ShaderAttributes;
+    defines: ShaderDefines;
+    precision: string;
     vshader: string;
     fshader: string;
 }
@@ -49,8 +83,14 @@ export default class Shader {
 
     public compile() {
         const gl = this.device.gl;
-        this.vshader = createShader(gl, gl.VERTEX_SHADER, this.definition.vshader);
-        this.fshader = createShader(gl, gl.FRAGMENT_SHADER, this.definition.fshader);
+        const vshader = parseIncludes(this.definition.vshader);
+        const fshader = parseIncludes(this.definition.fshader);
+
+        console.log("vs: ", vshader);
+        console.log("fs: ", fshader);
+
+        this.vshader = createShader(gl, gl.VERTEX_SHADER, vshader);
+        this.fshader = createShader(gl, gl.FRAGMENT_SHADER, fshader);
         this.program = createProgram(gl, this.vshader, this.fshader);
     }
 
