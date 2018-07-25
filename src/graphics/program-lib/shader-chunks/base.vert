@@ -1,8 +1,8 @@
-attribute vec3 aPosition;
-attribute vec3 aNormal;
-attribute vec3 aTangent;
-attribute vec2 aUv0;
-attribute vec2 aUv1;
+attribute vec3 position;
+attribute vec3 normal;
+attribute vec3 tangent;
+attribute vec2 uv0;
+attribute vec2 uv1;
 
 #ifdef VERTEX_COLOR
 attribute vec3 aColor;

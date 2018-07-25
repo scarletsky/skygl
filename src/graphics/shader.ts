@@ -87,7 +87,7 @@ export default class Shader {
             this.attributes.push(
                 new ShaderInput(
                     this.device,
-                    this.definition.attributes[info.name],
+                    info.name,
                     info.type,
                     location
                 )
