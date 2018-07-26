@@ -14,12 +14,17 @@ export interface MaterialParameters {
     [key: string]: any;
 }
 
+interface MaterialUniforms {
+    [prop: string]: any;
+}
+
 export default abstract class Material {
     public static readonly CULLFACE_NONE = 0;
     public static readonly CULLFACE_BACK = 1;
     public static readonly CULLFACE_FRONT = 2;
     public static readonly CULLFACE_FRONT_AND_BACK = 3;
 
+    public _needsUpdate = true;
     public shader: Shader;
     public id = idCounter++;
     public name = "Untitled";
@@ -31,15 +36,16 @@ export default abstract class Material {
     public greenWrite = true;
     public blueWrite = true;
     public alphaWrite = true;
+    public uniforms = {} as MaterialUniforms;
     public cullFace = Material.CULLFACE_BACK;
     [key: string]: any;
 
     constructor(params: MaterialParameters = {}) {
         this.id = idCounter++;
-        this.setParameters(params);
+        this.initialize(params);
     }
 
-    public setParameters(params: MaterialParameters) {
+    private initialize(params: MaterialParameters) {
         for (const key in params) {
             const value = params[key];
             this[key] = value;
@@ -50,7 +56,10 @@ export default abstract class Material {
         this.shader = shader;
     }
 
-    public update() {
-
+    public setUniform(prop: string, value: any) {
+        // FIXME material.uniforms should not use the reference value
+        this.uniforms[prop] = value;
     }
+
+    public abstract update(): void;
 }
