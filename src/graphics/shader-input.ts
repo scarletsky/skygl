@@ -11,6 +11,6 @@ export default class ShaderInput {
         this.locationId = locationId;
         this.scopeId = device.scope.resolve(name);
         this.dataType = dataType;
-        this.value = null;
+        this.value = [null, null, null, null];
     }
 }

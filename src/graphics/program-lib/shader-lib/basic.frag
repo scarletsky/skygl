@@ -1,4 +1,6 @@
-uniform vec4 uColor;
+precision highp float;
+
+uniform vec4 uDiffuse;
 uniform sampler2D uDiffuseMap;
 
 #ifdef VERTEX_COLOR
@@ -13,10 +15,12 @@ varying vec2 vUv0;
 
 void main() {
   
-  vec4 color = uColor;
+  vec4 color;
 
   #ifdef VERTEX_COLOR
   color = vColor;
+  #else
+  color = uDiffuse;
   #endif
 
   #ifdef DIFFUSE_MAP
