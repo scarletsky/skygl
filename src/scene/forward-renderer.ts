@@ -18,13 +18,13 @@ export default class ForwardRenderer {
     private modelMatrixId: ScopeId;
     private viewMatrixId: ScopeId;
     private projectionMatrixId: ScopeId;
-    private meshes: Node[] = [];
+    private meshes: Mesh[] = [];
 
     constructor(device: Device) {
         this.device = device;
-        this.modelMatrixId = device.scope.resolve("modelMatrix");
-        this.viewMatrixId = device.scope.resolve("viewMatrix");
-        this.projectionMatrixId = device.scope.resolve("projectionMatrix");
+        this.modelMatrixId = device.scope.resolve("uModelMatrix");
+        this.viewMatrixId = device.scope.resolve("uViewMatrix");
+        this.projectionMatrixId = device.scope.resolve("uProjectionMatrix");
     }
 
     private prepare(node: Node) {
@@ -38,6 +38,10 @@ export default class ForwardRenderer {
     }
 
     public render(scene: Scene, camera: Camera) {
+        let material, shader;
+        let scope = this.device.scope;
+        let programlib = this.device.programlib;
+
         this.meshes.length = 0;
 
         if (scene.autoUpdate) scene.updateWorldMatrix();
@@ -49,9 +53,17 @@ export default class ForwardRenderer {
         this.viewMatrixId.setValue(camera.viewMatrix.data);
         this.projectionMatrixId.setValue(camera.projectionMatrix.data);
 
-        for (let mesh of this.meshes) {
+        for (const mesh of this.meshes) {
+            shader = programlib.getProgram(mesh.material);
+            material = mesh.material;
+
+            for (const prop in material.uniforms) {
+                scope.resolve(prop).setValue(material.uniforms[prop]);
+            }
+
             this.modelMatrixId.setValue(mesh.worldMatrix.data);
-            this.device.draw(mesh as Mesh);
+            this.device.setShader(shader);
+            this.device.draw(mesh);
         }
     }
 }

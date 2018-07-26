@@ -1,3 +1,4 @@
+import ProgramLib from "./program-lib/program-lib";
 import ScopeSpace from "./scope-space";
 import ShaderInput from "./shader-input";
 import Shader from "./shader";
@@ -17,8 +18,10 @@ interface DeviceCommitFunction {
 export default class Device {
     public canvas: HTMLCanvasElement;
     public gl: WebGLRenderingContext;
+    // TODO: rename to webgl, value should be 1 or 2
     public webgl2: boolean;
     public scope: ScopeSpace;
+    public programlib: ProgramLib;
     public blending: boolean;
     public redWrite: boolean;
     public greenWrite: boolean;
@@ -31,11 +34,13 @@ export default class Device {
     private boundVertexBuffer: WebGLBuffer;
     private boundIndexBuffer: WebGLBuffer;
     private enabledAttributes: Uint8Array;
+    // TODO: rename to uniformSetters
     private commitFunction: DeviceCommitFunction = {};
 
     constructor(canvas: HTMLCanvasElement, options: DeviceOptions = {}) {
         this.canvas = canvas;
         this.scope = new ScopeSpace();
+        this.programlib = new ProgramLib(this);
         this.initializeContext(options);
         this.initializeDevice();
         this.initializeExtensions();
@@ -176,7 +181,7 @@ export default class Device {
             this.boundShader = shader;
 
             if (!shader.ready && !shader.link()) {
-                throw new Error('Can not link shader.');
+                throw new Error("Can not link shader.");
             }
             this.gl.useProgram(shader.program);
         }
@@ -218,11 +223,10 @@ export default class Device {
     }
 
     public setUniforms() {
-        let scopeId;
         const uniforms = this.boundShader.uniforms;
         // set uniform
-        for (let uniform of uniforms) {
-            scopeId = uniform.scopeId;
+        for (const uniform of uniforms) {
+            const scopeId = uniform.scopeId;
             if (scopeId.value !== null) {
                 this.commitFunction[uniform.dataType](uniform, scopeId.value);
             }
@@ -287,11 +291,9 @@ export default class Device {
     public draw(mesh: Mesh) {
         const gl = this.gl;
         const geometry = mesh.geometry;
-        const material = mesh.material;
         const primitive = geometry.primitive;
         const indexBuffer = primitive.indexBuffer;
 
-        this.setShader(material.shader);
         this.setAttributes(geometry);
         this.setUniforms();
 
