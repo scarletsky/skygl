@@ -21,8 +21,7 @@ export default class VertexBuffer extends Buffer {
         normalized: boolean = false,
         interleaved: boolean = false
     ) {
-        super(data);
-        this.target = Buffer.ARRAY_BUFFER;
+        super(Buffer.ARRAY_BUFFER, data);
         this.itemSize = itemSize;
         this.type = type !== undefined ? type : Buffer.getBufferType(data);
         this.stride = stride;

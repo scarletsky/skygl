@@ -10,8 +10,7 @@ export default class IndexBuffer extends Buffer {
         itemSize?: number,
         type?: number
     ) {
-        super(data);
-        this.target = Buffer.ELEMENT_ARRAY_BUFFER;
+        super(Buffer.ELEMENT_ARRAY_BUFFER, data);
         this.itemSize = itemSize !== undefined ? itemSize : data.length;
         this.type = type !== undefined ? type : Buffer.getBufferType(data);
         this._needsUpload = true;

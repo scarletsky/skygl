@@ -1,6 +1,6 @@
 export type TypedArray = Uint8Array | Uint8ClampedArray | Uint16Array | Uint32Array | Int8Array | Int16Array | Int32Array | Float32Array | Float64Array;
 
-export default class Buffer {
+export default abstract class Buffer {
     public static readonly BYTE = 5120;
     public static readonly UNSIGNED_BYTE = 5121;
     public static readonly SHORT = 5122;
@@ -32,7 +32,8 @@ export default class Buffer {
     public _needsUpload: boolean;
     public _glBufferId: WebGLBuffer;
 
-    constructor(data: TypedArray) {
+    constructor(target: number, data: TypedArray) {
+        this.target = target;
         this.data = data;
     }
 }
