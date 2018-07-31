@@ -21,7 +21,6 @@ export default abstract class Material {
     public static readonly CULLFACE_FRONT = 2;
     public static readonly CULLFACE_FRONT_AND_BACK = 3;
 
-    public _needsUpdate = true;
     public shader: Shader;
     public id = idCounter++;
     public name = "Untitled";
@@ -34,6 +33,7 @@ export default abstract class Material {
     public blueWrite = true;
     public alphaWrite = true;
     public cullFace = Material.CULLFACE_BACK;
+    public _needsUpdate = true;
     [key: string]: any;
 
     constructor(params: MaterialParameters = {}) {
