@@ -1,8 +1,8 @@
-import Vec2 from "../math/vec2";
-import Vec3 from "../math/vec3";
-import Vec4 from "../math/vec4";
-import Mat3 from "../math/mat3";
-import Mat4 from "../math/mat4";
+import Vec2 from "math/vec2";
+import Vec3 from "math/vec3";
+import Vec4 from "math/vec4";
+import Mat3 from "math/mat3";
+import Mat4 from "math/mat4";
 
 type UniformSetter = (gl: WebGLRenderingContext, value: any) => void;
 

@@ -58,9 +58,9 @@ interface ShaderDefines {
 }
 
 interface ShaderDefinition {
-    defines: ShaderDefines;
+    defines?: ShaderDefines;
     // TODO support precision in shader
-    precision: string;
+    precision?: string;
     vshader: string;
     fshader: string;
 }

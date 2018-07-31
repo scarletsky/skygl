@@ -1,18 +1,13 @@
 import ProgramLib from "./program-lib/program-lib";
 import ScopeSpace from "./scope-space";
-import ShaderInput from "./shader-input";
 import Shader from "./shader";
 import Buffer from "./buffer";
-import Geometry from "../scene/geometry";
-import Material from "../scene/material";
-import Mesh from "../scene/mesh";
+import Geometry from "scene/geometry";
+import Material from "scene/material";
+import Mesh from "scene/mesh";
 
 interface DeviceOptions extends WebGLContextAttributes {
     preferWebgl2?: true;
-}
-
-interface DeviceCommitFunction {
-    [dataType: number]: (uniform: ShaderInput, value: any) => void;
 }
 
 export default class Device {
@@ -35,7 +30,6 @@ export default class Device {
     private boundIndexBuffer: WebGLBuffer;
     private enabledAttributes: Uint8Array;
     // TODO: rename to uniformSetters
-    private commitFunction: DeviceCommitFunction = {};
 
     constructor(canvas: HTMLCanvasElement, options: DeviceOptions = {}) {
         this.canvas = canvas;

@@ -1,7 +1,5 @@
-import ScopeId from "./scope-id";
-
 interface ScopeVariables {
-    [name: string]: ScopeId;
+    [name: string]: any;
 }
 
 export default class ScopeSpace {
@@ -9,14 +7,6 @@ export default class ScopeSpace {
 
     constructor() {
         this.variables = {};
-    }
-
-    public resolve(name: string) {
-        if (!this.variables[name]) {
-            this.variables[name] = new ScopeId(name);
-        }
-
-        return this.variables[name];
     }
 
     public setValue(name: string, value: any) {

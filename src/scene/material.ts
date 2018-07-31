@@ -1,5 +1,5 @@
-import Device from "../graphics/device";
-import Shader from "../graphics/shader";
+import Device from "graphics/device";
+import Shader from "graphics/shader";
 
 let idCounter = 0;
 

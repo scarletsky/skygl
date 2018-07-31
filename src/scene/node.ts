@@ -1,8 +1,8 @@
-import Vec3 from "../math/vec3";
-import Mat3 from "../math/mat3";
-import Mat4 from "../math/mat4";
-import Quat from "../math/quat";
-import EventEmitter from "../core/event-emitter";
+import Vec3 from "math/vec3";
+import Mat3 from "math/mat3";
+import Mat4 from "math/mat4";
+import Quat from "math/quat";
+import EventEmitter from "core/event-emitter";
 
 const vecA = new Vec3();
 const matA = new Mat4();

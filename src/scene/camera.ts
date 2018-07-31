@@ -1,6 +1,6 @@
 import Node from "./node";
-import Vec4 from "../math/vec4";
-import Mat4 from "../math/mat4";
+import Vec4 from "math/vec4";
+import Mat4 from "math/mat4";
 
 export default class Camera extends Node {
     public static readonly PERSPECTIVE = 0;

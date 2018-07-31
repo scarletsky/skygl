@@ -1,7 +1,7 @@
 import Device from "../device";
 import Shader from "../shader";
-import Material from "../../scene/material";
-import BasicMaterial from "../../scene/basic-material";
+import Material from "scene/material";
+import BasicMaterial from "scene/basic-material";
 import * as ShaderLib from "./shader-lib";
 
 interface ProgramKeyOptions {

@@ -1,8 +1,8 @@
-import Vec3 from "../math/vec3";
+import Vec3 from "math/vec3";
 import Geometry from "./geometry";
-import VertexBuffer from "../graphics/vertex-buffer";
-import IndexBuffer from "../graphics/index-buffer";
-import Primitive from "../graphics/primitive";
+import VertexBuffer from "graphics/vertex-buffer";
+import IndexBuffer from "graphics/index-buffer";
+import Primitive from "graphics/primitive";
 
 export function createBox() {
     const geometry = new Geometry();

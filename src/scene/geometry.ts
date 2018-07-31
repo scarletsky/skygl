@@ -1,6 +1,6 @@
-import VertexBuffer from "../graphics/vertex-buffer";
-import Primitive from "../graphics/primitive";
-import { createBox } from "../scene/procedural";
+import VertexBuffer from "graphics/vertex-buffer";
+import Primitive from "graphics/primitive";
+import { createBox } from "scene/procedural";
 
 export default class Geometry {
     public static readonly ATTRIBUTE_POSITION = "position";

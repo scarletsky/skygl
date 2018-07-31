@@ -1,4 +1,4 @@
-import Device from "../graphics/device";
+import Device from "graphics/device";
 import Scene from "./scene";
 import Camera from "./camera";
 import Node from "./node";

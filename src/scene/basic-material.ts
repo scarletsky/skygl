@@ -1,7 +1,7 @@
-import Device from "../graphics/device";
+import Device from "graphics/device";
 import Material, { MaterialParameters } from "./material";
-import Vec4 from "../math/vec4";
-import Texture from "../graphics/texture";
+import Vec4 from "math/vec4";
+import Texture from "graphics/texture";
 
 interface BasicMaterialParameters extends MaterialParameters {
     vertexColors?: boolean;
