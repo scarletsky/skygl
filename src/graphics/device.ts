@@ -76,76 +76,6 @@ export default class Device {
         this.boundVertexBuffer = null;
         this.boundIndexBuffer = null;
         this.enabledAttributes = new Uint8Array(maxVertexAttributes);
-
-        this.commitFunction[gl.FLOAT] = function(uniform, value) {
-            if (uniform.value !== value) {
-                gl.uniform1f(uniform.locationId, value);
-                uniform.value = value;
-            }
-        };
-        this.commitFunction[gl.FLOAT_VEC2] = function(uniform, value) {
-            const uniformValue = uniform.value;
-            if (uniformValue[0] !== value[0] || uniformValue[1] !== value[1]) {
-                gl.uniform2f(uniform.locationId, value[0], value[1]);
-                uniformValue[0] = value[0];
-                uniformValue[1] = value[1];
-            }
-        };
-        this.commitFunction[gl.FLOAT_VEC3] = function(uniform, value) {
-            const uniformValue = uniform.value;
-            if (uniformValue[0] !== value[0] || uniformValue[1] !== value[1] || uniformValue[2] !== value[2]) {
-                gl.uniform3f(uniform.locationId, value[0], value[1], value[2]);
-                uniformValue[0] = value[0];
-                uniformValue[1] = value[1];
-                uniformValue[2] = value[2];
-            }
-        };
-        this.commitFunction[gl.FLOAT_VEC4] = function(uniform, value) {
-            const uniformValue = uniform.value;
-            if (uniformValue[0] !== value[0] || uniformValue[1] !== value[1] || uniformValue[2] !== value[2] || uniformValue[3] !== value[3]) {
-                gl.uniform4f(uniform.locationId, value[0], value[1], value[2], value[3]);
-                uniformValue[0] = value[0];
-                uniformValue[1] = value[1];
-                uniformValue[2] = value[2];
-                uniformValue[3] = value[3];
-            }
-        };
-        this.commitFunction[gl.BOOL] = this.commitFunction[gl.INT] = function(uniform, value) {
-            if (uniform.value !== value) {
-                gl.uniform1i(uniform.locationId, value);
-                uniform.value = value;
-            }
-        };
-        this.commitFunction[gl.BOOL_VEC2] = this.commitFunction[gl.INT_VEC2] = function(uniform, value) {
-            const uniformValue = uniform.value;
-            if (uniformValue[0] !== value[0] || uniformValue[1] !== value[1]) {
-                gl.uniform2i(uniform.locationId, value[0], value[1]);
-                uniformValue[0] = value[0];
-                uniformValue[1] = value[1];
-            }
-        };
-        this.commitFunction[gl.BOOL_VEC3] = this.commitFunction[gl.INT_VEC3] = function(uniform, value) {
-            const uniformValue = uniform.value;
-            if (uniformValue[0] !== value[0] || uniformValue[1] !== value[1] || uniformValue[2] !== value[2]) {
-                gl.uniform3i(uniform.locationId, value[0], value[1], value[2]);
-                uniformValue[0] = value[0];
-                uniformValue[1] = value[1];
-                uniformValue[2] = value[2];
-            }
-        };
-        this.commitFunction[gl.BOOL_VEC4] = this.commitFunction[gl.INT_VEC4] = function(uniform, value) {
-            const uniformValue = uniform.value;
-            if (uniformValue[0] !== value[0] || uniformValue[1] !== value[1] || uniformValue[2] !== value[2] || uniformValue[3] !== value[3]) {
-                gl.uniform4i(uniform.locationId, value[0], value[1], value[2], value[3]);
-                uniformValue[0] = value[0];
-                uniformValue[1] = value[1];
-                uniformValue[2] = value[2];
-                uniformValue[3] = value[3];
-            }
-        };
-        this.commitFunction[gl.FLOAT_MAT2] = function(uniform, value) { gl.uniformMatrix2fv(uniform.locationId, false, value); };
-        this.commitFunction[gl.FLOAT_MAT3] = function(uniform, value) { gl.uniformMatrix3fv(uniform.locationId, false, value); };
-        this.commitFunction[gl.FLOAT_MAT4] = function(uniform, value) { gl.uniformMatrix4fv(uniform.locationId, false, value); };
     }
 
     private initializeCapabilities() {
@@ -188,16 +118,15 @@ export default class Device {
     }
 
     public setAttributes(geometry: Geometry) {
-        let bufferId, locationId, scopeId, vertexBuffer;
+        let bufferId, location, vertexBuffer;
         const gl = this.gl;
         const attributes = this.boundShader.attributes;
         const vertexBuffers = geometry.attributes;
 
         // bind vertex buffers
         for (const attribute of attributes) {
-            scopeId = attribute.scopeId;
-            locationId = attribute.locationId as number;
-            vertexBuffer = vertexBuffers[scopeId.name];
+            location = attribute.location as number;
+            vertexBuffer = vertexBuffers[attribute.name];
 
             if (vertexBuffer._needsUpload) this.uploadBuffer(vertexBuffer);
 
@@ -207,12 +136,12 @@ export default class Device {
                 this.boundVertexBuffer = bufferId;
                 gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
             }
-            if (!this.enabledAttributes[locationId]) {
-                this.enabledAttributes[locationId] = 1;
-                gl.enableVertexAttribArray(locationId);
+            if (!this.enabledAttributes[location]) {
+                this.enabledAttributes[location] = 1;
+                gl.enableVertexAttribArray(location);
             }
             gl.vertexAttribPointer(
-                locationId,
+                location,
                 vertexBuffer.itemSize,
                 vertexBuffer.type,
                 vertexBuffer.normalized,
@@ -223,13 +152,12 @@ export default class Device {
     }
 
     public setUniforms() {
+        const gl = this.gl;
+        const scope = this.scope;
         const uniforms = this.boundShader.uniforms;
         // set uniform
         for (const uniform of uniforms) {
-            const scopeId = uniform.scopeId;
-            if (scopeId.value !== null) {
-                this.commitFunction[uniform.dataType](uniform, scopeId.value);
-            }
+            uniform.setValue(gl, scope.variables[uniform.name]);
         }
     }
 

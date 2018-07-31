@@ -1,5 +1,4 @@
 import Device from "../graphics/device";
-import ScopeId from "../graphics/scope-id";
 import Scene from "./scene";
 import Camera from "./camera";
 import Node from "./node";
@@ -15,16 +14,10 @@ function frontToBack(a: Node, b: Node) {
 
 export default class ForwardRenderer {
     private device: Device;
-    private modelMatrixId: ScopeId;
-    private viewMatrixId: ScopeId;
-    private projectionMatrixId: ScopeId;
     private meshes: Mesh[] = [];
 
     constructor(device: Device) {
         this.device = device;
-        this.modelMatrixId = device.scope.resolve("uModelMatrix");
-        this.viewMatrixId = device.scope.resolve("uViewMatrix");
-        this.projectionMatrixId = device.scope.resolve("uProjectionMatrix");
     }
 
     private prepare(node: Node) {
@@ -39,8 +32,9 @@ export default class ForwardRenderer {
 
     public render(scene: Scene, camera: Camera) {
         let material, shader;
-        let scope = this.device.scope;
-        let programlib = this.device.programlib;
+        let device = this.device;
+        let scope = device.scope;
+        let programlib = device.programlib;
 
         this.meshes.length = 0;
 
@@ -50,18 +44,15 @@ export default class ForwardRenderer {
         this.prepare(scene);
         this.meshes.sort(frontToBack);
 
-        this.viewMatrixId.setValue(camera.viewMatrix.data);
-        this.projectionMatrixId.setValue(camera.projectionMatrix.data);
+        scope.setValue("uViewMatrix", camera.viewMatrix.data);
+        scope.setValue("uProjectionMatrix", camera.projectionMatrix.data);
 
         for (const mesh of this.meshes) {
+            scope.setValue("uModelMatrix", mesh.worldMatrix.data);
+
             shader = programlib.getProgram(mesh.material);
             material = mesh.material;
-
-            for (const prop in material.uniforms) {
-                scope.resolve(prop).setValue(material.uniforms[prop]);
-            }
-
-            this.modelMatrixId.setValue(mesh.worldMatrix.data);
+            material.apply(device);
             this.device.setShader(shader);
             this.device.draw(mesh);
         }

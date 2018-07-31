@@ -1,5 +1,6 @@
 import Device from "./device";
-import ShaderInput from "./shader-input";
+import ShaderAttribute from "./shader-attribute";
+import ShaderUniform from "./shader-uniform";
 import * as ShaderChunks from "./program-lib/shader-chunks";
 
 function createShader(gl: WebGLRenderingContext, type: number, src: string) {
@@ -66,9 +67,9 @@ interface ShaderDefinition {
 
 export default class Shader {
     public ready = false;
-    public attributes: ShaderInput[] = [];
-    public uniforms: ShaderInput[] = [];
-    public samplers: ShaderInput[] = [];
+    public attributes: ShaderAttribute[] = [];
+    public uniforms: ShaderUniform[] = [];
+    public samplers: ShaderUniform[] = [];
     public program: WebGLProgram;
 
     private device: Device;
@@ -125,14 +126,7 @@ export default class Shader {
         while (i < numAttributes) {
             info = gl.getActiveAttrib(this.program, i++);
             location = gl.getAttribLocation(this.program, info.name);
-            this.attributes.push(
-                new ShaderInput(
-                    this.device,
-                    info.name,
-                    info.type,
-                    location
-                )
-            );
+            this.attributes.push(new ShaderAttribute(info, location as number));
         }
 
         i = 0;
@@ -142,9 +136,9 @@ export default class Shader {
             location = gl.getUniformLocation(this.program, info.name);
             // TODO support webgl2: gl.SAMPLER_2D_SHADOE, gl.SAMPLER_CUBE_SHADOW, gl.SAMPLER_3D
             if (info.type === gl.SAMPLER_2D || info.type === gl.SAMPLER_CUBE) {
-                this.samplers.push(new ShaderInput(this.device, info.name, info.type, location));
+                this.samplers.push(new ShaderUniform(info, location as WebGLUniformLocation));
             } else {
-                this.uniforms.push(new ShaderInput(this.device, info.name, info.type, location));
+                this.uniforms.push(new ShaderUniform(info, location as WebGLUniformLocation));
             }
         }
 

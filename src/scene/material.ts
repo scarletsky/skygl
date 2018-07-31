@@ -1,3 +1,4 @@
+import Device from "../graphics/device";
 import Shader from "../graphics/shader";
 
 let idCounter = 0;
@@ -45,7 +46,7 @@ export default abstract class Material {
         this.initialize(params);
     }
 
-    private initialize(params: MaterialParameters) {
+    protected initialize(params: MaterialParameters) {
         for (const key in params) {
             const value = params[key];
             this[key] = value;
@@ -56,10 +57,5 @@ export default abstract class Material {
         this.shader = shader;
     }
 
-    public setUniform(prop: string, value: any) {
-        // FIXME material.uniforms should not use the reference value
-        this.uniforms[prop] = value;
-    }
-
-    public abstract update(): void;
+    public abstract apply(device: Device): void;
 }

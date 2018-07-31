@@ -18,4 +18,8 @@ export default class ScopeSpace {
 
         return this.variables[name];
     }
+
+    public setValue(name: string, value: any) {
+        this.variables[name] = value;
+    }
 }
