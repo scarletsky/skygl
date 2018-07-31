@@ -15,10 +15,6 @@ export interface MaterialParameters {
     [key: string]: any;
 }
 
-interface MaterialUniforms {
-    [prop: string]: any;
-}
-
 export default abstract class Material {
     public static readonly CULLFACE_NONE = 0;
     public static readonly CULLFACE_BACK = 1;
@@ -37,12 +33,10 @@ export default abstract class Material {
     public greenWrite = true;
     public blueWrite = true;
     public alphaWrite = true;
-    public uniforms = {} as MaterialUniforms;
     public cullFace = Material.CULLFACE_BACK;
     [key: string]: any;
 
     constructor(params: MaterialParameters = {}) {
-        this.id = idCounter++;
         this.initialize(params);
     }
 
