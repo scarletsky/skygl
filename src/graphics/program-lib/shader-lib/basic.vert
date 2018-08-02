@@ -1,5 +1,9 @@
 #include <baseVS>
 
+#ifdef DIFFUSE_MAP
+varying vec2 vUv0;
+#endif
+
 void main() {
 
   #ifdef VERTEX_COLOR
