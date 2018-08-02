@@ -22,9 +22,9 @@ export default class ProgramLib {
     }
 
     public getProgram(material: Material) {
-        let type = this.getMaterialType(material) as keyof typeof ShaderLib;
-        let options = this.generateOptions(material);
-        let key = this.generateKey(type, options);
+        const type = this.getMaterialType(material) as keyof typeof ShaderLib;
+        const options = this.generateOptions(material);
+        const key = this.generateKey(type, options);
 
         if (!this._cached[key]) {
             this._cached[key] = new Shader(this.device, {
@@ -43,14 +43,14 @@ export default class ProgramLib {
     }
 
     private generateKey(materialType: string, options: ProgramKeyOptions) {
-        let chunks = [materialType];
+        const chunks = [materialType];
 
-        for (let k in options) {
+        for (const k in options) {
             if (options[k]) {
                 chunks.push(k);
             }
         }
-        
+
         return chunks.join();
     }
 
