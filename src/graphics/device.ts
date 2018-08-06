@@ -125,7 +125,7 @@ export default class Device {
             location = attribute.location as number;
             vertexBuffer = vertexBuffers[attribute.name];
 
-            if (vertexBuffer._needsUpload) this.uploadBuffer(vertexBuffer);
+            if (vertexBuffer._needsUpload) vertexBuffer.apply(this);
 
             bufferId = vertexBuffer._glBufferId;
 
@@ -214,18 +214,6 @@ export default class Device {
         }
     }
 
-    public uploadBuffer(buffer: Buffer) {
-        const gl = this.gl;
-        if (!buffer._glBufferId) {
-            buffer._glBufferId = gl.createBuffer();
-        }
-
-        gl.bindBuffer(buffer.target, buffer._glBufferId);
-        gl.bufferData(buffer.target, buffer.data, gl.STATIC_DRAW);
-
-        buffer._needsUpload = false;
-    }
-
     public deleteBuffer(buffer: Buffer) {
         const gl = this.gl;
         if (buffer._glBufferId) {
@@ -248,7 +236,7 @@ export default class Device {
         if (this.boundIndexBuffer !== indexBuffer) {
             this.boundIndexBuffer = indexBuffer;
             if (indexBuffer) {
-                if (indexBuffer._needsUpload) this.uploadBuffer(indexBuffer);
+                if (indexBuffer._needsUpload) indexBuffer.apply(this);
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer._glBufferId);
             } else {
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);

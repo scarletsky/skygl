@@ -1,3 +1,5 @@
+import Device from "./device";
+
 export type TypedArray = Uint8Array | Uint8ClampedArray | Uint16Array | Uint32Array | Int8Array | Int16Array | Int32Array | Float32Array | Float64Array;
 
 export default abstract class Buffer {
@@ -37,5 +39,15 @@ export default abstract class Buffer {
         this.data = data;
     }
 
-    // TODO: add abstract method: Buffer.apply
+    public apply(device: Device) {
+        const gl = device.gl;
+        if (!this._glBufferId) {
+            this._glBufferId = gl.createBuffer();
+        }
+
+        gl.bindBuffer(this.target, this._glBufferId);
+        gl.bufferData(this.target, this.data, gl.STATIC_DRAW);
+
+        this._needsUpload = false;
+    }
 }
