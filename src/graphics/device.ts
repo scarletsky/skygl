@@ -2,6 +2,7 @@ import ProgramLib from "./program-lib/program-lib";
 import ScopeSpace from "./scope-space";
 import Shader from "./shader";
 import Buffer from "./buffer";
+import Texture from "./texture";
 import Geometry from "scene/geometry";
 import Material from "scene/material";
 import Mesh from "scene/mesh";
@@ -25,11 +26,12 @@ export default class Device {
     public depthTest: boolean;
     public cullFace: number;
 
+    public textureUnit: number;
+    // TODO: rename boundXXX
     private boundShader: Shader;
     private boundVertexBuffer: WebGLBuffer;
     private boundIndexBuffer: WebGLBuffer;
     private enabledAttributes: Uint8Array;
-    // TODO: rename to uniformSetters
 
     constructor(canvas: HTMLCanvasElement, options: DeviceOptions = {}) {
         this.canvas = canvas;
@@ -69,6 +71,7 @@ export default class Device {
         this.boundShader = null;
         this.boundVertexBuffer = null;
         this.boundIndexBuffer = null;
+        this.textureUnit = -1;
         this.enabledAttributes = new Uint8Array(maxVertexAttributes);
     }
 
@@ -155,6 +158,27 @@ export default class Device {
         }
     }
 
+    public setSamplers() {
+        const gl = this.gl;
+        const scope = this.scope;
+        const samplers = this.boundShader.samplers;
+
+        let textureUnit = 0;
+
+        for (const sampler of samplers) {
+
+            const texture = scope.variables[sampler.name] as Texture;
+
+            if (!texture) continue;
+
+            this.textureUnit = textureUnit;
+            texture.apply(this);
+            sampler.setValue(gl, textureUnit);
+
+            textureUnit++;
+        }
+    }
+
     public setDepthTest(depthTest: boolean) {
         if (this.depthTest !== depthTest) {
             const gl = this.gl;
@@ -217,6 +241,7 @@ export default class Device {
         const indexBuffer = primitive.indexBuffer;
 
         this.setAttributes(geometry);
+        this.setSamplers();
         this.setUniforms();
 
         // set index buffer

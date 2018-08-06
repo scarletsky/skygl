@@ -95,6 +95,11 @@ export default class ShaderUniform {
                 this.value = new Mat4();
                 this.setValue = this.setFloatMat4;
                 break;
+
+            case ShaderUniform.SAMPLER_2D:
+                this.value = null;
+                this.setValue = this.setSampler2D;
+                break;
         }
     }
 
@@ -180,5 +185,12 @@ export default class ShaderUniform {
     private setFloatMat4(gl: WebGLRenderingContext, value: Mat4) {
         this.value = value;
         gl.uniformMatrix4fv(this.location, false, this.value);
+    }
+
+    private setSampler2D(gl: WebGLRenderingContext, value: number) {
+        if (this.value !== value) {
+            this.value = value;
+            gl.uniform1i(this.location, this.value);
+        }
     }
 }

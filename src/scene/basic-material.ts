@@ -21,6 +21,6 @@ export default class BasicMaterial extends Material {
     public apply(device: Device) {
         const scope = device.scope;
         scope.setValue("uDiffuse", this.diffuse);
-        scope.setValue("UDiffuseMap", this.diffuseMap);
+        scope.setValue("uDiffuseMap", this.diffuseMap);
     }
 }
