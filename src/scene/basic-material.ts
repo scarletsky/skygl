@@ -1,6 +1,6 @@
 import Device from "graphics/device";
 import Material, { MaterialParameters } from "./material";
-import Vec4 from "math/vec4";
+import Color from "math/color";
 import Texture from "graphics/texture";
 
 interface BasicMaterialParameters extends MaterialParameters {
@@ -10,7 +10,7 @@ interface BasicMaterialParameters extends MaterialParameters {
 }
 
 export default class BasicMaterial extends Material {
-    public diffuse = new Vec4(1, 1, 1, 1);
+    public diffuse = new Color(1, 1, 1, 1);
     public diffuseMap = null as Texture;
     public vertexColor = false;
 
