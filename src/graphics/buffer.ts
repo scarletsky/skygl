@@ -36,4 +36,6 @@ export default abstract class Buffer {
         this.target = target;
         this.data = data;
     }
+
+    // TODO: add abstract method: Buffer.apply
 }
