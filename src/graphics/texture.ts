@@ -163,7 +163,7 @@ export default class Texture {
         this.setParameters(params);
     }
 
-    public get compressed() {
+    get compressed() {
         switch (this.internalFormat) {
             case Texture.COMPRESSED_RGB_S3TC_DXT1_EXT:
             case Texture.COMPRESSED_RGBA_S3TC_DXT1_EXT:
