@@ -170,8 +170,11 @@ export default class Device {
 
             if (!texture) continue;
 
-            this.textureUnit = textureUnit;
-            texture.apply(this);
+            if (this.textureUnit !== textureUnit) {
+                this.textureUnit = textureUnit;
+                texture.apply(this);
+            }
+
             sampler.setValue(gl, textureUnit);
 
             textureUnit++;
