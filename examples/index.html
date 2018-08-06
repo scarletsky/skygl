@@ -36,12 +36,10 @@ image.onload = function() {
 };
 image.src = "./assets/firefox.png";
 
-var euler = new engine.Vec3();
 var speed = new engine.Vec3(10 / 60, 20 / 60, 30 / 60);
 
 function render() {
-    euler.add(speed);
-    mesh.rotate(euler);
+    mesh.rotate(speed);
     renderer.render(scene, camera);
     window.requestAnimationFrame(render);
 }
