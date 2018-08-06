@@ -21,11 +21,20 @@ var renderer = new engine.ForwardRenderer(device);
 var scene = new engine.Scene();
 var geometry = engine.Geometry.createBox();
 var material = new engine.BasicMaterial();
+var diffuseMap = new engine.Texture();
 var mesh = new engine.Mesh(geometry, material);
 var camera = new engine.Camera();
 camera.position.set(0, 0, 5);
 camera.aspect = window.innerWidth / window.innerHeight;
 scene.addChild(mesh);
+
+var image = new Image();
+image.onload = function() {
+    diffuseMap.setSource(image);
+    material.diffuseMap = diffuseMap;
+    render();
+};
+image.src = "./assets/firefox.png";
 
 var euler = new engine.Vec3();
 var speed = new engine.Vec3(10 / 60, 20 / 60, 30 / 60);
@@ -36,7 +45,6 @@ function render() {
     renderer.render(scene, camera);
     window.requestAnimationFrame(render);
 }
-render();
 
         </script>
     </body>
