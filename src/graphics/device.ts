@@ -27,10 +27,9 @@ export default class Device {
     public cullFace: number;
 
     public textureUnit: number;
-    // TODO: rename boundXXX
-    private boundShader: Shader;
-    private boundVertexBuffer: WebGLBuffer;
-    private boundIndexBuffer: WebGLBuffer;
+    private shader: Shader;
+    private vertexBuffer: WebGLBuffer;
+    private indexBuffer: WebGLBuffer;
     private enabledAttributes: Uint8Array;
 
     constructor(canvas: HTMLCanvasElement, options: DeviceOptions = {}) {
@@ -68,9 +67,9 @@ export default class Device {
         const gl = this.gl;
         const maxVertexAttributes = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
 
-        this.boundShader = null;
-        this.boundVertexBuffer = null;
-        this.boundIndexBuffer = null;
+        this.shader = null;
+        this.vertexBuffer = null;
+        this.indexBuffer = null;
         this.textureUnit = -1;
         this.enabledAttributes = new Uint8Array(maxVertexAttributes);
     }
@@ -104,8 +103,8 @@ export default class Device {
     }
 
     public setShader(shader: Shader) {
-        if (this.boundShader !== shader) {
-            this.boundShader = shader;
+        if (this.shader !== shader) {
+            this.shader = shader;
 
             if (!shader.ready && !shader.link()) {
                 throw new Error("Can not link shader.");
@@ -117,7 +116,7 @@ export default class Device {
     public setAttributes(geometry: Geometry) {
         let bufferId, location, vertexBuffer;
         const gl = this.gl;
-        const attributes = this.boundShader.attributes;
+        const attributes = this.shader.attributes;
         const vertexBuffers = geometry.attributes;
 
         // bind vertex buffers
@@ -129,8 +128,8 @@ export default class Device {
 
             bufferId = vertexBuffer._glBufferId;
 
-            if (this.boundVertexBuffer !== bufferId) {
-                this.boundVertexBuffer = bufferId;
+            if (this.vertexBuffer !== bufferId) {
+                this.vertexBuffer = bufferId;
                 gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
             }
             if (!this.enabledAttributes[location]) {
@@ -151,7 +150,7 @@ export default class Device {
     public setUniforms() {
         const gl = this.gl;
         const scope = this.scope;
-        const uniforms = this.boundShader.uniforms;
+        const uniforms = this.shader.uniforms;
         // set uniform
         for (const uniform of uniforms) {
             uniform.setValue(gl, scope.variables[uniform.name]);
@@ -161,7 +160,7 @@ export default class Device {
     public setSamplers() {
         const gl = this.gl;
         const scope = this.scope;
-        const samplers = this.boundShader.samplers;
+        const samplers = this.shader.samplers;
 
         let textureUnit = 0;
 
@@ -233,8 +232,8 @@ export default class Device {
         this.setUniforms();
 
         // set index buffer
-        if (this.boundIndexBuffer !== indexBuffer) {
-            this.boundIndexBuffer = indexBuffer;
+        if (this.indexBuffer !== indexBuffer) {
+            this.indexBuffer = indexBuffer;
             if (indexBuffer) {
                 if (indexBuffer._needsUpload) indexBuffer.apply(this);
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer._glBufferId);
