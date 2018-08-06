@@ -10,7 +10,7 @@ interface BasicMaterialParameters extends MaterialParameters {
 }
 
 export default class BasicMaterial extends Material {
-    public diffuse = new Vec4(0, 0, 0, 1);
+    public diffuse = new Vec4(1, 1, 1, 1);
     public diffuseMap = null as Texture;
     public vertexColor = false;
 
