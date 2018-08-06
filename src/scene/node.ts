@@ -67,7 +67,9 @@ export default class Node extends EventEmitter {
     }
 
     public rotate(vector: Vec3) {
+        this.getWorldRotation(quatB);
         quatA.setFromEulerAngles(vector);
+        quatA.mul(quatB);
         return this.setWorldRotation(quatA);
     }
 
