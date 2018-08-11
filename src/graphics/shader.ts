@@ -46,7 +46,7 @@ function parseDefines(defines: ShaderDefines) {
         chunks.push(`#define ${key} ${value}\n`);
     }
 
-    return chunks.join();
+    return chunks.join("");
 }
 
 function filterEmptyLine(str: string) {
