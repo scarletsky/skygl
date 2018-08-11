@@ -179,12 +179,12 @@ export default class ShaderUniform {
 
     private setFloatMat3(gl: WebGLRenderingContext, value: Mat3) {
         this.value = value;
-        gl.uniformMatrix3fv(this.location, false, this.value);
+        gl.uniformMatrix3fv(this.location, false, this.value.data);
     }
 
     private setFloatMat4(gl: WebGLRenderingContext, value: Mat4) {
         this.value = value;
-        gl.uniformMatrix4fv(this.location, false, this.value);
+        gl.uniformMatrix4fv(this.location, false, this.value.data);
     }
 
     private setSampler2D(gl: WebGLRenderingContext, value: number) {

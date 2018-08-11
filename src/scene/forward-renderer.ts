@@ -44,11 +44,12 @@ export default class ForwardRenderer {
         this.prepare(scene);
         this.meshes.sort(frontToBack);
 
-        scope.setValue("uViewMatrix", camera.viewMatrix.data);
-        scope.setValue("uProjectionMatrix", camera.projectionMatrix.data);
+        scope.setValue("uViewPosition", camera.getWorldPosition());
+        scope.setValue("uViewMatrix", camera.viewMatrix);
+        scope.setValue("uProjectionMatrix", camera.projectionMatrix);
 
         for (const mesh of this.meshes) {
-            scope.setValue("uModelMatrix", mesh.worldMatrix.data);
+            scope.setValue("uModelMatrix", mesh.worldMatrix);
 
             shader = programlib.getProgram(mesh.material);
             material = mesh.material;
