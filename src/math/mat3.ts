@@ -1,4 +1,5 @@
 import Mat from "./mat";
+import Mat4 from "./mat4";
 
 export default class Mat3 extends Mat {
 
@@ -110,6 +111,24 @@ export default class Mat3 extends Mat {
         m[6] = 0;
         m[7] = 0;
         m[8] = 1;
+
+        return this;
+    }
+
+    public setFromMat4(rhs: Mat4) {
+        const l = this.data;
+        const r = rhs.data;
+        l[0] = r[0];
+        l[1] = r[1];
+        l[2] = r[2];
+
+        l[3] = r[4];
+        l[4] = r[5];
+        l[5] = r[6];
+
+        l[6] = r[8];
+        l[7] = r[9];
+        l[8] = r[10];
 
         return this;
     }
