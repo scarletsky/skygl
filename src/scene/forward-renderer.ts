@@ -49,7 +49,10 @@ export default class ForwardRenderer {
         scope.setValue("uProjectionMatrix", camera.projectionMatrix);
 
         for (const mesh of this.meshes) {
+            mesh.worldMatrix.invertTo3x3(mesh.normalMatrix);
+            mesh.normalMatrix.transpose();
             scope.setValue("uModelMatrix", mesh.worldMatrix);
+            scope.setValue("uNormalMatrix", mesh.normalMatrix);
 
             shader = programlib.getProgram(mesh.material);
             material = mesh.material;
