@@ -3,7 +3,7 @@
     <head>
         <title>Engine</title>
         <style>
-            html, body { margin: 0; padding: 0; }
+            html, body { margin: 0; padding: 0; background: rgb(25, 25, 25); }
             canvas { width: 100vw; height: 100vh; }
         </style>
     </head>
@@ -20,13 +20,18 @@ var gl = device.gl;
 var renderer = new engine.ForwardRenderer(device);
 var scene = new engine.Scene();
 var geometry = engine.Geometry.createBox();
-var material = new engine.BasicMaterial();
+var material = new engine.PhongMaterial();
 var diffuseMap = new engine.Texture();
 var mesh = new engine.Mesh(geometry, material);
 var camera = new engine.Camera();
 camera.position.set(0, 0, 5);
 camera.aspect = window.innerWidth / window.innerHeight;
 scene.addChild(mesh);
+
+var lightPosition = new engine.Vec3(1, 0, 5);
+var lightColor = new engine.Color(1, 1, 1, 1);
+device.scope.setValue('uLightPosition', lightPosition);
+device.scope.setValue('uLightColor', lightColor);
 
 var image = new Image();
 image.onload = function() {
@@ -35,11 +40,13 @@ image.onload = function() {
     render();
 };
 image.src = "./assets/firefox.png";
+material.diffuse.set(1, 0.5, 0.5, 1);
 
-var speed = new engine.Vec3(10 / 60, 20 / 60, 30 / 60);
+var speed = new engine.Vec3(30 / 60, 40 / 60, 50 / 60);
 
 function render() {
-    mesh.rotate(speed);
+    mesh.setWorldEulerAngles(new engine.Vec3(0, 0, 0));
+    // mesh.rotate(speed);
     renderer.render(scene, camera);
     window.requestAnimationFrame(render);
 }
