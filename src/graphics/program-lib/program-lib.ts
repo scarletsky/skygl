@@ -2,6 +2,7 @@ import Device from "../device";
 import Shader from "../shader";
 import Material from "scene/material";
 import BasicMaterial from "scene/basic-material";
+import PhongMaterial from "scene/phong-material";
 import * as ShaderLib from "./shader-lib";
 
 interface ProgramKeyOptions {
@@ -38,6 +39,7 @@ export default class ProgramLib {
     }
 
     private getMaterialType(material: Material) {
+        if (material instanceof PhongMaterial) return "phong";
         if (material instanceof BasicMaterial) return "basic";
         if (material instanceof Material) return "raw";
     }
@@ -59,6 +61,7 @@ export default class ProgramLib {
             ALPHA_TEST: material.alphaTest > 0,
             VERTEX_COLOR: !!material.vertexColor,
             DIFFUSE_MAP: !!material.diffuseMap,
+            AMBIENT: !!material.ambient,
             SKINNING: false
         };
     }

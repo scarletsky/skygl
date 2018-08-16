@@ -4,5 +4,6 @@ export { default as Camera } from "./camera";
 export { default as Geometry } from "./geometry";
 export { default as Material } from "./material";
 export { default as BasicMaterial } from "./basic-material";
+export { default as PhongMaterial } from "./phong-material";
 export { default as Mesh } from "./mesh";
 export { default as ForwardRenderer } from "./forward-renderer";
