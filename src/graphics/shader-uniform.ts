@@ -28,7 +28,7 @@ export default class ShaderUniform {
     public static readonly UNSIGNED_SHORT = 0x1403;
     public static readonly INT = 0x1404;
     public static readonly UNSIGNED_INT = 0x1405;
-    public static readonly FLOAT = 0x140;
+    public static readonly FLOAT = 0x1406;
 
     public name: string;
     public type: number;
