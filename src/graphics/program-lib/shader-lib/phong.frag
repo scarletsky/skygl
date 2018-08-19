@@ -8,6 +8,7 @@ uniform vec4 uAmbient;
 uniform vec4 uDiffuse;
 uniform sampler2D uDiffuseMap;
 uniform vec4 uSpecular;
+uniform float uShininess;
 
 varying vec3 vNormalW;
 varying vec3 vPositionW;
@@ -38,7 +39,7 @@ void main() {
 
   vec4 ambient = uAmbient * lightColor;
   vec4 diffuse = max(dot(viewDir, vNormalW), 0.0) * lightColor;
-  vec4 specular = pow(max(dot(viewDir, reflectDir), 0.0), 128.0) * uSpecular * lightColor;
+  vec4 specular = pow(max(dot(viewDir, reflectDir), 0.0), uShininess) * uSpecular * lightColor;
   color = (ambient + diffuse + specular) * color;
 
   #ifdef ALPHA_TEST
