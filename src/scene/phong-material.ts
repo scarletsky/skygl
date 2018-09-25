@@ -19,6 +19,7 @@ export default class PhongMaterial extends Material {
     public diffuse = new Color(1, 1, 1, 1);
     public diffuseMap = null as Texture;
     public specular = new Color(1, 1, 1, 1);
+    public specularmMap = null as Texture;
     public shininess = 25;
 
     constructor(parameters: PhongMaterialParameters) {
@@ -31,6 +32,7 @@ export default class PhongMaterial extends Material {
         scope.setValue("uDiffuse", this.diffuse);
         scope.setValue("uDiffuseMap", this.diffuseMap);
         scope.setValue("uSpecular", this.specular);
+        scope.setValue("uSpecularMap", this.specularMap);
         scope.setValue("uEmissive", this.emissive);
         scope.setValue("uShininess", this.shininess);
     }
