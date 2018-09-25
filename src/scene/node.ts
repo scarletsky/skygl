@@ -3,6 +3,7 @@ import Mat3 from "math/mat3";
 import Mat4 from "math/mat4";
 import Quat from "math/quat";
 import EventEmitter from "core/event-emitter";
+import { Script, Scriptable } from "script/script";
 
 const vecA = new Vec3();
 const matA = new Mat4();
@@ -10,7 +11,7 @@ const quatA = new Quat();
 const quatB = new Quat();
 const quatC = new Quat();
 
-export default class Node extends EventEmitter {
+export default class Node extends EventEmitter implements Scriptable<Node> {
     public static readonly DEFAULT_NAME = "Untitled";
     public name: string;
     public parent: Node;
@@ -23,6 +24,7 @@ export default class Node extends EventEmitter {
     public normalMatrix = new Mat3();
     public autoUpdate = true;
     public enabled = true;
+    public scripts = [] as Array<Script<Node>>;
 
     constructor() {
         super();
@@ -213,6 +215,10 @@ export default class Node extends EventEmitter {
             force = true;
         }
 
+        for (const script of this.scripts) {
+            this.execScript(script);
+        }
+
         for (const child of this.children) {
             child.updateWorldMatrix(force);
         }
@@ -230,5 +236,39 @@ export default class Node extends EventEmitter {
 
     public toJSON() {
 
+    }
+
+    public addScript(script: Script<Node>) {
+        const index = this.scripts.indexOf(script);
+
+        if (index !== -1) return this;
+
+        script.attach(this);
+        this.scripts.push(script);
+
+        if (this.enabled && script.enabled) {
+            script.onInitialize();
+        }
+
+        return this;
+    }
+
+    public removeScript(script: Script<Node>) {
+        const index = this.scripts.indexOf(script);
+
+        if (index !== -1) return this;
+
+        script.detach();
+        this.scripts.splice(index, 1);
+
+        return this;
+    }
+
+    public execScript(script: Script<Node>) {
+        if (!this.enabled) return;
+
+        script.initialized = true;
+        script.started = true;
+        script.onUpdate();
     }
 }
