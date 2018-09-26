@@ -37,6 +37,7 @@ export default class ForwardRenderer {
         let programlib = device.programlib;
 
         this.meshes.length = 0;
+        Scene.setCurrentScene(scene);
 
         if (scene.autoUpdate) scene.updateWorldMatrix();
         if (camera.parent === null) camera.updateWorldMatrix();
