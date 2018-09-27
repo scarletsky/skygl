@@ -729,7 +729,7 @@ export default class Mat4 extends Mat {
         det = m0 * a11 + m1 * a12 + m2 * a13;
         if (det === 0) { // no inverse
             console.warn("pc.Mat4#invertTo3x3: Matrix not invertible");
-            return this;
+            return res;
         }
 
         idet = 1 / det;
@@ -744,7 +744,7 @@ export default class Mat4 extends Mat {
         r[7] = idet * a23;
         r[8] = idet * a33;
 
-        return this;
+        return res;
     }
 
     public getTranslation(t?: Vec3): Vec3 {
