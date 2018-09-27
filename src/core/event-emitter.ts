@@ -13,20 +13,20 @@ interface EventCallbackMap {
 export default class EventEmitter {
     public _callbacks: EventCallbackMap = {};
 
-    public on(event: string, callback: Callback, once: boolean = false) {
+    public on(event: string, callback: Callback, scope = this as any, once: boolean = false) {
         if (this._callbacks[event] === undefined) {
             this._callbacks[event] = [];
         }
 
         this._callbacks[event].push({
-            scope: this,
+            scope,
             callback,
             once
         });
     }
 
-    public once(event: string, callback: Callback) {
-        this.on(event, callback, true);
+    public once(event: string, callback: Callback, scope = this as any) {
+        this.on(event, callback, scope, true);
     }
 
     public off(event: string, callback?: Callback) {
@@ -57,7 +57,7 @@ export default class EventEmitter {
 
         callbacks.forEach((callback, i) => {
             const func = callback.callback;
-            func.apply(this, args);
+            func.apply(callback.scope, args);
 
             if (callback.once) {
                 onceFuncIndices.push(i);
