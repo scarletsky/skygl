@@ -247,7 +247,7 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
         this.scripts.push(script);
 
         if (this.enabled && script.enabled) {
-            script.onInitialize();
+            script.initialized = true;
         }
 
         return this;
