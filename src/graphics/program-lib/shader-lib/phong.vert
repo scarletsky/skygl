@@ -3,7 +3,7 @@
 varying vec3 vNormalW;
 varying vec3 vPositionW;
 
-#ifdef DIFFUSE_MAP
+#ifdef UV0
 varying vec2 vUv0;
 #endif
 

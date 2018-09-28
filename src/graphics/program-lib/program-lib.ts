@@ -57,12 +57,19 @@ export default class ProgramLib {
     }
 
     private generateOptions(material: Material): ProgramKeyOptions {
-        return {
+        const options = {
             ALPHA_TEST: material.alphaTest > 0,
             VERTEX_COLOR: !!material.vertexColor,
             DIFFUSE_MAP: !!material.diffuseMap,
+            SPECULAR_MAP: !!material.specularMap,
             AMBIENT: !!material.ambient,
             SKINNING: false
-        };
+        } as ProgramKeyOptions;
+
+        if (options.DIFFUSE_MAP || options.SPECULAR_MAP) {
+            options.UV0 = true;
+        }
+
+        return options;
     }
 }
