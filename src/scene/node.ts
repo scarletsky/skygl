@@ -6,6 +6,7 @@ import EventEmitter from "core/event-emitter";
 import { Script, Scriptable } from "script/script";
 
 const vecA = new Vec3();
+const vecB = new Vec3();
 const matA = new Mat4();
 const quatA = new Quat();
 const quatB = new Quat();
@@ -57,25 +58,45 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
         return this.worldMatrix.transformVector(Vec3.BACK, vecA);
     }
 
-    public translate(vector: Vec3) {
+    public translate(x: number, y: number, z: number) {
+        vecB.set(x, y, z);
+        return this.translate2(vecB);
+    }
+
+    public translate2(vector: Vec3) {
         this.getWorldPosition(vecA);
         vecA.add(vector);
         return this.setWorldPosition(vecA);
     }
 
-    public translateLocal(vector: Vec3) {
+    public translateLocal(x: number, y: number, z: number) {
+        vecB.set(x, y, z);
+        return this.translateLocal2(vecB);
+    }
+
+    public translateLocal2(vector: Vec3) {
         this.position.add(vector);
         return this;
     }
 
-    public rotate(vector: Vec3) {
+    public rotate(x: number, y: number, z: number) {
+        vecB.set(x, y, z);
+        return this.rotate2(vecB);
+    }
+
+    public rotate2(vector: Vec3) {
         this.getWorldRotation(quatB);
         quatA.setFromEulerAngles(vector);
         quatA.mul(quatB);
         return this.setWorldRotation(quatA);
     }
 
-    public rotateLocal(vector: Vec3) {
+    public rotateLocal(x: number, y: number, z: number) {
+        vecB.set(x, y, z);
+        return this.rotateLocal2(vecB);
+    }
+
+    public rotateLocal2(vector: Vec3) {
         quatA.setFromEulerAngles(vector);
         this.rotation.mul(quatA);
         return this;
@@ -94,7 +115,12 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
         return this.worldMatrix.getTranslation(res);
     }
 
-    public setWorldPosition(worldPosition: Vec3) {
+    public setWorldPosition(x: number, y: number, z: number) {
+        vecB.set(x, y, z);
+        return this.setWorldPosition2(vecB);
+    }
+
+    public setWorldPosition2(worldPosition: Vec3) {
         if (this.parent === null) {
             this.position.copy(worldPosition);
         } else {
@@ -110,7 +136,12 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
         return this.localMatrix.getTranslation(res);
     }
 
-    public setLocalPosition(localPosition: Vec3) {
+    public setLocalPosition(x: number, y: number, z: number) {
+        vecB.set(x, y, z);
+        return this.setLocalPosition2(vecB);
+    }
+
+    public setLocalPosition2(localPosition: Vec3) {
         this.position.copy(localPosition);
         return this;
     }
@@ -121,7 +152,12 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
         return this.worldMatrix.getEulerAngles(res);
     }
 
-    public setWorldEulerAngles(worldEulerAngles: Vec3) {
+    public setWorldEulerAngles(x: number, y: number, z: number) {
+        vecB.set(x, y, z);
+        return this.setWorldEulerAngles2(vecB);
+    }
+
+    public setWorldEulerAngles2(worldEulerAngles: Vec3) {
         if (this.parent === null) {
             this.rotation.setFromEulerAngles(worldEulerAngles);
         } else {
@@ -135,7 +171,12 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
         return this.rotation.getEulerAngles(res);
     }
 
-    public setLocalEulerAngles(localEulerAngles: Vec3) {
+    public setLocalEulerAngles(x: number, y: number, z: number) {
+        vecB.set(x, y, z);
+        return this.setLocalEulerAngles2(vecB);
+    }
+
+    public setLocalEulerAngles2(localEulerAngles: Vec3) {
         this.rotation.setFromEulerAngles(localEulerAngles);
         return this;
     }
@@ -171,7 +212,12 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
         return res.copy(this.scale);
     }
 
-    public setLocalScale(localScale: Vec3) {
+    public setLocalScale(x: number, y: number, z: number) {
+        vecB.set(x, y, z);
+        return this.setLocalScale2(vecB);
+    }
+
+    public setLocalScale2(localScale: Vec3) {
         this.scale.copy(localScale);
         return this;
     }
