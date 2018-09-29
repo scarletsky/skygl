@@ -40,6 +40,8 @@ export default class Mouse extends Input {
 
     private _onMouseMove(event: MouseEvent) {
         this.fire("mousemove", new CustomMouseEvent(event));
+        CustomMouseEvent.lastX = event.offsetX;
+        CustomMouseEvent.lastY = event.offsetY;
     }
 
     private _onMouseWheel(event: MouseEvent) {
