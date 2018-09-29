@@ -249,6 +249,11 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
     }
 
     public updateWorldMatrix(force: boolean = false) {
+
+        for (const script of this.scripts) {
+            this.execScript(script);
+        }
+
         this.updateLocalMatrix();
 
         if (this.autoUpdate || force) {
@@ -261,13 +266,10 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
             force = true;
         }
 
-        for (const script of this.scripts) {
-            this.execScript(script);
-        }
-
         for (const child of this.children) {
             child.updateWorldMatrix(force);
         }
+
     }
 
     public traverse(callback: (node: Node) => void) {
