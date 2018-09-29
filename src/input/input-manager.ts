@@ -1,6 +1,7 @@
 import Mouse from "input/mouse";
+import Keyboard from "input/keyboard";
 
-type InputSource = Mouse;
+type InputSource = Mouse | Keyboard;
 
 interface InputSourceMap {
     [type: string]: InputSource;
@@ -8,7 +9,8 @@ interface InputSourceMap {
 
 export default class InputManager {
     public static sources = {
-        mouse: null as Mouse
+        mouse: null as Mouse,
+        keyboard: null as Keyboard
     } as InputSourceMap;
 
     public static get(type: string) {
@@ -16,8 +18,16 @@ export default class InputManager {
     }
 
     public static add(source: InputSource) {
+        let type;
+
         if (source instanceof Mouse) {
-            InputManager.sources.mouse = source;
+            type = "mouse";
+        } else if (source instanceof Keyboard) {
+            type = "keyboard";
+        }
+
+        if (type) {
+            InputManager.sources[type] = source;
         }
     }
 }
