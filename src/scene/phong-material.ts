@@ -15,7 +15,6 @@ export interface PhongMaterialParameters extends MaterialParameters {
 }
 
 export default class PhongMaterial extends Material {
-    public ambient = new Color(0.2, 0.2, 0.2, 1);
     public diffuse = new Color(1, 1, 1, 1);
     public diffuseMap = null as Texture;
     public specular = new Color(1, 1, 1, 1);
@@ -28,7 +27,6 @@ export default class PhongMaterial extends Material {
 
     public apply(device: Device) {
         const scope = device.scope;
-        scope.setValue("uAmbient", this.ambient);
         scope.setValue("uDiffuse", this.diffuse);
         scope.setValue("uDiffuseMap", this.diffuseMap);
         scope.setValue("uSpecular", this.specular);

@@ -1,4 +1,6 @@
 import Node from "./node";
+import { Color } from "math";
+import { Device } from "graphics";
 
 export default class Scene extends Node {
     private static _current = null as Scene;
@@ -12,8 +14,10 @@ export default class Scene extends Node {
     }
 
     public autoUpdate = true;
+    public ambient = new Color(0.2, 0.2, 0.2);
 
-    constructor() {
-        super();
+    public apply(device: Device) {
+        const scope = device.scope;
+        scope.setValue("uAmbient", this.ambient);
     }
 }
