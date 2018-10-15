@@ -21,6 +21,18 @@ function createProgram(gl: WebGLRenderingContext, vertexShader: WebGLShader, fra
     return program;
 }
 
+function addLineNumbers(src: string) {
+    var chunks = src.split("\n");
+
+    // Chrome reports shader errors on lines indexed from 1
+    for (var i = 0, len = chunks.length; i < len; i++) {
+        chunks[i] = (i + 1) + ":\t" + chunks[i];
+    }
+
+    return chunks.join( "\n" );
+}
+
+
 function parseIncludes(source: string) {
     let pattern = /^[ \t]*#include <([\w\d.]+)>/gm;
 
@@ -88,8 +100,8 @@ export default class Shader {
         const vshader = parseDefines(this.definition.defines) + parseIncludes(this.definition.vshader);
         const fshader = parseDefines(this.definition.defines) + parseIncludes(this.definition.fshader);
 
-        console.log("vs: ", vshader);
-        console.log("fs: ", fshader);
+        console.log("vertex shader: \n", addLineNumbers(vshader));
+        console.log("fragment shader: \n", addLineNumbers(fshader));
 
         this.vshader = createShader(gl, gl.VERTEX_SHADER, vshader);
         this.fshader = createShader(gl, gl.FRAGMENT_SHADER, fshader);
