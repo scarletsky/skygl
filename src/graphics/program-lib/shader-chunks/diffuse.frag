@@ -1,11 +1,12 @@
-uniform vec4 uDiffuse;
+#ifdef PHONG_MATERIAL
+vec4 getDiffuse(const in PhongMaterial material) {
 
-#ifdef DIFFUSE_MAP
-uniform sampler2D uDiffuseMap;
-#endif
+  vec4 dDiffuse = material.diffuse;
 
-vec4 getDiffuse() {
-  vec4 diffuse = uDiffuse;
+  #ifdef DIFFUSE_MAP
+  dDiffuse *= texture2D(material.diffuseMap, vUv0);
+  #endif
 
-  return diffuse;
+  return dDiffuse;
 }
+#endif
