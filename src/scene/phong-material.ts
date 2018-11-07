@@ -33,5 +33,11 @@ export default class PhongMaterial extends Material {
         scope.setValue("uSpecularMap", this.specularMap);
         scope.setValue("uEmissive", this.emissive);
         scope.setValue("uShininess", this.shininess);
+
+        scope.setValue("uMaterial.diffuse", this.diffuse);
+        scope.setValue("uMaterial.diffuseMap", this.diffuseMap);
+        scope.setValue("uMaterial.specular", this.specular);
+        scope.setValue("uMaterial.specularMap", this.specularMap);
+        scope.setValue("uMaterial.shininess", this.shininess);
     }
 }

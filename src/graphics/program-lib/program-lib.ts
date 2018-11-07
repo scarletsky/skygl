@@ -1,5 +1,6 @@
 import Device from "../device";
 import Shader from "../shader";
+import Light, { SortedLights } from "scene/light";
 import Material from "scene/material";
 import BasicMaterial from "scene/basic-material";
 import PhongMaterial from "scene/phong-material";
@@ -22,9 +23,9 @@ export default class ProgramLib {
         this.device = device;
     }
 
-    public getProgram(material: Material) {
+    public getProgram(material: Material, lights: SortedLights) {
         const type = this.getMaterialType(material) as keyof typeof ShaderLib;
-        const options = this.generateOptions(material);
+        const options = this.generateOptions(material, lights);
         const key = this.generateKey(type, options);
 
         if (!this._cached[key]) {
@@ -56,8 +57,11 @@ export default class ProgramLib {
         return chunks.join();
     }
 
-    private generateOptions(material: Material): ProgramKeyOptions {
+    private generateOptions(material: Material, lights: SortedLights): ProgramKeyOptions {
         const options = {
+            NUM_DIRECTIONAL_LIGHTS: lights[Light.TYPE_DIRECTIONAL].length,
+            NUM_POINT_LIGHTS: lights[Light.TYPE_POINT].length,
+            NUM_SPOT_LIGHTS: lights[Light.TYPE_SPOT].length,
             ALPHA_TEST: material.alphaTest > 0,
             VERTEX_COLOR: !!material.vertexColor,
             DIFFUSE_MAP: !!material.diffuseMap,

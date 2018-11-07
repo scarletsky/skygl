@@ -1,7 +1,6 @@
-precision highp float;
+#define PHONG_MATERIAL
 
-uniform vec3 uLightPosition;
-uniform vec4 uLightColor;
+precision highp float;
 
 uniform vec3 uViewPosition;
 uniform vec4 uAmbient;
@@ -23,39 +22,51 @@ varying vec4 vColor;
 varying vec2 vUv0;
 #endif
 
+struct PhongMaterial {
+  vec4 diffuse;
+  sampler2D diffuseMap;
+
+  vec4 specular;
+  sampler2D specularMap;
+
+  float shininess;
+};
+
+uniform PhongMaterial uMaterial;
+
 #include <alphaTestFS>
+#include <diffuseFS>
+#include <specularFS>
+#include <lightCommonFS>
+#include <lightingPhongFS>
 
 void main() {
   
-  vec3 lightPos = uLightPosition;
-  vec4 lightColor = uLightColor;
-  vec3 lightDir = normalize(lightPos - vPositionW);
   vec3 viewDir = normalize(uViewPosition - vPositionW);
-  vec3 reflectDir = normalize(reflect(-lightDir, vNormalW));
-  float diff = max(dot(viewDir, vNormalW), 0.0);
-  float spec = pow(max(dot(viewDir, reflectDir), 0.0), uShininess);
-  vec4 color = uDiffuse;
 
-  vec4 ambient = uAmbient * lightColor;
-  vec4 diffuse = diff * lightColor;
-  vec4 specular = spec * uSpecular * lightColor;
+  vec4 dColor = vec4(0.0);
+  vec4 dDiffuse = getDiffuse(uMaterial);
+  vec4 dSpecular = getSpecular(uMaterial);
 
-  #ifdef DIFFUSE_MAP
-  vec4 diffuseMapColor = texture2D(uDiffuseMap, vUv0);
-  diffuse *= diffuseMapColor;
-  ambient *= diffuseMapColor;
+  vec4 dAmbient = vec4(0.2, 0.2, 0.2, 1);
+
+  #if NUM_DIRECTIONAL_LIGHTS > 0
+  getDirectionalLighting(viewDir, vNormalW, uMaterial);
   #endif
 
-  #ifdef SPECULAR_MAP
-  vec4 specularMapColor = texture2D(uSpecularMap, vUv0);
-  specular *= specularMapColor;
+  #if NUM_POINT_LIGHTS > 0
+  getPointLighting(viewDir, vNormalW, uMaterial);
   #endif
 
-  color = (ambient + diffuse + specular);
+  #if NUM_SPOT_LIGHTS > 0
+  getSpotLighting(viewDir, vNormalW, uMaterial);
+  #endif
+
+  dColor = (dAmbient + dDiffuse * dLightDiffuse + dSpecular * dLightSpecular);
 
   #ifdef ALPHA_TEST
-  alphaTest(color.a);
+  alphaTest(dColor.a);
   #endif
 
-  gl_FragColor = color;
+  gl_FragColor = dColor;
 }
