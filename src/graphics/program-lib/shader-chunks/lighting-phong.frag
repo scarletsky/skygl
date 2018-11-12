@@ -16,13 +16,15 @@ float getLightSpecularFactor(vec3 viewDir, vec3 reflectDir, float shininess) {
 #if NUM_DIRECTIONAL_LIGHTS > 0
 void getDirectionalLighting(vec3 viewDir, vec3 normalDir, PhongMaterial material) {
   DirectionalLight light;
+  vec3 lightDir;
   vec3 reflectDir;
   float lightDiffuseFactor;
   float lightSpecularFactor;
   for (int i = 0; i < NUM_DIRECTIONAL_LIGHTS; i++) {
     light = uDirectionalLights[i];
-    reflectDir = getLightReflectDir(light.direction, normalDir);
-    lightDiffuseFactor = getLightDiffuseFactor(-light.direction, normalDir);
+    lightDir = light.direction;
+    reflectDir = getLightReflectDir(lightDir, normalDir);
+    lightDiffuseFactor = getLightDiffuseFactor(-lightDir, normalDir);
     lightSpecularFactor = getLightSpecularFactor(viewDir, reflectDir, material.shininess);
     dLightDiffuse += lightDiffuseFactor * light.color;
     dLightSpecular += lightSpecularFactor * light.color;
@@ -32,8 +34,25 @@ void getDirectionalLighting(vec3 viewDir, vec3 normalDir, PhongMaterial material
 
 
 #if NUM_POINT_LIGHTS > 0
-void getPointLighting() {
+void getPointLighting(vec3 viewDir, vec3 normalDir, PhongMaterial material) {
+  PointLight light;
+  vec3 lightDir;
+  vec3 reflectDir;
+  float lightDiffuseFactor;
+  float lightSpecularFactor;
+  float dist;
+  float attenuation;
 
+  for (int i = 0; i < NUM_POINT_LIGHTS; i++) {
+    light = uPointLights[i];
+    lightDir = vPositionW - light.position;
+    dist = length(lightDir);
+    attenuation = getLightAttenuation(dist, light.attenuation);
+    lightDiffuseFactor = getLightDiffuseFactor(-lightDir, normalDir);
+    lightSpecularFactor = getLightSpecularFactor(viewDir, reflectDir, material.shininess);
+    dLightDiffuse += lightDiffuseFactor * attenuation * light.color;
+    dLightSpecular += lightSpecularFactor * attenuation * light.color;
+  }
 }
 #endif
 

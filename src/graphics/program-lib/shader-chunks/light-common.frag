@@ -14,6 +14,8 @@ uniform DirectionalLight uDirectionalLights[NUM_DIRECTIONAL_LIGHTS];
 struct PointLight {
   vec3 position;
   vec4 color;
+  float range;
+  vec4 attenuation;
 };
 uniform PointLight uPointLights[NUM_POINT_LIGHTS];
 #endif

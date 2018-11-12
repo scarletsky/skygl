@@ -5,14 +5,13 @@ import { Device } from "graphics";
 export default class PointLight extends Light {
     public type = Light.TYPE_POINT;
     public range = 10;
-    public attenuation = new Vec4(1.0, 0.0, 0.0, 0.0);
+    public attenuation = new Vec4(1.0, 0.09, 0.0032, 0.0);
 
-    public apply(device: Device) {
+    public apply(device: Device, index: number) {
         const scope = device.scope;
-        scope.setValue("uLightPosition", this.getWorldPosition());
-        scope.setValue("uLightColor", this.color);
-        scope.setValue("uLigtIntensity", this.intensity);
-        scope.setValue("uLightRange", this.range);
-        scope.setValue("uLightAttenuation", this.attenuation);
+        scope.setValue(`uPointLights[${index}].position`, this.position);
+        scope.setValue(`uPointLights[${index}].color`, this.color);
+        scope.setValue(`uPointLights[${index}].range`, this.range);
+        scope.setValue(`uPointLights[${index}].attenuation`, this.attenuation);
     }
 }
