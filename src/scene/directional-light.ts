@@ -13,7 +13,7 @@ export default class DirectionalLight extends Light {
         const scope = device.scope;
         this.getWorldRotation(quatA);
         quatA.transformVector(Vec3.DOWN, this._direction);
-        scope.setValue(`uDirectionalLights[0].direction`, this._direction);
+        scope.setValue(`uDirectionalLights[${index}].direction`, this._direction);
         scope.setValue(`uDirectionalLights[${index}].color`, this.color);
     }
 }
