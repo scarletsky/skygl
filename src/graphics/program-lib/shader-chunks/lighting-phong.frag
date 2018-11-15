@@ -46,9 +46,10 @@ void getPointLighting(vec3 viewDir, vec3 normalDir, PhongMaterial material) {
   for (int i = 0; i < NUM_POINT_LIGHTS; i++) {
     light = uPointLights[i];
     lightDir = vPositionW - light.position;
-    reflectDir = getLightReflectDir(lightDir, normalDir);
     dist = length(lightDir);
     if (dist > light.range) continue;
+    lightDir = normalize(lightDir);
+    reflectDir = getLightReflectDir(lightDir, normalDir);
     attenuation = getLightAttenuation(dist, light.attenuation);
     lightDiffuseFactor = getLightDiffuseFactor(-lightDir, normalDir);
     lightSpecularFactor = getLightSpecularFactor(viewDir, reflectDir, material.shininess);
