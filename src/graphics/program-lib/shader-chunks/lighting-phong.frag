@@ -60,7 +60,29 @@ void getPointLighting(vec3 viewDir, vec3 normalDir, PhongMaterial material) {
 
 
 #if NUM_SPOT_LIGHTS > 0
-void getSpotLighting() {
+void getSpotLighting(vec3 viewDir, vec3 normalDir, PhongMaterial material) {
+  SpotLight light;
+  vec3 lightDir;
+  vec3 reflectDir;
+  float lightDiffuseFactor;
+  float lightSpecularFactor;
+  float theta;
 
+  for (int i = 0; i < NUM_SPOT_LIGHTS; i++) {
+    light = uSpotLights[i];
+    lightDir = normalize(vPositionW - light.position);
+    reflectDir = getLightReflectDir(lightDir, normalDir);
+    theta = dot(lightDir, light.direction);
+
+    if (theta > light.outerConeRadian) {
+      float epsilon   = light.innerConeRadian - light.outerConeRadian;
+      float intensity = clamp((theta - light.outerConeRadian) / epsilon, 0.0, 1.0);
+
+      lightDiffuseFactor = getLightDiffuseFactor(-lightDir, normalDir);
+      lightSpecularFactor = getLightSpecularFactor(viewDir, reflectDir, material.shininess);
+      dLightDiffuse += lightDiffuseFactor * intensity * light.color;
+      dLightSpecular += lightSpecularFactor * intensity * light.color;
+    }
+  }
 }
 #endif

@@ -26,7 +26,9 @@ struct SpotLight {
   vec3 position;
   vec3 direction;
   vec4 color;
-}
+  float innerConeRadian;
+  float outerConeRadian;
+};
 uniform SpotLight uSpotLights[NUM_SPOT_LIGHTS];
 #endif
 
