@@ -34,6 +34,7 @@ struct PhongMaterial {
 
 uniform PhongMaterial uMaterial;
 
+#include <baseFS>
 #include <alphaTestFS>
 #include <diffuseFS>
 #include <specularFS>
@@ -51,15 +52,15 @@ void main() {
   vec4 dAmbient = vec4(0.2, 0.2, 0.2, 1);
 
   #if NUM_DIRECTIONAL_LIGHTS > 0
-  getDirectionalLighting(viewDir, vNormalW, uMaterial);
+  calcDirectionalLighting(viewDir, vNormalW, uMaterial);
   #endif
 
   #if NUM_POINT_LIGHTS > 0
-  getPointLighting(viewDir, vNormalW, uMaterial);
+  calcPointLighting(viewDir, vNormalW, uMaterial);
   #endif
 
   #if NUM_SPOT_LIGHTS > 0
-  getSpotLighting(viewDir, vNormalW, uMaterial);
+  calcSpotLighting(viewDir, vNormalW, uMaterial);
   #endif
 
   dColor = (dAmbient + dDiffuse * dLightDiffuse + dSpecular * dLightSpecular);

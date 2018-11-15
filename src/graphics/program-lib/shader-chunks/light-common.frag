@@ -1,5 +1,7 @@
 vec4 dLightDiffuse = vec4(0.0);
 vec4 dLightSpecular = vec4(0.0);
+vec4 tLightDiffuse = vec4(0.0);
+vec4 tLightSpecular = vec4(0.0);
 
 #if NUM_DIRECTIONAL_LIGHTS > 0
 struct DirectionalLight {
