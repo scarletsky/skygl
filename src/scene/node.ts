@@ -17,11 +17,13 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
     public name: string;
     public parent: Node;
     public children: Node[];
-    public position = new Vec3();
-    public rotation = new Quat();
-    public scale = new Vec3(1, 1, 1);
-    public worldMatrix = new Mat4();
+    public localPosition = new Vec3();
+    public localRotation = new Quat();
+    public localScale = new Vec3(1, 1, 1);
     public localMatrix = new Mat4();
+    public worldPosition = new Vec3();
+    public worldRotation = new Quat();
+    public worldMatrix = new Mat4();
     public normalMatrix = new Mat3();
     public autoUpdate = true;
     public enabled = true;
@@ -66,7 +68,7 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
     public translate2(vector: Vec3) {
         this.getWorldPosition(vecA);
         vecA.add(vector);
-        return this.setWorldPosition(vecA);
+        return this.setWorldPosition2(vecA);
     }
 
     public translateLocal(x: number, y: number, z: number) {
@@ -75,7 +77,7 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
     }
 
     public translateLocal2(vector: Vec3) {
-        this.position.add(vector);
+        this.localPosition.add(vector);
         return this;
     }
 
@@ -98,7 +100,7 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
 
     public rotateLocal2(vector: Vec3) {
         quatA.setFromEulerAngles(vector);
-        this.rotation.mul(quatA);
+        this.localRotation.mul(quatA);
         return this;
     }
 
@@ -122,10 +124,10 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
 
     public setWorldPosition2(worldPosition: Vec3) {
         if (this.parent === null) {
-            this.position.copy(worldPosition);
+            this.localPosition.copy(worldPosition);
         } else {
             matA.copy(this.parent.worldMatrix).invert();
-            matA.transformPoint(worldPosition, this.position);
+            matA.transformPoint(worldPosition, this.localPosition);
         }
         return this;
     }
@@ -142,7 +144,7 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
     }
 
     public setLocalPosition2(localPosition: Vec3) {
-        this.position.copy(localPosition);
+        this.localPosition.copy(localPosition);
         return this;
     }
 
@@ -159,7 +161,7 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
 
     public setWorldEulerAngles2(worldEulerAngles: Vec3) {
         if (this.parent === null) {
-            this.rotation.setFromEulerAngles(worldEulerAngles);
+            this.localRotation.setFromEulerAngles(worldEulerAngles);
         } else {
             quatA.setFromEulerAngles(worldEulerAngles);
             this.setWorldRotation(quatA);
@@ -168,7 +170,7 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
 
     public getLocalEulerAngles(res?: Vec3) {
         if (res === undefined) res = new Vec3();
-        return this.rotation.getEulerAngles(res);
+        return this.localRotation.getEulerAngles(res);
     }
 
     public setLocalEulerAngles(x: number, y: number, z: number) {
@@ -177,7 +179,7 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
     }
 
     public setLocalEulerAngles2(localEulerAngles: Vec3) {
-        this.rotation.setFromEulerAngles(localEulerAngles);
+        this.localRotation.setFromEulerAngles(localEulerAngles);
         return this;
     }
 
@@ -189,27 +191,27 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
 
     public setWorldRotation(worldRotation: Quat) {
         if (this.parent === null) {
-            this.rotation.copy(worldRotation);
+            this.localRotation.copy(worldRotation);
         } else {
             quatB.copy(this.parent.getWorldRotation()).invert();
             quatC.mul2(quatB, worldRotation);
-            this.rotation.copy(quatC);
+            this.localRotation.copy(quatC);
         }
         return this;
     }
 
     public getLocalRotation(res?: Quat) {
         if (res === undefined) res = new Quat();
-        return res.copy(this.rotation);
+        return res.copy(this.localRotation);
     }
 
     public setLocalRotation(localRotation: Quat) {
-        this.rotation.copy(localRotation);
+        this.localRotation.copy(localRotation);
     }
 
     public getLocalScale(res?: Vec3) {
         if (res === undefined) res = new Vec3();
-        return res.copy(this.scale);
+        return res.copy(this.localScale);
     }
 
     public setLocalScale(x: number, y: number, z: number) {
@@ -218,7 +220,7 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
     }
 
     public setLocalScale2(localScale: Vec3) {
-        this.scale.copy(localScale);
+        this.localScale.copy(localScale);
         return this;
     }
 
@@ -245,7 +247,7 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
     }
 
     public updateLocalMatrix() {
-        this.localMatrix.setTRS(this.position, this.rotation, this.scale);
+        this.localMatrix.setTRS(this.localPosition, this.localRotation, this.localScale);
     }
 
     public updateWorldMatrix(force: boolean = false) {
@@ -262,7 +264,6 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
             } else {
                 this.worldMatrix.mul2(this.parent.worldMatrix, this.localMatrix);
             }
-
             force = true;
         }
 

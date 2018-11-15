@@ -6,11 +6,11 @@ import Mesh from "./mesh";
 import Light, { SortedLights } from "./light";
 
 function backToFront(a: Node, b: Node) {
-    return b.position.z - a.position.z;
+    return b.worldPosition.z - a.worldPosition.z;
 }
 
 function frontToBack(a: Node, b: Node) {
-    return a.position.z - b.position.z;
+    return a.worldPosition.z - b.worldPosition.z;
 }
 
 export default class ForwardRenderer {
