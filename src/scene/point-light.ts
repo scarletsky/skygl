@@ -9,7 +9,8 @@ export default class PointLight extends Light {
 
     public apply(device: Device, index: number) {
         const scope = device.scope;
-        scope.setValue(`uPointLights[${index}].position`, this.position);
+        this.worldMatrix.getTranslation(this.worldPosition);
+        scope.setValue(`uPointLights[${index}].position`, this.worldPosition);
         scope.setValue(`uPointLights[${index}].color`, this.color);
         scope.setValue(`uPointLights[${index}].range`, this.range);
         scope.setValue(`uPointLights[${index}].attenuation`, this.attenuation);
