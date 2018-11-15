@@ -6,14 +6,13 @@ const quatA = new Quat();
 
 export default class DirectionalLight extends Light {
     public type = Light.TYPE_DIRECTIONAL;
-
-    private _direction = new Vec3();
+    public direction = new Vec3();
 
     public apply(device: Device, index: number) {
         const scope = device.scope;
         this.getWorldRotation(quatA);
-        quatA.transformVector(Vec3.DOWN, this._direction);
-        scope.setValue(`uDirectionalLights[${index}].direction`, this._direction);
+        quatA.transformVector(Vec3.DOWN, this.direction);
+        scope.setValue(`uDirectionalLights[${index}].direction`, this.direction);
         scope.setValue(`uDirectionalLights[${index}].color`, this.color);
     }
 }

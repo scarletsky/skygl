@@ -8,7 +8,6 @@ export default class SpotLight extends Light {
     public type = Light.TYPE_SPOT;
     public innerConeAngle = 40;
     public outerConeAngle = 45;
-
     public direction = new Vec3();
 
     public apply(device: Device, index: number) {
