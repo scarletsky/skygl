@@ -18,6 +18,7 @@ export default class SpotLight extends Light {
         scope.setValue(`uSpotLights[${index}].position`, this.worldPosition);
         scope.setValue(`uSpotLights[${index}].direction`, this.direction);
         scope.setValue(`uSpotLights[${index}].color`, this.color);
+        scope.setValue(`uSpotLights[${index}].intensity`, this.intensity);
         scope.setValue(`uSpotLights[${index}].innerConeRadian`, Math.cos(this.innerConeAngle * DEG_TO_RAD));
         scope.setValue(`uSpotLights[${index}].outerConeRadian`, Math.cos(this.outerConeAngle * DEG_TO_RAD));
     }

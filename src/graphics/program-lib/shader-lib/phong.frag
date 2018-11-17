@@ -63,7 +63,7 @@ void main() {
   calcSpotLighting(viewDir, vNormalW, uMaterial);
   #endif
 
-  dColor = (dAmbient + dDiffuse * dLightDiffuse + dSpecular * dLightSpecular);
+  dColor = (dAmbient * dLightAmbient + dDiffuse * dLightDiffuse + dSpecular * dLightSpecular);
 
   #ifdef ALPHA_TEST
   alphaTest(dColor.a);

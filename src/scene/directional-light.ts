@@ -14,5 +14,6 @@ export default class DirectionalLight extends Light {
         quatA.transformVector(Vec3.DOWN, this.direction);
         scope.setValue(`uDirectionalLights[${index}].direction`, this.direction);
         scope.setValue(`uDirectionalLights[${index}].color`, this.color);
+        scope.setValue(`uDirectionalLights[${index}].intensity`, this.intensity);
     }
 }

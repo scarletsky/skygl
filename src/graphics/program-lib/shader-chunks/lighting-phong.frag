@@ -21,6 +21,7 @@ void calcLighting(vec3 viewDir, vec3 normalDir, vec3 lightDir, vec4 lightColor, 
   reflectDir = getLightReflectDir(lightDir, normalDir);
   lightDiffuseFactor = getLightDiffuseFactor(-lightDir, normalDir);
   lightSpecularFactor = getLightSpecularFactor(viewDir, reflectDir, shininess);
+  tLightAmbient = lightColor;
   tLightDiffuse = lightDiffuseFactor * lightColor;
   tLightSpecular = lightSpecularFactor * lightColor;
 }
@@ -32,8 +33,8 @@ void calcDirectionalLighting(vec3 viewDir, vec3 normalDir, PhongMaterial materia
   for (int i = 0; i < NUM_DIRECTIONAL_LIGHTS; i++) {
     light = uDirectionalLights[i];
     calcLighting(viewDir, normalDir, light.direction, light.color, material.shininess);
-    dLightDiffuse += tLightDiffuse;
-    dLightSpecular += tLightSpecular;
+    dLightDiffuse += tLightDiffuse * light.intensity;
+    dLightSpecular += tLightSpecular * light.intensity;
   }
 }
 #endif
@@ -50,12 +51,13 @@ void calcPointLighting(vec3 viewDir, vec3 normalDir, PhongMaterial material) {
     light = uPointLights[i];
     lightDir = vPositionW - light.position;
     dist = length(lightDir);
-    if (dist > light.range) continue;
+    // if (dist > light.range) continue;
     lightDir = normalize(lightDir);
     attenuation = getLightAttenuation(dist, light.attenuation);
     calcLighting(viewDir, normalDir, lightDir, light.color, material.shininess);
-    dLightDiffuse += tLightDiffuse * attenuation;
-    dLightSpecular += tLightSpecular * attenuation;
+    dLightAmbient += tLightAmbient * attenuation * light.intensity;
+    dLightDiffuse += tLightDiffuse * attenuation * light.intensity;
+    dLightSpecular += tLightSpecular * attenuation * light.intensity;
   }
 }
 #endif
@@ -79,8 +81,8 @@ void calcSpotLighting(vec3 viewDir, vec3 normalDir, PhongMaterial material) {
     if (theta > light.outerConeRadian) {
       attenuation = saturate((theta - light.outerConeRadian) / (light.innerConeRadian - light.outerConeRadian));
       calcLighting(viewDir, normalDir, lightDir, light.color, material.shininess);
-      dLightDiffuse += tLightDiffuse * attenuation;
-      dLightSpecular += tLightSpecular * attenuation;
+      dLightDiffuse += tLightDiffuse * attenuation * light.intensity;
+      dLightSpecular += tLightSpecular * attenuation * light.intensity;
     }
   }
 }

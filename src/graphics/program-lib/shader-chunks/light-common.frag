@@ -1,5 +1,7 @@
+vec4 dLightAmbient = vec4(0.0);
 vec4 dLightDiffuse = vec4(0.0);
 vec4 dLightSpecular = vec4(0.0);
+vec4 tLightAmbient = vec4(0.0);
 vec4 tLightDiffuse = vec4(0.0);
 vec4 tLightSpecular = vec4(0.0);
 
@@ -7,6 +9,7 @@ vec4 tLightSpecular = vec4(0.0);
 struct DirectionalLight {
   vec3 direction;
   vec4 color;
+  float intensity;
 };
 uniform DirectionalLight uDirectionalLights[NUM_DIRECTIONAL_LIGHTS];
 #endif
@@ -16,8 +19,9 @@ uniform DirectionalLight uDirectionalLights[NUM_DIRECTIONAL_LIGHTS];
 struct PointLight {
   vec3 position;
   vec4 color;
-  float range;
   vec4 attenuation;
+  float range;
+  float intensity;
 };
 uniform PointLight uPointLights[NUM_POINT_LIGHTS];
 #endif
@@ -28,6 +32,7 @@ struct SpotLight {
   vec3 position;
   vec3 direction;
   vec4 color;
+  float intensity;
   float innerConeRadian;
   float outerConeRadian;
 };

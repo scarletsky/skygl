@@ -12,6 +12,7 @@ export default class PointLight extends Light {
         this.worldMatrix.getTranslation(this.worldPosition);
         scope.setValue(`uPointLights[${index}].position`, this.worldPosition);
         scope.setValue(`uPointLights[${index}].color`, this.color);
+        scope.setValue(`uPointLights[${index}].intensity`, this.intensity);
         scope.setValue(`uPointLights[${index}].range`, this.range);
         scope.setValue(`uPointLights[${index}].attenuation`, this.attenuation);
     }
