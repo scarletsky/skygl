@@ -231,80 +231,59 @@ export default class Mat4 extends Mat {
     }
 
     public transformPoint(vec: Vec3, res?: Vec3): Vec3 {
-        let x, y, z;
-        const m = this.data;
-        const v = vec.data;
+        let x, y, z, m;
+
+        m = this.data;
+
+        x = vec.x;
+        y = vec.y;
+        z = vec.z;
 
         res = (res === undefined) ? new Vec3() : res;
 
-        x = v[0] * m[0] +
-            v[1] * m[4] +
-            v[2] * m[8] +
-            m[12];
+        res.x = x * m[0] + y * m[4] + z * m[8] + m[12];
+        res.y = x * m[1] + y * m[5] + z * m[9] + m[13];
+        res.z = x * m[2] + y * m[6] + z * m[10] + m[14];
 
-        y = v[0] * m[1] +
-            v[1] * m[5] +
-            v[2] * m[9] +
-            m[13];
-
-        z = v[0] * m[2] +
-            v[1] * m[6] +
-            v[2] * m[10] +
-            m[14];
-
-        return res.set(x, y, z);
+        return res;
     }
 
     public transformVector(vec: Vec3, res?: Vec3): Vec3 {
-        let x, y, z;
-        const m = this.data;
-        const v = vec.data;
+        let x, y, z, m;
+
+        m = this.data;
+
+        x = vec.x;
+        y = vec.y;
+        z = vec.z;
 
         res = (res === undefined) ? new Vec3() : res;
 
-        x = v[0] * m[0] +
-            v[1] * m[4] +
-            v[2] * m[8];
+        res.x = x * m[0] + y * m[4] + z * m[8];
+        res.y = x * m[1] + y * m[5] + z * m[9];
+        res.z = x * m[2] + y * m[6] + z * m[10];
 
-        y = v[0] * m[1] +
-            v[1] * m[5] +
-            v[2] * m[9];
-
-        z = v[0] * m[2] +
-            v[1] * m[6] +
-            v[2] * m[10];
-
-        return res.set(x, y, z);
+        return res;
     }
 
     public transformVec4(vec: Vec4, res?: Vec4): Vec4 {
-        let x, y, z, w;
-        const m = this.data;
-        const v = vec.data;
+        let x, y, z, w, m;
+
+        m = this.data;
+
+        x = vec.x;
+        y = vec.y;
+        z = vec.z;
+        w = vec.w;
 
         res = (res === undefined) ? new Vec4() : res;
 
-        x = v[0] * m[0] +
-            v[1] * m[4] +
-            v[2] * m[8] +
-            v[3] * m[12];
+        res.x = x * m[0] + y * m[4] + z * m[8] + w * m[12];
+        res.y = x * m[1] + y * m[5] + z * m[9] + w * m[13];
+        res.z = x * m[2] + y * m[6] + z * m[10] + w * m[14];
+        res.w = x * m[3] + y * m[7] + z * m[11] + w * m[15];
 
-        y = v[0] * m[1] +
-            v[1] * m[5] +
-            v[2] * m[9] +
-            v[3] * m[13];
-
-        z = v[0] * m[2] +
-            v[1] * m[6] +
-            v[2] * m[10] +
-            v[3] * m[14];
-
-        w = v[0] * m[3] +
-            v[1] * m[7] +
-            v[2] * m[11] +
-            v[3] * m[15];
-
-        return res.set(x, y, z, w);
+        return res;
     }
 
     public setLookAt(position: Vec3, target: Vec3, up: Vec3): Mat4 {
