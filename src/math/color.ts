@@ -14,7 +14,42 @@ export default class Color {
             this.r = r || 0;
             this.g = g || 0;
             this.b = b || 0;
-            this.a = a || 0;
+            this.a = a || 1;
         }
+    }
+
+    public clone() {
+        return new Color().copy(this);
+    }
+
+    public copy(rhs: Color) {
+        this.r = rhs.r;
+        this.g = rhs.g;
+        this.b = rhs.b;
+        this.a = rhs.a;
+
+        return this;
+    }
+
+    public lerp(lhs: Color, rhs: Color, alpha: number) {
+        this.r = lhs.r + alpha * (rhs.r - lhs.r);
+        this.g = lhs.g + alpha * (rhs.g - lhs.g);
+        this.b = lhs.b + alpha * (rhs.b - lhs.b);
+        this.a = lhs.a + alpha * (rhs.a - lhs.a);
+
+        return this;
+    }
+
+    public set(r: number, g: number, b: number, a: number = 1) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
+
+        return this;
+    }
+
+    public toString() {
+        return `[${this.r}, ${this.g}, ${this.b}, ${this.a}]`;
     }
 }
