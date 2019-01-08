@@ -18,6 +18,23 @@ export default class Color {
         }
     }
 
+    // for ShaderUniform#setVec4
+    public get x() {
+        return this.r;
+    }
+
+    public get y() {
+        return this.g;
+    }
+
+    public get z() {
+        return this.b;
+    }
+
+    public get w() {
+        return this.a;
+    }
+
     public clone() {
         return new Color().copy(this);
     }
