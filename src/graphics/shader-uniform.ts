@@ -111,32 +111,32 @@ export default class ShaderUniform {
     }
 
     private setIntVec2(gl: WebGLRenderingContext, value: Vec2) {
-         if (this.value.data[0] !== value.data[0] ||
-             this.value.data[1] !== value.data[1]
+         if (this.value.x !== value.x ||
+             this.value.y !== value.y
            ) {
             this.value.copy(value);
-            gl.uniform2i(this.location, this.value.data[0], this.value.data[1]);
+            gl.uniform2i(this.location, this.value.x, this.value.y);
         }
     }
 
     private setIntVec3(gl: WebGLRenderingContext, value: Vec3) {
-         if (this.value.data[0] !== value.data[0] ||
-             this.value.data[1] !== value.data[1] ||
-             this.value.data[2] !== value.data[2]
+         if (this.value.x !== value.x ||
+             this.value.y !== value.y ||
+             this.value.z !== value.z
            ) {
             this.value.copy(value);
-            gl.uniform3i(this.location, this.value.data[0], this.value.data[1], this.value.data[2]);
+            gl.uniform3i(this.location, this.value.x, this.value.y, this.value.z);
         }
     }
 
     private setIntVec4(gl: WebGLRenderingContext, value: Vec4) {
-         if (this.value.data[0] !== value.data[0] ||
-             this.value.data[1] !== value.data[1] ||
-             this.value.data[2] !== value.data[2] ||
-             this.value.data[3] !== value.data[3]
+         if (this.value.x !== value.x ||
+             this.value.y !== value.y ||
+             this.value.z !== value.z ||
+             this.value.w !== value.w
            ) {
             this.value.copy(value);
-            gl.uniform4i(this.location, this.value.data[0], this.value.data[1], this.value.data[2], this.value.data[3]);
+            gl.uniform4i(this.location, this.value.x, this.value.y, this.value.z, this.value.w);
         }
     }
 
@@ -148,8 +148,8 @@ export default class ShaderUniform {
     }
 
     private setFloatVec2(gl: WebGLRenderingContext, value: Vec2) {
-        if (this.value.data[0] !== value.data[0] ||
-            this.value.data[1] !== value.data[1]
+        if (this.value.x !== value.x ||
+            this.value.y !== value.y
            ) {
             this.value.copy(value);
             gl.uniform2f(this.location, this.value.x, this.value.y);
@@ -157,23 +157,23 @@ export default class ShaderUniform {
     }
 
     private setFloatVec3(gl: WebGLRenderingContext, value: Vec3) {
-        if (this.value.data[0] !== value.data[0] ||
-            this.value.data[1] !== value.data[1] ||
-            this.value.data[2] !== value.data[2]
+        if (this.value.x !== value.x ||
+            this.value.y !== value.y ||
+            this.value.z !== value.z
            ) {
             this.value.copy(value);
-            gl.uniform3f(this.location, this.value.data[0], this.value.data[1], this.value.data[2]);
+            gl.uniform3f(this.location, this.value.x, this.value.y, this.value.z);
         }
     }
 
     private setFloatVec4(gl: WebGLRenderingContext, value: Vec4) {
-        if (this.value.data[0] !== value.data[0] ||
-            this.value.data[1] !== value.data[1] ||
-            this.value.data[2] !== value.data[2] ||
-            this.value.data[3] !== value.data[3]
+        if (this.value.x !== value.x ||
+            this.value.y !== value.y ||
+            this.value.z !== value.z ||
+            this.value.w !== value.w
            ) {
             this.value.copy(value);
-            gl.uniform4f(this.location, this.value.data[0], this.value.data[1], this.value.data[2], this.value.data[3]);
+            gl.uniform4f(this.location, this.value.x, this.value.y, this.value.z, this.value.w);
         }
     }
 
