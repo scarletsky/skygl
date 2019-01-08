@@ -5,52 +5,25 @@ export default class Vec4 extends Vec {
     public static readonly ONE = new Vec4(1, 1, 1, 1);
     public static readonly ZERO = new Vec4(0, 0, 0, 0);
 
-    constructor(x?: number[]);
-    constructor(x: number, y: number, z: number, w: number);
+    public x: number;
+    public y: number;
+    public z: number;
+    public w: number;
+
     constructor(x?: number[] | number, y?: number, z?: number, w?: number) {
         super();
-        this.data = new Float32Array(4);
 
         if (Array.isArray(x)) {
-            this.data.set(x);
+            this.x = x[0];
+            this.y = x[1];
+            this.z = x[2];
+            this.w = x[3];
         } else {
-            this.data[0] = x || 0;
-            this.data[1] = y || 0;
-            this.data[2] = z || 0;
-            this.data[3] = w || 0;
+            this.x = x || 0;
+            this.y = y || 0;
+            this.z = z || 0;
+            this.w = w || 0;
         }
-    }
-
-    get x() {
-        return this.data[0];
-    }
-
-    set x(value) {
-        this.data[0] = value;
-    }
-
-    get y() {
-        return this.data[1];
-    }
-
-    set y(value) {
-        this.data[1] = value;
-    }
-
-    get z() {
-        return this.data[2];
-    }
-
-    set z(value) {
-        this.data[2] = value;
-    }
-
-    get w() {
-        return this.data[3];
-    }
-
-    set w(value) {
-        this.data[3] = value;
     }
 
     public add(rhs: Vec4) {

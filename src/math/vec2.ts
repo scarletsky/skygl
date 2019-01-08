@@ -9,35 +9,19 @@ export default class Vec2 extends Vec {
     public static readonly ONE = new Vec2(1, 1);
     public static readonly ZERO = new Vec2(0, 0);
 
-    constructor(x?: number[]);
-    constructor(x: number, y: number);
+    public x: number;
+    public y: number;
+
     constructor(x?: number[] | number, y?: number) {
         super();
 
-        this.data = new Float32Array(2);
-
         if (Array.isArray(x)) {
-            this.data.set(x);
+            this.x = x[0];
+            this.y = x[1];
         } else {
-            this.data[0] = x || 0;
-            this.data[1] = y || 0;
+            this.x = x || 0;
+            this.y = y || 0;
         }
-    }
-
-    get x() {
-        return this.data[0];
-    }
-
-    set x(value) {
-        this.data[0] = value;
-    }
-
-    get y() {
-        return this.data[1];
-    }
-
-    set y(value) {
-        this.data[1] = value;
     }
 
     public add(rhs: Vec2) {

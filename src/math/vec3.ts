@@ -11,44 +11,22 @@ export default class Vec3 extends Vec {
     public static readonly UP = new Vec3(0, 1, 0);
     public static readonly ZERO = new Vec3(0, 0, 0);
 
-    constructor(x?: number[]);
-    constructor(x: number, y: number, z: number);
+    public x: number;
+    public y: number;
+    public z: number;
 
     constructor(x?: number[] | number, y?: number, z?: number) {
         super();
-        this.data = new Float32Array(3);
 
         if (Array.isArray(x)) {
-            this.data.set(x);
+            this.x = x[0];
+            this.y = x[1];
+            this.z = x[2];
         } else {
-            this.data[0] = x || 0;
-            this.data[1] = y || 0;
-            this.data[2] = z || 0;
+            this.x = x || 0;
+            this.y = y || 0;
+            this.z = z || 0;
         }
-    }
-
-    get x() {
-        return this.data[0];
-    }
-
-    set x(value) {
-        this.data[0] = value;
-    }
-
-    get y() {
-        return this.data[1];
-    }
-
-    set y(value) {
-        this.data[1] = value;
-    }
-
-    get z() {
-        return this.data[2];
-    }
-
-    set z(value) {
-        this.data[2] = value;
     }
 
     public add(rhs: Vec3) {

@@ -1,6 +1,4 @@
 export default abstract class Vec {
-    public data: Float32Array;
-
     public abstract add(rhs: Vec): Vec;
     public abstract add2(lhs: Vec, rhs: Vec): Vec;
     public abstract clone(): Vec;
