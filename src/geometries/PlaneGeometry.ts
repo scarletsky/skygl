@@ -38,9 +38,9 @@ export default class PlaneGeometry extends Geometry {
             for (let j = 0; j <= heightSegments; j++) {
                 let x = -widthHalf + widthDivider * i;
                 let y = 0;
-                let z = -heightHalf + heightDivider * j;
+                let z = heightHalf - heightDivider * j;
                 let u = i / widthSegments;
-                let v = 1 - j / heightSegments;
+                let v = j / heightSegments;
 
                 positions.push(x, y, z);
                 normals.push(0, 1, 0);
