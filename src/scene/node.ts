@@ -12,6 +12,14 @@ const quatA = new Quat();
 const quatB = new Quat();
 const quatC = new Quat();
 
+export interface NodeParameters {
+    name?: string;
+    position?: Vec3 | number[];
+    rotation?: Vec3 | number[];
+    scale?: Vec3 | number[];
+    enabled?: boolean;
+}
+
 export default class Node extends EventEmitter implements Scriptable<Node> {
     public static readonly DEFAULT_NAME = "Untitled";
     public name: string;
@@ -29,11 +37,12 @@ export default class Node extends EventEmitter implements Scriptable<Node> {
     public enabled = true;
     public scripts = [] as Array<Script<Node>>;
 
-    constructor() {
+    constructor(params: NodeParameters = {}) {
         super();
-        this.name = Node.DEFAULT_NAME;
         this.parent = null;
         this.children = [];
+
+        this.name = params.name || Node.DEFAULT_NAME;
     }
 
     get right() {
