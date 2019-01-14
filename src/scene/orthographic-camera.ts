@@ -18,7 +18,7 @@ export default class OrthographicCamera extends Camera {
     protected _near: number;
     protected _far: number;
 
-    constructor(params: OrthographicCameraParameters) {
+    constructor(params: OrthographicCameraParameters = {}) {
         super(params);
         this._left = params.left !== undefined ? params.left : -1;
         this._right = params.right !== undefined ? params.right : 1;
