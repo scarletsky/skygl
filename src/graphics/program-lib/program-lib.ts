@@ -4,6 +4,7 @@ import Light, { SortedLights } from "scene/light";
 import Material from "scene/material";
 import BasicMaterial from "scene/basic-material";
 import PhongMaterial from "scene/phong-material";
+import DepthMaterial from "scene/depth-material";
 import * as ShaderLib from "./shader-lib";
 
 interface ProgramKeyOptions {
@@ -40,6 +41,7 @@ export default class ProgramLib {
     }
 
     private getMaterialType(material: Material) {
+        if (material instanceof DepthMaterial) return "depth";
         if (material instanceof PhongMaterial) return "phong";
         if (material instanceof BasicMaterial) return "basic";
         if (material instanceof Material) return "raw";
