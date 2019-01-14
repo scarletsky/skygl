@@ -2,6 +2,7 @@ export { default as Node } from "./node";
 export { default as Scene } from "./scene";
 export { default as Camera } from "./camera";
 export { default as PerspectiveCamera } from "./perspective-camera";
+export { default as OrthographicCamera } from "./orthographic-camera";
 export { default as Geometry } from "./geometry";
 export { default as Material } from "./material";
 export { default as BasicMaterial } from "./basic-material";
