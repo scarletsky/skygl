@@ -2,6 +2,19 @@ import typescript from 'rollup-plugin-typescript';
 import json from 'rollup-plugin-json';
 import serve from 'rollup-plugin-serve';
 
+const builds = {
+    dev: {
+        output: [
+            { file: 'dist/skygl.umd.js', format: 'umd', name: 'sky' }
+        ]
+    },
+    cjs: {
+        output: [
+            { file: 'dist/skygl.js', format: 'cjs' }
+        ]
+    }
+}
+
 function glsl() {
     return {
         transform(code, id) {
@@ -21,20 +34,28 @@ function glsl() {
     }
 }
 
-export default {
-    input: 'src/index.ts',
-    output: [
-        { file: 'dist/engine.js', format: 'umd', name: 'engine' }
-    ],
-    plugins: [
-        typescript({
-            typescript: require('typescript')
-        }),
-        glsl(),
-        json(),
-        serve({
+function genConfig(name) {
+    const opts = builds[name];
+    const config = {
+        input: 'src/index.ts',
+        output: opts.output,
+        plugins: [
+            typescript({
+                typescript: require('typescript')
+            }),
+            glsl(),
+            json()
+        ]
+    };
+
+    if (name === 'dev') {
+        config.plugins.push(serve({
             contentBase: './',
             port: 4444
-        })
-    ]
+        }));
+    }
+
+    return config;
 }
+
+export default genConfig(process.env.TARGET);

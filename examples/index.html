@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <title>Engine</title>
+        <title>SkyGL</title>
         <style>
             html, body { margin: 0; padding: 0; background: rgb(25, 25, 25); overflow: hidden; }
             canvas { width: 100vw; height: 100vh; }
@@ -10,41 +10,45 @@
 
     <body>
         <canvas id="application"></canvas>
-        <script type="text/javascript" src="../dist/engine.js"></script>
+        <script type="text/javascript" src="../dist/skygl.umd.js"></script>
         <script type="text/javascript">
 var canvas = document.getElementById('application');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-engine.InputManager.add(new engine.Mouse(canvas));
-engine.InputManager.add(new engine.Keyboard(window));
-var device = new engine.Device(canvas);
+sky.InputManager.add(new sky.Mouse(canvas));
+sky.InputManager.add(new sky.Keyboard(window));
+var device = new sky.Device(canvas);
 var gl = device.gl;
-var renderer = new engine.ForwardRenderer(device);
-var scene = new engine.Scene();
-var light = new engine.DirectionalLight();
-var light2 = new engine.PointLight();
-var light3 = new engine.SpotLight();
-var geometry = new engine.BoxGeometry();
-var material = new engine.PhongMaterial();
-var diffuseMap = new engine.Texture();
-var specularMap = new engine.Texture();
-var mesh = new engine.Mesh(geometry, material);
-var mesh2 = new engine.Mesh(geometry, material);
-var mesh3 = new engine.Mesh(geometry, material);
-var camera = new engine.Camera();
-var orbitControls = new engine.OrbitControls();
+var renderer = new sky.ForwardRenderer(device);
+var scene = new sky.Scene();
+var light = new sky.DirectionalLight();
+var light2 = new sky.PointLight();
+var light3 = new sky.SpotLight();
+var geometry = new sky.BoxGeometry();
+var material = new sky.PhongMaterial();
+var diffuseMap = new sky.Texture();
+var specularMap = new sky.Texture();
+var mesh = new sky.Mesh(geometry, material);
+var mesh2 = new sky.Mesh(geometry, material);
+var mesh3 = new sky.Mesh(geometry, material);
+var plane = new sky.Mesh(new sky.PlaneGeometry(), material);
+var camera = new sky.PerspectiveCamera();
+var orbitControls = new sky.OrbitControls();
 camera.setWorldPosition(0, 0, 5);
 camera.aspect = window.innerWidth / window.innerHeight;
 camera.addScript(orbitControls);
-light.setWorldPosition(0, 1, 0);
+light.setWorldPosition(0, 5, 0);
 light2.setWorldPosition(0, 0, 5);
 light3.setWorldPosition(0, 0, 0)
-mesh2.setWorldPosition(2, 1, 3);
-mesh3.setWorldPosition(-3, -1, -1);
+mesh.setWorldPosition(0, 0.5, 0);
+mesh2.setWorldPosition(2, 0.5, -3);
+mesh3.setWorldPosition(-3, 2, -1);
+plane.setLocalScale(20, 20, 20);
 camera.addChild(light2);
 scene.addChild(mesh);
 scene.addChild(mesh2);
 scene.addChild(mesh3);
+scene.addChild(plane);
 scene.addChild(camera);
 scene.addChild(light);
 scene.addChild(light3);
