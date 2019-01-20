@@ -62,11 +62,6 @@ export default class ForwardRenderer {
         });
 
         for (const mesh of this.meshes) {
-            mesh.worldMatrix.invertTo3x3(mesh.normalMatrix);
-            mesh.normalMatrix.transpose();
-            scope.setValue("uModelMatrix", mesh.worldMatrix);
-            scope.setValue("uNormalMatrix", mesh.normalMatrix);
-
             shader = programlib.getProgram(mesh.material, this.lights);
             material = mesh.material;
             material.apply(device);
