@@ -63,6 +63,7 @@ export default class ForwardRenderer {
 
         for (const mesh of this.meshes) {
             shader = programlib.getProgram(mesh.material, this.lights);
+            mesh.apply(device);
             material = mesh.material;
             material.apply(device);
             this.device.setShader(shader);
