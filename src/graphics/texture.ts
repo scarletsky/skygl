@@ -206,9 +206,16 @@ export default class Texture {
         this._needsUpload = true;
     }
 
-    public apply(device: Device) {
+    public apply(device: Device, textureUnit?: number) {
         const gl = device.gl;
-        const textureUnit = device.textureUnit;
+
+        if (textureUnit === undefined) {
+            textureUnit = device.textureUnit;
+        }
+
+        if (device.textureUnits[textureUnit][this.target] === this) {
+            return;
+        }
 
         if (!this._glTextureId) {
             this._glTextureId = gl.createTexture();
@@ -222,6 +229,8 @@ export default class Texture {
             this.applyTexImage2D(gl);
             this._needsUpload = false;
         }
+
+        device.textureUnits[textureUnit][this.target] = this;
     }
 
     public applyParameters(gl: WebGLRenderingContext) {

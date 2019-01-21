@@ -11,6 +11,10 @@ interface DeviceOptions extends WebGLContextAttributes {
     preferWebgl2?: true;
 }
 
+interface TextureUnits {
+    [target: number]: Texture;
+}
+
 export default class Device {
     public canvas: HTMLCanvasElement;
     public gl: WebGLRenderingContext;
@@ -27,6 +31,11 @@ export default class Device {
     public cullFace: number;
 
     public textureUnit: number;
+    public textureUnits: TextureUnits[];
+
+    public maxTextureSize: number;
+    public maxCombinedTextureUnits: number;
+
     private shader: Shader;
     private vertexBuffer: WebGLBuffer;
     private indexBuffer: WebGLBuffer;
@@ -70,12 +79,20 @@ export default class Device {
         this.shader = null;
         this.vertexBuffer = null;
         this.indexBuffer = null;
-        this.textureUnit = -1;
+        this.textureUnit = 0;
+        this.textureUnits = [];
         this.enabledAttributes = new Uint8Array(maxVertexAttributes);
     }
 
     private initializeCapabilities() {
+        const gl = this.gl;
 
+        this.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+        this.maxCombinedTextureUnits = gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS);
+
+        for (let i = 0; i < this.maxCombinedTextureUnits; i++) {
+            this.textureUnits.push({});
+        }
     }
 
     private initializeExtensions() {
@@ -172,9 +189,9 @@ export default class Device {
 
             if (this.textureUnit !== textureUnit) {
                 this.textureUnit = textureUnit;
-                texture.apply(this);
             }
 
+            texture.apply(this, textureUnit);
             sampler.setValue(gl, textureUnit);
 
             textureUnit++;
