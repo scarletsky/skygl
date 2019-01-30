@@ -4,6 +4,8 @@ import depthVS from "./shader-lib/depth.vert";
 import depthFS from "./shader-lib/depth.frag";
 import phongVS from "./shader-lib/phong.vert";
 import phongFS from "./shader-lib/phong.frag";
+import quadVS from "./shader-lib/quad.vert";
+import quadFS from "./shader-lib/quad.frag";
 
 export const basic = {
     vshader: basicVS,
@@ -18,4 +20,9 @@ export const phong = {
 export const depth = {
     vshader: depthVS,
     fshader: depthFS
+};
+
+export const quad = {
+    vshader: quadVS,
+    fshader: quadFS
 };
