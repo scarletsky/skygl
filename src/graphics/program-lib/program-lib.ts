@@ -1,5 +1,6 @@
 import Device from "../device";
 import Shader from "../shader";
+import Scene from "scene/scene";
 import Light, { SortedLights } from "scene/light";
 import Material from "scene/material";
 import BasicMaterial from "scene/basic-material";
@@ -24,9 +25,9 @@ export default class ProgramLib {
         this.device = device;
     }
 
-    public getProgram(material: Material, lights: SortedLights) {
+    public getProgram(material: Material, scene: Scene) {
         const type = this.getMaterialType(material) as keyof typeof ShaderLib;
-        const options = this.generateOptions(material, lights);
+        const options = this.generateOptions(material, scene.lights);
         const key = this.generateKey(type, options);
 
         if (!this._cached[key]) {

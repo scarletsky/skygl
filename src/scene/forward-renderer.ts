@@ -39,7 +39,7 @@ export default class ForwardRenderer {
         camera.apply(device);
 
         for (const mesh of scene.meshes) {
-            shader = programlib.getProgram(mesh.material, scene.lights);
+            shader = programlib.getProgram(mesh.material, scene);
             mesh.apply(device);
             material = mesh.material;
             material.apply(device);
