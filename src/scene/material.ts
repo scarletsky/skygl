@@ -47,9 +47,5 @@ export default abstract class Material {
         }
     }
 
-    public setShader(shader: Shader) {
-        this.shader = shader;
-    }
-
     public abstract apply(device: Device): void;
 }
