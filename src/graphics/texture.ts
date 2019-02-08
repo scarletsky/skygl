@@ -22,6 +22,7 @@ export interface TextureParameters {
     magFilter?: number;
     anisotropy?: number;
     flipY?: boolean;
+    mipmaps?: boolean;
     [key: string]: any;
 }
 
@@ -91,6 +92,7 @@ export default class Texture {
     public static readonly RGBA_INTEGER = 0x8d99;
     public static readonly RG_INTEGER = 0x8228;
     public static readonly RED = 0x1903;
+    public static readonly DEPTH_COMPONENT = 0x1902;
 
     // GL2 internal format
     public static readonly R8 = 0x8229;
@@ -107,6 +109,9 @@ export default class Texture {
     public static readonly RGBA8UI = 0x8d7c;
     public static readonly SRGB8_ALPHA8 = 0x8c43;
     public static readonly SRGB8 = 0x8c41;
+    public static readonly DEPTH_COMPONENT16 = 0x81a5;
+    public static readonly DEPTH_COMPONENT24 = 0x81a6;
+    public static readonly DEPTH_COMPONENT32F = 0x8cac;
 
     // GL2 internal format HALF FLOAT - FLOAT
     public static readonly R16F = 0x822d;
@@ -151,7 +156,7 @@ export default class Texture {
     public internalFormat = Texture.RGBA;
     public internalFormatType = Texture.UNSIGNED_BYTE;
     public flipY = true;
-    public generateMipmaps = true;
+    public mipmaps = true;
     public _levels = [] as MipObject[];
     public _pot = true;
     public _needsUpload = true;
@@ -252,7 +257,7 @@ export default class Texture {
     }
 
     public applyTexImage2D(gl: WebGLRenderingContext) {
-        const mipObject = this._levels[0];
+        const mipObject = this._levels[0] || null;
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
         gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
         if (this.compressed) {
@@ -279,7 +284,7 @@ export default class Texture {
             );
         }
 
-        if (!this.compressed && this.generateMipmaps) {
+        if (!this.compressed && this.mipmaps) {
             gl.generateMipmap(this.target);
         }
     }
