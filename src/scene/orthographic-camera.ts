@@ -1,4 +1,5 @@
 import Camera, { CameraParameters } from "./camera";
+import { Device } from "graphics";
 
 export interface OrthographicCameraParameters extends CameraParameters{
     left?: number;
@@ -32,5 +33,11 @@ export default class OrthographicCamera extends Camera {
 
     public updateProjectionMatrix() {
         this.projectionMatrix.setOrtho(this._left, this._right, this._bottom, this._top, this._near, this._far);
+    }
+
+    public apply(device: Device) {
+        const scope = device.scope;
+        scope.setValue("uViewMatrix", this.viewMatrix);
+        scope.setValue("uProjectionMatrix", this.projectionMatrix);
     }
 }

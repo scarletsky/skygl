@@ -1,4 +1,5 @@
 import Camera, { CameraParameters } from "./camera";
+import { Device } from "graphics";
 
 export default class PerspectiveCamera extends Camera {
     protected _fov = 45;
@@ -29,5 +30,12 @@ export default class PerspectiveCamera extends Camera {
 
     public updateProjectionMatrix() {
         this.projectionMatrix.setPerspective(this._fov, this._aspect, this._nearClip, this._farClip);
+    }
+
+    public apply(device: Device) {
+        const scope = device.scope;
+        scope.setValue("uViewPosition", this.getWorldPosition());
+        scope.setValue("uViewMatrix", this.viewMatrix);
+        scope.setValue("uProjectionMatrix", this.projectionMatrix);
     }
 }
