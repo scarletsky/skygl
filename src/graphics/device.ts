@@ -3,6 +3,7 @@ import ScopeSpace from "./scope-space";
 import Shader from "./shader";
 import Buffer from "./buffer";
 import Texture from "./texture";
+import RenderTarget from "./render-target";
 import Geometry from "scene/geometry";
 import Material from "scene/material";
 import Mesh from "scene/mesh";
@@ -37,6 +38,7 @@ export default class Device {
     public maxCombinedTextureUnits: number;
 
     private shader: Shader;
+    private renderTarget: RenderTarget;
     private vertexBuffer: WebGLBuffer;
     private indexBuffer: WebGLBuffer;
     private enabledAttributes: Uint8Array;
@@ -230,6 +232,18 @@ export default class Device {
             }
 
             this.cullFace = cullFace;
+        }
+    }
+
+    public setRenderTarget(renderTarget: RenderTarget) {
+        if (this.renderTarget !== renderTarget) {
+            this.renderTarget = renderTarget;
+
+            if (this.renderTarget) {
+                this.renderTarget.apply(this);
+            } else {
+                this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null)
+            }
         }
     }
 
