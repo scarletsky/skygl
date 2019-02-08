@@ -10,6 +10,7 @@ struct DirectionalLight {
   vec3 direction;
   vec4 color;
   float intensity;
+  bool castShadow;
 };
 uniform DirectionalLight uDirectionalLights[NUM_DIRECTIONAL_LIGHTS];
 #endif

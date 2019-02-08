@@ -1,15 +1,13 @@
 #define PHONG_MATERIAL
 
 precision highp float;
+precision highp int;
 
 uniform vec3 uViewPosition;
 uniform vec4 uAmbient;
 uniform vec4 uDiffuse;
 uniform vec4 uSpecular;
 uniform float uShininess;
-
-uniform sampler2D uDiffuseMap;
-uniform sampler2D uSpecularMap;
 
 varying vec3 vNormalW;
 varying vec3 vPositionW;
@@ -39,6 +37,8 @@ uniform PhongMaterial uMaterial;
 #include <diffuseFS>
 #include <specularFS>
 #include <lightCommonFS>
+#include <shadowCommonVSFS>
+#include <shadowCommonFS>
 #include <lightingPhongFS>
 
 void main() {

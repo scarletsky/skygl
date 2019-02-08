@@ -7,6 +7,11 @@ varying vec3 vPositionW;
 varying vec2 vUv0;
 #endif
 
+#ifdef SHADOW_MAP
+varying vec4 vShadowCoord;
+#include <shadowCommonVSFS>
+#endif
+
 void main() {
 
   #ifdef DIFFUSE_MAP
@@ -15,4 +20,6 @@ void main() {
   vNormalW = normalize(uNormalMatrix * normal);
   vPositionW = vec3(uModelMatrix * vec4(position, 1.0));
   gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(position, 1.0);
+
+  #include <shadowCommonVS>
 }

@@ -5,4 +5,7 @@ export { default as diffuseFS } from "./shader-chunks/diffuse.frag";
 export { default as specularFS } from "./shader-chunks/specular.frag";
 export { default as lightCommonFS } from "./shader-chunks/light-common.frag";
 export { default as lightingPhongFS } from "./shader-chunks/lighting-phong.frag";
+export { default as shadowCommonVS } from "./shader-chunks/shadow-common.vert";
+export { default as shadowCommonFS } from "./shader-chunks/shadow-common.frag";
+export { default as shadowCommonVSFS } from "./shader-chunks/shadow-common.glsl";
 export { default as packDepthFS } from "./shader-chunks/pack-depth.frag";

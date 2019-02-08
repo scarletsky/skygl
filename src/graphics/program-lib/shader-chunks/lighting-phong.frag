@@ -29,13 +29,18 @@ void calcLighting(vec3 viewDir, vec3 normalDir, vec3 lightDir, vec4 lightColor, 
 #if NUM_DIRECTIONAL_LIGHTS > 0
 void calcDirectionalLighting(vec3 viewDir, vec3 normalDir, PhongMaterial material) {
   DirectionalLight light;
+  DirectionalLightShadow shadow;
 
+  #pragma unroll_loop
   for (int i = 0; i < NUM_DIRECTIONAL_LIGHTS; i++) {
     light = uDirectionalLights[i];
+    shadow = uDirectionalLightShadows[i];
     calcLighting(viewDir, normalDir, light.direction, light.color, material.shininess);
-    dLightDiffuse += tLightDiffuse * light.intensity;
-    dLightSpecular += tLightSpecular * light.intensity;
+    calcShadow(uDirectionalLightShadowMaps[i], vDirectionalLightShadowCoords[i], shadow.bias, shadow.size);
+    dLightDiffuse += tLightDiffuse * light.intensity * dShadow;
+    dLightSpecular += tLightSpecular * light.intensity * dShadow;
   }
+
 }
 #endif
 

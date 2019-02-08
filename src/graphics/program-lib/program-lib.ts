@@ -70,6 +70,7 @@ export default class ProgramLib {
             DIFFUSE_MAP: !!material.diffuseMap,
             SPECULAR_MAP: !!material.specularMap,
             AMBIENT: !!material.ambient,
+            SHADOW_MAP: true,
             SKINNING: false
         } as ProgramKeyOptions;
 
