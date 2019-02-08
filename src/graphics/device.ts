@@ -186,7 +186,6 @@ export default class Device {
         for (const sampler of samplers) {
 
             const texture = scope.variables[sampler.name] as Texture;
-
             if (!texture) continue;
 
             if (this.textureUnit !== textureUnit) {
@@ -235,6 +234,18 @@ export default class Device {
         }
     }
 
+    public setColorWrite(redWrite: boolean, greenWrite: boolean, blueWrite: boolean, alphaWrite: boolean) {
+        this.gl.colorMask(redWrite, greenWrite, blueWrite, alphaWrite);
+    }
+
+    public setDepthWrite(depthWrite: boolean) {
+        this.gl.depthMask(depthWrite);
+    }
+
+    public setViewport(x: number, y: number, width: number, height: number) {
+        this.gl.viewport(x, y, width, height);
+    }
+
     public setRenderTarget(renderTarget: RenderTarget) {
         if (this.renderTarget !== renderTarget) {
             this.renderTarget = renderTarget;
@@ -253,6 +264,23 @@ export default class Device {
             gl.deleteBuffer(buffer._glBufferId);
             buffer._glBufferId = null;
         }
+    }
+
+    public deleteTexture(texture: Texture) {
+        const gl = this.gl;
+        if (texture._glTextureId) {
+            gl.deleteTexture(texture._glTextureId);
+            texture._glTextureId = null;
+        }
+    }
+
+    public clear(colorBuffer = true, depthBuffer = true, stencilBuffer = true) {
+        const gl = this.gl;
+        const colorMask = colorBuffer ? gl.COLOR_BUFFER_BIT : 0;
+        const depthMask = depthBuffer ? gl.DEPTH_BUFFER_BIT : 0;
+        const stencilMask = stencilBuffer ? gl.STENCIL_BUFFER_BIT : 0;
+        const mask = colorMask | depthMask | stencilMask;
+        gl.clear(mask);
     }
 
     public draw(mesh: Mesh) {
