@@ -61,6 +61,36 @@ function parseDefines(defines: ShaderDefines) {
     return chunks.join("");
 }
 
+function replaceLightNums(str: string, defines: ShaderDefines) {
+    return str
+        .replace(/NUM_DIRECTIONAL_LIGHTS/g, defines.NUM_DIRECTIONAL_LIGHTS || 0)
+        .replace(/NUM_POINT_LIGHTS/g, defines.NUM_POINT_LIGHTS || 0)
+        .replace(/NUM_SPOT_LIGHTS/g, defines.NUM_SPOT_LIGHTS || 0);
+}
+
+function unrollLoops(str: string) {
+
+	var pattern = /#pragma unroll_loop[\s]+?for \(int i \= (\d+)\; i < (\d+)\; i\+\+\) \{([\s\S]+?)(?=\})\}/g;
+
+	function replace(_match: string, start: string, end: string, snippet: string) {
+
+		var unroll = '';
+
+		for (var i = parseInt(start); i < parseInt(end); i++) {
+
+			unroll += snippet.replace(/\[i\]/g, '[' + i + ']');
+
+		}
+
+		return unroll;
+
+	}
+
+	return str.replace(pattern, replace);
+
+}
+
+
 function filterEmptyLine(str: string) {
     return str !== "";
 }
@@ -84,21 +114,29 @@ export default class Shader {
     public samplers: ShaderUniform[] = [];
     public program: WebGLProgram;
 
-    private device: Device;
     private definition: ShaderDefinition;
     private vshader: WebGLShader;
     private fshader: WebGLShader;
 
-    constructor(device: Device, definition: ShaderDefinition) {
-        this.device = device;
+    constructor(definition: ShaderDefinition) {
+        if (!definition.defines) {
+            definition.defines = {};
+        }
+
         this.definition = definition;
-        this.compile();
     }
 
-    public compile() {
-        const gl = this.device.gl;
-        const vshader = parseDefines(this.definition.defines) + parseIncludes(this.definition.vshader);
-        const fshader = parseDefines(this.definition.defines) + parseIncludes(this.definition.fshader);
+    public apply(device: Device) {
+        const gl = device.gl;
+
+        let defines = parseDefines(this.definition.defines);
+        let vshader = parseIncludes(this.definition.vshader);
+        let fshader = parseIncludes(this.definition.fshader);
+        vshader = unrollLoops(replaceLightNums(vshader, this.definition.defines));
+        fshader = unrollLoops(replaceLightNums(fshader, this.definition.defines));
+
+        vshader = defines + vshader;
+        fshader = defines + fshader;
 
         console.log("vertex shader: \n", addLineNumbers(vshader));
         console.log("fragment shader: \n", addLineNumbers(fshader));
@@ -106,11 +144,6 @@ export default class Shader {
         this.vshader = createShader(gl, gl.VERTEX_SHADER, vshader);
         this.fshader = createShader(gl, gl.FRAGMENT_SHADER, fshader);
         this.program = createProgram(gl, this.vshader, this.fshader);
-    }
-
-    public link() {
-        const gl = this.device.gl;
-
         gl.linkProgram(this.program);
 
         if (!gl.getShaderParameter(this.vshader, gl.COMPILE_STATUS)) {
@@ -159,11 +192,13 @@ export default class Shader {
         return true;
     }
 
-    public destroy() {
+    public destroy(device: Device) {
         if (this.program) {
-            const gl = this.device.gl;
+            const gl = device.gl;
             gl.deleteProgram(this.program);
             this.program = null;
         }
+
+        this.ready = false;
     }
 }

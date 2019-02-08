@@ -31,7 +31,7 @@ export default class ProgramLib {
         const key = this.generateKey(type, options);
 
         if (!this._cached[key]) {
-            this._cached[key] = new Shader(this.device, {
+            this._cached[key] = new Shader({
                 defines: options,
                 vshader: ShaderLib[type].vshader,
                 fshader: ShaderLib[type].fshader

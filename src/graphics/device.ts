@@ -123,7 +123,7 @@ export default class Device {
         if (this.shader !== shader) {
             this.shader = shader;
 
-            if (!shader.ready && !shader.link()) {
+            if (!shader.ready && !shader.apply(this)) {
                 throw new Error("Can not link shader.");
             }
             this.gl.useProgram(shader.program);
