@@ -9,6 +9,7 @@ export { default as VertexBuffer } from "./vertex-buffer";
 export { default as IndexBuffer } from "./index-buffer";
 export { default as Primitive } from "./primitive";
 export { default as Texture } from "./texture";
+export { default as RenderTarget } from "./render-target";
 
 export const shaderChunks = ShaderChunks;
 export const shaderLib = ShaderLib;

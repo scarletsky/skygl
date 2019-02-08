@@ -12,75 +12,95 @@
         <canvas id="application"></canvas>
         <script type="text/javascript" src="../dist/skygl.umd.js"></script>
         <script type="text/javascript">
-var canvas = document.getElementById('application');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-sky.InputManager.add(new sky.Mouse(canvas));
-sky.InputManager.add(new sky.Keyboard(window));
-var device = new sky.Device(canvas);
-var gl = device.gl;
-var renderer = new sky.ForwardRenderer(device);
-var scene = new sky.Scene();
-var light = new sky.DirectionalLight();
-var light2 = new sky.PointLight();
-var light3 = new sky.SpotLight();
-var geometry = new sky.BoxGeometry();
-var material = new sky.PhongMaterial();
-var diffuseMap = new sky.Texture();
-var specularMap = new sky.Texture();
-var mesh = new sky.Mesh(geometry, material);
-var mesh2 = new sky.Mesh(geometry, material);
-var mesh3 = new sky.Mesh(geometry, material);
-var plane = new sky.Mesh(new sky.PlaneGeometry(), material);
-var camera = new sky.PerspectiveCamera();
-var orbitControls = new sky.OrbitControls();
-camera.setWorldPosition(0, 0, 5);
-camera.aspect = window.innerWidth / window.innerHeight;
-camera.addScript(orbitControls);
-light.setWorldPosition(0, 5, 0);
-light2.setWorldPosition(0, 0, 5);
-light3.setWorldPosition(0, 0, 0)
-mesh.setWorldPosition(0, 0.5, 0);
-mesh2.setWorldPosition(2, 0.5, -3);
-mesh3.setWorldPosition(-3, 2, -1);
-plane.setLocalScale(20, 20, 20);
-camera.addChild(light2);
-scene.addChild(mesh);
-scene.addChild(mesh2);
-scene.addChild(mesh3);
-scene.addChild(plane);
-scene.addChild(camera);
-scene.addChild(light);
-scene.addChild(light3);
+         var canvas = document.getElementById('application');
+         canvas.width = window.innerWidth;
+         canvas.height = window.innerHeight;
+         sky.InputManager.add(new sky.Mouse(canvas));
+         sky.InputManager.add(new sky.Keyboard(window));
+         var device = new sky.Device(canvas);
+         var gl = device.gl;
+         var renderer = new sky.ForwardRenderer(device);
+         var scene = new sky.Scene();
+         var light = new sky.DirectionalLight();
+         var light2 = new sky.PointLight();
+         var light3 = new sky.SpotLight();
+         var geometry = new sky.BoxGeometry();
+         var material = new sky.PhongMaterial();
+         var floor = new sky.PhongMaterial();
+         var diffuseMap = new sky.Texture({ name: 'diffuseMap' });
+         var specularMap = new sky.Texture({ name: 'specularMap' });
+         var checker = new sky.Texture();
+         var mesh = new sky.Mesh(geometry, material);
+         var mesh2 = new sky.Mesh(geometry, material);
+         var mesh3 = new sky.Mesh(geometry, material);
+         var plane = new sky.Mesh(new sky.PlaneGeometry(), floor);
+         var camera = new sky.PerspectiveCamera();
+         var quadShader = new sky.Shader(sky.shaderLib.quad);
+         var quadMesh = new sky.Mesh(new sky.QuadGeometry());
+         var orbitControls = new sky.OrbitControls();
+         camera.setWorldPosition(0, 0, 5);
+         camera.setWorldEulerAngles(10, 20, 0);
+         camera.aspect = window.innerWidth / window.innerHeight;
+         camera.addScript(orbitControls);
+         light.setWorldPosition(0, 5, 0);
+         light.setWorldEulerAngles(0, 0, 30);
+         light2.setWorldPosition(0, 0, 5);
+         light3.setWorldPosition(0, 0, 0)
+         mesh.setWorldPosition(0, 0.5, 0);
+         mesh2.setWorldPosition(2, 0.5, -3);
+         mesh3.setWorldPosition(-3, 2, -1);
+         plane.setLocalScale(20, 20, 20);
+         // camera.addChild(light2);
+         scene.addChild(mesh);
+         scene.addChild(mesh2);
+         scene.addChild(mesh3);
+         scene.addChild(plane);
+         scene.addChild(camera);
+         scene.addChild(light);
+         // scene.addChild(light3);
 
-var image = new Image();
-var image2 = new Image();
-image.onload = function() {
-    image.loaded = true;
-    diffuseMap.setSource(image);
-    material.diffuseMap = diffuseMap;
-    onImageLoaded();
-};
-image2.onload = function() {
-    image2.loaded = true;
-    specularMap.setSource(image2);
-    material.specularMap = specularMap;
-    onImageLoaded();
-}
-image.src = "./assets/container2.png";
-image2.src = "./assets/container2_specular.png";
-material.diffuse.set(1, 0.5, 0.5, 1);
+         var image = new Image();
+         var image2 = new Image();
+         var image3 = new Image();
+         image.onload = function() {
+             image.loaded = true;
+             diffuseMap.setSource(image);
+             material.diffuseMap = diffuseMap;
+             onImageLoaded();
+         };
+         image2.onload = function() {
+             image2.loaded = true;
+             specularMap.setSource(image2);
+             material.specularMap = specularMap;
+             onImageLoaded();
+         }
+         image3.onload = function() {
+             image3.loaded = true;
+             checker.setSource(image3);
+             floor.diffuseMap = checker;
+             onImageLoaded();
+         }
+         image.src = "./assets/container2.png";
+         image2.src = "./assets/container2_specular.png";
+         image3.src = "./assets/checker-floor.jpg";
+         material.diffuse.set(1, 0.5, 0.5, 1);
 
-function onImageLoaded() {
-    if (image.loaded && image2.loaded) {
-        render();
-    }
-}
-            
-function render() {
-    renderer.render(scene, camera);
-    window.requestAnimationFrame(render);
-}
+         function onImageLoaded() {
+             if (image.loaded && image2.loaded && image3.loaded) {
+                 render();
+             }
+         }
+         
+         function render() {
+             device.setViewport(0, 0, canvas.width, canvas.height);
+             renderer.render(scene, camera);
+             const outputMap = light.shadow.camera.renderTarget.depthBuffer;
+             device.scope.setValue("uOutputMap", outputMap);
+             device.setViewport(canvas.height * 0.75, 0, canvas.width * 0.25, canvas.height * 0.25);
+             device.setShader(quadShader);
+             device.draw(quadMesh);
+             window.requestAnimationFrame(render);
+         }
 
         </script>
     </body>
