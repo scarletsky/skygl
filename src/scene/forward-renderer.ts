@@ -32,12 +32,15 @@ export default class ForwardRenderer {
         scene.meshes.sort(frontToBack);
 
         scene.lights.forEach(lights => {
-            lights.forEach((light, index) => light.apply(device, index));
+            lights.forEach((light, index) => {
+                light.generateShadow(device, scene, index);
+                light.apply(device, index);
+            });
         });
 
         scene.apply(device);
         camera.apply(device);
-
+        device.clear();
         for (const mesh of scene.meshes) {
             shader = programlib.getProgram(mesh.material, scene);
             mesh.apply(device);

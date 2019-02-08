@@ -1,5 +1,7 @@
 import Node from "./node";
-import Color from "math/color";
+import Scene from "./scene";
+import Shadow from "./shadow";
+import { Color } from "math";
 import { Device } from "graphics";
 
 export type SortedLights = [
@@ -15,6 +17,14 @@ export default abstract class Light extends Node {
     public type = Light.TYPE_DIRECTIONAL;
     public color = new Color(1, 1, 1, 1);
     public intensity = 1;
+    public castShadow = true;
+    public shadow = null as Shadow;
+
+    public generateShadow(device: Device, scene: Scene, index: number) {
+        if (this.castShadow) {
+            this.shadow.apply(device, scene, index);
+        }
+    }
 
     public abstract apply(device: Device, index: number): void;
 }
