@@ -7,7 +7,7 @@ void calcShadow(sampler2D shadowMap, vec4 shadowCoord, float bias, float size) {
   shadowCoord.xyz /= shadowCoord.w;
   shadowCoord = shadowCoord * 0.5 + 0.5;
 
-  if (texture2D(shadowMap, shadowCoord.xy).r < shadowCoord.z){
+  if (texture2D(shadowMap, shadowCoord.xy).r < shadowCoord.z - bias){
     shadow = 0.5;
   }
 

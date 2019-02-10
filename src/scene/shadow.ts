@@ -8,7 +8,7 @@ export default abstract class Shadow {
     public static DEPTH_MATERIAL = new DepthMaterial();
 
     public type = Shadow.TYPE_PCF;
-    public bias = 0.2;
+    public bias = 0.0005;
     public size = 1024;
     public distance = 16;
     public matrix = new Mat4();
