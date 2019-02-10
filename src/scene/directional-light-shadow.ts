@@ -11,7 +11,7 @@ export default class DirectionalLightShadow extends Shadow {
 
     constructor(light: DirectionalLight) {
         super();
-        this.size = 798;
+        this.size = 1024;
         this.light = light;
         this.camera = new OrthographicCamera({
             left: 10,
@@ -48,6 +48,7 @@ export default class DirectionalLightShadow extends Shadow {
 
     public apply(device: Device, scene: Scene, index: number) {
         const scope = device.scope;
+        const canvas = device.canvas;
         const camera = this.camera;
         const light = this.light;
         const material = Shadow.DEPTH_MATERIAL;
@@ -62,6 +63,8 @@ export default class DirectionalLightShadow extends Shadow {
         device.setRenderTarget(camera.renderTarget);
         device.setShader(shader);
         device.clear();
+        device.setViewport(0, 0, this.size, this.size);
+        device.setColorWrite(false ,false ,false ,false);
 
         for (const mesh of scene.meshes) {
             mesh.apply(device);
@@ -69,6 +72,8 @@ export default class DirectionalLightShadow extends Shadow {
         }
 
         device.setRenderTarget(null);
+        device.setViewport(0, 0, canvas.width, canvas.height);
+        device.setColorWrite(true, true, true, true);
 
         this.matrix.mul2(camera.projectionMatrix, camera.viewMatrix);
         scope.setValue(uniformPrefix + "type", this.type);
