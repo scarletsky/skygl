@@ -5,9 +5,6 @@ precision highp int;
 
 uniform vec3 uViewPosition;
 uniform vec4 uAmbient;
-uniform vec4 uDiffuse;
-uniform vec4 uSpecular;
-uniform float uShininess;
 
 varying vec3 vNormalW;
 varying vec3 vPositionW;
