@@ -1,6 +1,7 @@
 import Light from "./light";
 import { Device } from "graphics";
 import { Vec3, Quat, DEG_TO_RAD } from "math";
+import SpotLightShadow from "./spot-light-shadow";
 
 const quatA = new Quat();
 
@@ -9,6 +10,11 @@ export default class SpotLight extends Light {
     public innerConeAngle = 40;
     public outerConeAngle = 45;
     public direction = new Vec3();
+
+    constructor() {
+        super();
+        this.shadow = new SpotLightShadow(this);
+    }
 
     public apply(device: Device, index: number) {
         const scope = device.scope;

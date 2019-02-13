@@ -1,12 +1,18 @@
 #ifdef SHADOW_MAP
 
-vec4 shadowCoord;
-
 #if NUM_DIRECTIONAL_LIGHTS > 0
-DirectionalLightShadow shadow;
+DirectionalLightShadow dirShadow;
 for (int i = 0; i < NUM_DIRECTIONAL_LIGHTS; i++) {
-  shadow = uDirectionalLightShadows[i];
-  vDirectionalLightShadowCoords[i] = shadow.matrix * uModelMatrix * vec4(position, 1.0);
+  dirShadow = uDirectionalLightShadows[i];
+  vDirectionalLightShadowCoords[i] = dirShadow.matrix * uModelMatrix * vec4(position, 1.0);
+}
+#endif
+
+#if NUM_SPOT_LIGHTS > 0
+SpotLightShadow spotShadow;
+for (int i = 0; i < NUM_SPOT_LIGHTS; i++) {
+  spotShadow = uSpotLightShadows[i];
+  vSpotLightShadowCoords[i] = spotShadow.matrix * uModelMatrix * vec4(position, 1.0);
 }
 #endif
 

@@ -72,6 +72,7 @@ void calcPointLighting(vec3 viewDir, vec3 normalDir, PhongMaterial material) {
 #if NUM_SPOT_LIGHTS > 0
 void calcSpotLighting(vec3 viewDir, vec3 normalDir, PhongMaterial material) {
   SpotLight light;
+  SpotLightShadow shadow;
   vec3 lightDir;
   vec3 reflectDir;
   float lightDiffuseFactor;
@@ -79,16 +80,19 @@ void calcSpotLighting(vec3 viewDir, vec3 normalDir, PhongMaterial material) {
   float theta;
   float attenuation;
 
+  #pragma unroll_loop
   for (int i = 0; i < NUM_SPOT_LIGHTS; i++) {
     light = uSpotLights[i];
+    shadow = uSpotLightShadows[i];
     lightDir = normalize(vPositionW - light.position);
     theta = dot(lightDir, light.direction);
 
     if (theta > light.outerConeRadian) {
       attenuation = saturate((theta - light.outerConeRadian) / (light.innerConeRadian - light.outerConeRadian));
       calcLighting(viewDir, normalDir, lightDir, light.color, material.shininess);
-      dLightDiffuse += tLightDiffuse * attenuation * light.intensity;
-      dLightSpecular += tLightSpecular * attenuation * light.intensity;
+      calcShadow(uSpotLightShadowMaps[i], vSpotLightShadowCoords[i], shadow.bias, shadow.size);
+      dLightDiffuse += tLightDiffuse * attenuation * light.intensity * dShadow;
+      dLightSpecular += tLightSpecular * attenuation * light.intensity * dShadow;
     }
   }
 }

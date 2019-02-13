@@ -14,7 +14,7 @@ void calcShadow(sampler2D shadowMap, vec4 shadowCoord, float bias, float size) {
   for (int x = -1; x <= 1; x++) {
     for (int y = -1; y <= 1; y++) {
       float pcfDepth = texture2D(shadowMap, shadowCoord.xy + vec2(x, y) * texelSize).r;
-      shadow += (shadowCoord.z - bias < pcfDepth) ? 1.0 : 0.0;
+      shadow += (shadowCoord.z - bias < pcfDepth) ? 1.0 : 0.5;
     }
   }
   shadow /= 9.0;
