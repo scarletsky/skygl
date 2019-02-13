@@ -18,7 +18,7 @@ void calcLighting(vec3 viewDir, vec3 normalDir, vec3 lightDir, vec4 lightColor, 
   float lightSpecularFactor;
   vec3 reflectDir;
 
-  // reflectDir = getLightReflectDir(lightDir, normalDir);
+  // reflectDir = getLightReflectDir(lightDir, normalDir); // phong
   reflectDir = normalize(-lightDir + viewDir); // blinn-phong
   lightDiffuseFactor = getLightDiffuseFactor(-lightDir, normalDir);
   lightSpecularFactor = getLightSpecularFactor(viewDir, reflectDir, shininess);

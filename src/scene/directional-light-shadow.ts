@@ -21,15 +21,15 @@ export default class DirectionalLightShadow extends Shadow {
             near: -10,
             far: 20,
             renderTarget: new RenderTarget({
-                // colorBuffer: new Texture({
-                //     width: this.size,
-                //     height: this.size,
-                //     mipmaps: false,
-                //     magFilter: Texture.NEAREST,
-                //     minFilter: Texture.NEAREST,
-                //     wrapS: Texture.CLAMP_TO_EDGE,
-                //     wrapT: Texture.CLAMP_TO_EDGE,
-                // }),
+                colorBuffer: new Texture({
+                    width: this.size,
+                    height: this.size,
+                    mipmaps: false,
+                    magFilter: Texture.NEAREST,
+                    minFilter: Texture.NEAREST,
+                    wrapS: Texture.CLAMP_TO_EDGE,
+                    wrapT: Texture.CLAMP_TO_EDGE,
+                }),
                 depthBuffer: new Texture({
                     width: this.size,
                     height: this.size,
@@ -75,7 +75,14 @@ export default class DirectionalLightShadow extends Shadow {
         device.setViewport(0, 0, canvas.width, canvas.height);
         device.setColorWrite(true, true, true, true);
 
-        this.matrix.mul2(camera.projectionMatrix, camera.viewMatrix);
+        this.matrix.set([
+            0.5, 0.0, 0.0, 0.0,
+            0.0, 0.5, 0.0, 0.0,
+            0.0, 0.0, 0.5, 0.0,
+            0.5, 0.5, 0.5, 1.0
+        ]);
+        this.matrix.mul(camera.projectionMatrix);
+        this.matrix.mul(camera.viewMatrix);
         scope.setValue(uniformPrefix + "type", this.type);
         scope.setValue(uniformPrefix + "bias", this.bias);
         scope.setValue(uniformPrefix + "size", this.size);
