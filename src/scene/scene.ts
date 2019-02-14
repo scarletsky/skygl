@@ -1,8 +1,8 @@
-import Node from "./node";
-import Mesh from "./mesh";
-import Light, { SortedLights } from "./light";
+import Node from "core/node";
+import Light, { SortedLights } from "lights/light";
 import { Color } from "math";
 import { Device } from "graphics";
+import Mesh from "./mesh";
 
 export default class Scene extends Node {
     private static _current = null as Scene;

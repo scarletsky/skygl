@@ -1,11 +1,8 @@
 import Device from "../device";
 import Shader from "../shader";
 import Scene from "scene/scene";
-import Light, { SortedLights } from "scene/light";
-import Material from "scene/material";
-import BasicMaterial from "scene/basic-material";
-import PhongMaterial from "scene/phong-material";
-import DepthMaterial from "scene/depth-material";
+import Light, { SortedLights } from "lights/light";
+import { Material, BasicMaterial, PhongMaterial, DepthMaterial } from "materials";
 import * as ShaderLib from "./shader-lib";
 
 interface ProgramKeyOptions {

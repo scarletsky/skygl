@@ -4,4 +4,7 @@ export * from "./input";
 export * from "./graphics";
 export * from "./scene";
 export * from "./script";
+export * from "./cameras";
 export * from "./geometries";
+export * from "./lights";
+export * from "./materials";

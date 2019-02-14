@@ -1,4 +1,4 @@
-import Node, { NodeParameters } from "./node";
+import Node, { NodeParameters } from "core/node";
 import Vec4 from "math/vec4";
 import Mat4 from "math/mat4";
 import Color from "math/color";

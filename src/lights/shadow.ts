@@ -1,7 +1,7 @@
 import { Device } from "graphics";
 import { Mat4 } from "math";
-import Scene from "./scene";
-import DepthMaterial from "./depth-material";
+import Scene from "scene/scene";
+import DepthMaterial from "materials/depth-material";
 
 export default abstract class Shadow {
     public static TYPE_PCF = 0;

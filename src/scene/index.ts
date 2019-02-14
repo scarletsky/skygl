@@ -1,16 +1,3 @@
-export { default as Node } from "./node";
 export { default as Scene } from "./scene";
-export { default as Camera } from "./camera";
-export { default as PerspectiveCamera } from "./perspective-camera";
-export { default as OrthographicCamera } from "./orthographic-camera";
-export { default as Geometry } from "./geometry";
-export { default as Material } from "./material";
-export { default as DepthMaterial } from "./depth-material";
-export { default as BasicMaterial } from "./basic-material";
-export { default as PhongMaterial } from "./phong-material";
-export { default as Light } from "./light";
-export { default as DirectionalLight } from "./directional-light";
-export { default as PointLight } from "./point-light";
-export { default as SpotLight } from "./spot-light";
 export { default as Mesh } from "./mesh";
 export { default as ForwardRenderer } from "./forward-renderer";

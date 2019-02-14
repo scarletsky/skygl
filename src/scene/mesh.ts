@@ -1,5 +1,5 @@
-import Node from "./node";
-import Geometry from "./geometry";
+import Node from "core/node";
+import Geometry from "geometries/geometry";
 import Material from "./material";
 import Device from "graphics/device";
 

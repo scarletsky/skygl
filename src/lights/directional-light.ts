@@ -1,7 +1,7 @@
 import { Vec3, Quat } from "math"
 import { Device } from "graphics";
 import Light from "./light";
-import DirectionalLightShadow from "scene/directional-light-shadow";
+import DirectionalLightShadow from "./directional-light-shadow";
 
 const quatA = new Quat();
 

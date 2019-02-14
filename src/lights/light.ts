@@ -1,5 +1,5 @@
-import Node from "./node";
-import Scene from "./scene";
+import Node from "core/node";
+import Scene from "scene/scene";
 import Shadow from "./shadow";
 import { Color } from "math";
 import { Device } from "graphics";

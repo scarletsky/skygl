@@ -1,19 +1,25 @@
-import Shadow from "./shadow";
-import Scene from "./scene";
+import Scene from "scene/scene";
 import { Device, Texture, RenderTarget } from "graphics";
-import PerspectiveCamera from "scene/perspective-camera";
-import SpotLight from "scene/spot-light";
+import OrthographicCamera from "cameras/orthographic-camera";
+import DirectionalLight from "./directional-light";
+import Shadow from "./shadow";
 
-export default class SpotLightShadow extends Shadow {
+export default class DirectionalLightShadow extends Shadow {
 
-    public light: SpotLight;
-    public camera = null as PerspectiveCamera;
+    public light: DirectionalLight;
+    public camera = null as OrthographicCamera;
 
-    constructor(light: SpotLight) {
+    constructor(light: DirectionalLight) {
         super();
         this.size = 1024;
         this.light = light;
-        this.camera = new PerspectiveCamera({
+        this.camera = new OrthographicCamera({
+            left: 10,
+            right: -10,
+            top: 10,
+            bottom: -10,
+            near: -10,
+            far: 20,
             renderTarget: new RenderTarget({
                 colorBuffer: new Texture({
                     width: this.size,
@@ -46,7 +52,7 @@ export default class SpotLightShadow extends Shadow {
         const camera = this.camera;
         const light = this.light;
         const material = Shadow.DEPTH_MATERIAL;
-        const uniformPrefix = `uSpotLightShadows[${index}].`;
+        const uniformPrefix = `uDirectionalLightShadows[${index}].`;
         const shader = device.programlib.getProgram(material, scene);
         camera.setWorldPosition2(light.getWorldPosition());
         camera.setWorldRotation(light.getWorldRotation());
@@ -81,6 +87,6 @@ export default class SpotLightShadow extends Shadow {
         scope.setValue(uniformPrefix + "bias", this.bias);
         scope.setValue(uniformPrefix + "size", this.size);
         scope.setValue(uniformPrefix + "matrix", this.matrix);
-        scope.setValue(`uSpotLightShadowMaps[${index}]`, camera.renderTarget.depthBuffer);
+        scope.setValue(`uDirectionalLightShadowMaps[${index}]`, camera.renderTarget.depthBuffer);
     }
 }

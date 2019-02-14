@@ -4,8 +4,8 @@ import Shader from "./shader";
 import Buffer from "./buffer";
 import Texture from "./texture";
 import RenderTarget from "./render-target";
-import Geometry from "scene/geometry";
-import Material from "scene/material";
+import Geometry from "geometries/geometry";
+import Material from "materials/material";
 import Mesh from "scene/mesh";
 
 interface DeviceOptions extends WebGLContextAttributes {
