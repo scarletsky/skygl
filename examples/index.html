@@ -33,6 +33,7 @@
          var mesh = new sky.Mesh(geometry, material);
          var mesh2 = new sky.Mesh(geometry, material);
          var mesh3 = new sky.Mesh(geometry, material);
+         var mesh4 = new sky.Mesh(geometry, material);
          var plane = new sky.Mesh(new sky.PlaneGeometry(), floor);
          var camera = new sky.PerspectiveCamera();
          var quadShader = new sky.Shader(sky.shaderLib.quad);
@@ -45,19 +46,23 @@
          light.setWorldPosition(0, 5, 0);
          light.setWorldEulerAngles(0, 0, 30);
          light2.setWorldPosition(0, 0, 5);
-         light3.setWorldPosition(0, 0, 0)
+         light3.setWorldPosition(0, 10, 0);
          mesh.setWorldPosition(0, 0.5, 0);
          mesh2.setWorldPosition(2, 0.5, -3);
          mesh3.setWorldPosition(-3, 2, -1);
+         mesh3.setWorldEulerAngles(60, 50, 40);
+         mesh4.setWorldPosition(-1, 2, 0);
+         mesh4.setWorldEulerAngles(30, 30, 30);
          plane.setLocalScale(20, 20, 20);
          // camera.addChild(light2);
          scene.addChild(mesh);
          scene.addChild(mesh2);
          scene.addChild(mesh3);
+         scene.addChild(mesh4);
          scene.addChild(plane);
          scene.addChild(camera);
-         scene.addChild(light);
-         // scene.addChild(light3);
+         // scene.addChild(light);
+         scene.addChild(light3);
 
          var image = new Image();
          var image2 = new Image();
@@ -80,9 +85,9 @@
              floor.diffuseMap = checker;
              onImageLoaded();
          }
-         image.src = "./assets/container2.png";
-         image2.src = "./assets/container2_specular.png";
-         image3.src = "./assets/checker-floor.jpg";
+         image.src = "./assets/textures/container2.png";
+         image2.src = "./assets/textures/container2_specular.png";
+         image3.src = "./assets/textures/checker-floor.jpg";
          material.diffuse.set(1, 0.5, 0.5, 1);
 
          function onImageLoaded() {
@@ -94,9 +99,9 @@
          function render() {
              device.setViewport(0, 0, canvas.width, canvas.height);
              renderer.render(scene, camera);
-             const outputMap = light.shadow.camera.renderTarget.depthBuffer;
+             const outputMap = light3.shadow.camera.renderTarget.depthBuffer;
              device.scope.setValue("uOutputMap", outputMap);
-             device.setViewport(canvas.height * 0.75, 0, canvas.width * 0.25, canvas.height * 0.25);
+             device.setViewport(canvas.width * 0.75, 0, canvas.width * 0.25, canvas.height * 0.25);
              device.setShader(quadShader);
              device.draw(quadMesh);
              window.requestAnimationFrame(render);
