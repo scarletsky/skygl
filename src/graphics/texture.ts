@@ -230,15 +230,17 @@ export default class Texture {
         gl.bindTexture(this.target, this._glTextureId);
 
         if (this._needsUpload) {
-            this.applyParameters(gl);
-            this.applyTexImage2D(gl);
+            this.applyParameters(device);
+            this.applyTexImage2D(device);
             this._needsUpload = false;
         }
 
         device.textureUnits[textureUnit][this.target] = this;
     }
 
-    public applyParameters(gl: WebGLRenderingContext) {
+    public applyParameters(device: Device) {
+        const gl = device.gl;
+
         if (!this._pot) {
             this.wrapS = Texture.CLAMP_TO_EDGE;
             this.wrapT = Texture.CLAMP_TO_EDGE;
@@ -256,7 +258,8 @@ export default class Texture {
         gl.texParameteri(this.target, gl.TEXTURE_WRAP_T, this.wrapT);
     }
 
-    public applyTexImage2D(gl: WebGLRenderingContext) {
+    public applyTexImage2D(device: Device) {
+        const gl = device.gl;
         const mipObject = this._levels[0] || null;
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
         gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
