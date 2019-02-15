@@ -1,6 +1,6 @@
 import { Script } from "script/script";
 import { Vec3, Quat } from "math";
-import Camera from "scene/camera";
+import Camera from "cameras/camera";
 import MouseEvent from "input/mouse-event";
 import InputManager from "input/input-manager";
 

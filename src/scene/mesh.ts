@@ -1,6 +1,6 @@
 import Node from "core/node";
 import Geometry from "geometries/geometry";
-import Material from "./material";
+import Material from "materials/material";
 import Device from "graphics/device";
 
 export default class Mesh extends Node {

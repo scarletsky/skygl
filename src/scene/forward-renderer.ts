@@ -1,7 +1,7 @@
 import Device from "graphics/device";
+import Camera from "cameras/camera";
+import Node from "core/node";
 import Scene from "./scene";
-import Camera from "./camera";
-import Node from "./node";
 
 function backToFront(a: Node, b: Node) {
     return b.worldPosition.z - a.worldPosition.z;
