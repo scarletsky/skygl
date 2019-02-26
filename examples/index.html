@@ -29,7 +29,9 @@
          var floor = new sky.PhongMaterial();
          var diffuseMap = new sky.Texture({ name: 'diffuseMap' });
          var specularMap = new sky.Texture({ name: 'specularMap' });
+         var cubemap = new sky.Cubemap();
          var checker = new sky.Texture();
+         var skybox = new sky.Skybox(geometry, new sky.SkyboxMaterial);
          var mesh = new sky.Mesh(geometry, material);
          var mesh2 = new sky.Mesh(geometry, material);
          var mesh3 = new sky.Mesh(geometry, material);
@@ -61,8 +63,8 @@
          scene.addChild(mesh4);
          scene.addChild(plane);
          scene.addChild(camera);
-         // scene.addChild(light);
-         scene.addChild(light3);
+         scene.addChild(light);
+         // scene.addChild(light3);
 
          var image = new Image();
          var image2 = new Image();
@@ -90,9 +92,27 @@
          image3.src = "./assets/textures/checker-floor.jpg";
          material.diffuse.set(1, 0.5, 0.5, 1);
 
+         var faceLoaded = 0;
+         var faces = ['posx', 'negx', 'posy', 'negy', 'posz', 'negz'].map(name => {
+             var image = new Image();
+             image.name = name;
+             image.onload = onFaceLoaded;
+             image.src = "./assets/cubemaps/bridge/" + name + ".jpg";
+             return image;
+         });
+
          function onImageLoaded() {
              if (image.loaded && image2.loaded && image3.loaded) {
                  render();
+             }
+         }
+
+         function onFaceLoaded() {
+             faceLoaded++;
+             if (faceLoaded === 6) {
+                 cubemap.setSource(faces);
+                 skybox.material.environmentMap = cubemap;
+                 scene.setSkybox(skybox);
              }
          }
          
