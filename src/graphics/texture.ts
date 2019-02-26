@@ -5,6 +5,7 @@ import Device from "./device";
 let idCounter = 0;
 
 export type MipObject = HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | TypedArray;
+export type TextureLevels = MipObject[] | Array<MipObject[]>;
 
 export interface TextureParameters {
     name?: string;
@@ -157,7 +158,7 @@ export default class Texture {
     public internalFormatType = Texture.UNSIGNED_BYTE;
     public flipY = true;
     public mipmaps = true;
-    public _levels = [] as MipObject[];
+    public _levels = [] as TextureLevels;
     public _pot = true;
     public _needsUpload = true;
     public _needsUploadMipmap = true;
@@ -195,15 +196,18 @@ export default class Texture {
         }
     }
 
-    public setSource(source: MipObject) {
-        if (source instanceof HTMLImageElement ||
+    public verifySource(source: MipObject) {
+         if (source instanceof HTMLImageElement ||
             source instanceof HTMLCanvasElement ||
             source instanceof HTMLVideoElement) {
             this.width = source.width;
             this.height = source.height;
             this._pot = powerOfTwo(this.width) && powerOfTwo(this.height);
         }
+    }
 
+    public setSource(source: MipObject) {
+        this.verifySource(source);
         this._levels[0] = source;
     }
 
