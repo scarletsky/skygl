@@ -46,8 +46,13 @@ export default class ForwardRenderer {
             mesh.apply(device);
             material = mesh.material;
             material.apply(device);
-            this.device.setShader(shader);
-            this.device.draw(mesh);
+            device.setShader(shader);
+            device.draw(mesh);
+        }
+
+        if (scene.skybox) {
+            scene.skybox.apply(device, camera);
+            device.draw(scene.skybox);
         }
     }
 }

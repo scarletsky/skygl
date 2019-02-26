@@ -13,7 +13,7 @@ export default class Mesh extends Node {
         this.material = material;
     }
 
-    public apply(device: Device) {
+    public apply(device: Device, ..._rest: any[]) {
         const scope = device.scope;
         this.worldMatrix.invertTo3x3(this.normalMatrix);
         this.normalMatrix.transpose();
