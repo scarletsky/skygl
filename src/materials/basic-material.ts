@@ -19,6 +19,7 @@ export default class BasicMaterial extends Material {
     }
 
     public apply(device: Device) {
+        super.apply(device);
         const scope = device.scope;
         scope.setValue("uDiffuse", this.diffuse);
         scope.setValue("uDiffuseMap", this.diffuseMap);

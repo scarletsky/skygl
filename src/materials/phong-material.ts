@@ -26,6 +26,7 @@ export default class PhongMaterial extends Material {
     }
 
     public apply(device: Device) {
+        super.apply(device);
         const scope = device.scope;
         scope.setValue("uMaterial.diffuse", this.diffuse);
         scope.setValue("uMaterial.diffuseMap", this.diffuseMap);

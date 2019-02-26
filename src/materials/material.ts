@@ -47,5 +47,10 @@ export default abstract class Material {
         }
     }
 
-    public abstract apply(device: Device): void;
+    public apply(device: Device) {
+        device.setDepthTest(this.depthTest);
+        device.setDepthWrite(this.depthWrite);
+        device.setCullFace(this.cullFace);
+        device.setColorWrite(this.redWrite, this.greenWrite, this.blueWrite, this.alphaWrite);
+    }
 }
