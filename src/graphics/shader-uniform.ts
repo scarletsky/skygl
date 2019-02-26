@@ -97,6 +97,7 @@ export default class ShaderUniform {
                 break;
 
             case ShaderUniform.SAMPLER_2D:
+            case ShaderUniform.SAMPLER_CUBE:
                 this.value = null;
                 this.setValue = this.setSampler2D;
                 break;

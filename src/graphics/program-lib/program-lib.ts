@@ -2,7 +2,7 @@ import Device from "../device";
 import Shader from "../shader";
 import Scene from "scene/scene";
 import Light, { SortedLights } from "lights/light";
-import { Material, BasicMaterial, PhongMaterial, DepthMaterial } from "materials";
+import { Material, BasicMaterial, PhongMaterial, DepthMaterial, SkyboxMaterial } from "materials";
 import * as ShaderLib from "./shader-lib";
 
 interface ProgramKeyOptions {
@@ -22,9 +22,14 @@ export default class ProgramLib {
         this.device = device;
     }
 
-    public getProgram(material: Material, scene: Scene) {
+    public getProgram(material: Material, scene?: Scene) {
+        let options = {};
         const type = this.getMaterialType(material) as keyof typeof ShaderLib;
-        const options = this.generateOptions(material, scene.lights);
+
+        if (scene) {
+            options = this.generateOptions(material, scene.lights);
+        }
+
         const key = this.generateKey(type, options);
 
         if (!this._cached[key]) {
@@ -41,6 +46,7 @@ export default class ProgramLib {
     private getMaterialType(material: Material) {
         if (material instanceof DepthMaterial) return "depth";
         if (material instanceof PhongMaterial) return "phong";
+        if (material instanceof SkyboxMaterial) return "skybox";
         if (material instanceof BasicMaterial) return "basic";
         if (material instanceof Material) return "raw";
     }
