@@ -20,6 +20,7 @@ export default class PhongMaterial extends Material {
     public specularmMap = null as Texture;
     public shininess = 25;
     public environmentMap = null as Cubemap;
+    public refractiveIndex = 1;
 
     constructor(parameters: PhongMaterialParameters) {
         super(parameters);
@@ -34,5 +35,6 @@ export default class PhongMaterial extends Material {
         scope.setValue("uSpecularMap", this.specularMap);
         scope.setValue("uShininess", this.shininess);
         scope.setValue("uEnvironmentMap", this.environmentMap);
+        scope.setValue("uRefractiveIndex", this.refractiveIndex);
     }
 }

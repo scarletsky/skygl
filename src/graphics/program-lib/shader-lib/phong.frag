@@ -23,6 +23,7 @@ uniform vec4 uSpecular;
 uniform sampler2D uSpecularMap;
 uniform float uShininess;
 uniform samplerCube uEnvironmentMap;
+uniform float uRefractiveIndex;
 
 #include <baseFS>
 #include <alphaTestFS>
@@ -33,6 +34,7 @@ uniform samplerCube uEnvironmentMap;
 #include <shadowCommonFS>
 #include <lightingPhongFS>
 #include <reflectionCubeFS>
+#include <refractionFS>
 
 void main() {
   
