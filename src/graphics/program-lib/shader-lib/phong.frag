@@ -17,17 +17,12 @@ varying vec4 vColor;
 varying vec2 vUv0;
 #endif
 
-struct PhongMaterial {
-  vec4 diffuse;
-  sampler2D diffuseMap;
-
-  vec4 specular;
-  sampler2D specularMap;
-
-  float shininess;
-};
-
-uniform PhongMaterial uMaterial;
+uniform vec4 uDiffuse;
+uniform sampler2D uDiffuseMap;
+uniform vec4 uSpecular;
+uniform sampler2D uSpecularMap;
+uniform float uShininess;
+uniform samplerCube uEnvironmentMap;
 
 #include <baseFS>
 #include <alphaTestFS>
@@ -43,21 +38,20 @@ void main() {
   vec3 viewDir = normalize(uViewPosition - vPositionW);
 
   vec4 dColor = vec4(0.0);
-  vec4 dDiffuse = getDiffuse(uMaterial);
-  vec4 dSpecular = getSpecular(uMaterial);
-
+  vec4 dDiffuse = getDiffuse();
+  vec4 dSpecular = getSpecular();
   vec4 dAmbient = vec4(0.2, 0.2, 0.2, 1);
 
   #if NUM_DIRECTIONAL_LIGHTS > 0
-  calcDirectionalLighting(viewDir, vNormalW, uMaterial);
+  calcDirectionalLighting(viewDir, vNormalW);
   #endif
 
   #if NUM_POINT_LIGHTS > 0
-  calcPointLighting(viewDir, vNormalW, uMaterial);
+  calcPointLighting(viewDir, vNormalW);
   #endif
 
   #if NUM_SPOT_LIGHTS > 0
-  calcSpotLighting(viewDir, vNormalW, uMaterial);
+  calcSpotLighting(viewDir, vNormalW);
   #endif
 
   dColor = (dAmbient * dLightAmbient + dDiffuse * dLightDiffuse + dSpecular * dLightSpecular);

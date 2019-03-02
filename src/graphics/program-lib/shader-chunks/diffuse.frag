@@ -1,12 +1,10 @@
-#ifdef PHONG_MATERIAL
-vec4 getDiffuse(const in PhongMaterial material) {
+vec4 getDiffuse() {
 
-  vec4 dDiffuse = material.diffuse;
+  vec4 dDiffuse = uDiffuse;
 
   #ifdef DIFFUSE_MAP
-  dDiffuse *= texture2D(material.diffuseMap, vUv0);
+  dDiffuse *= texture2D(uDiffuseMap, vUv0);
   #endif
 
   return dDiffuse;
 }
-#endif

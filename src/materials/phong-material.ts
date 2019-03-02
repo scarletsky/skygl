@@ -1,7 +1,6 @@
-import Device from "graphics/device";
 import Material, { MaterialParameters } from "./material";
 import Color from "math/color";
-import Texture from "graphics/texture";
+import { Device, Texture } from "graphics";
 
 export interface PhongMaterialParameters extends MaterialParameters {
     ambient: Color;
@@ -28,10 +27,11 @@ export default class PhongMaterial extends Material {
     public apply(device: Device) {
         super.apply(device);
         const scope = device.scope;
-        scope.setValue("uMaterial.diffuse", this.diffuse);
-        scope.setValue("uMaterial.diffuseMap", this.diffuseMap);
-        scope.setValue("uMaterial.specular", this.specular);
-        scope.setValue("uMaterial.specularMap", this.specularMap);
-        scope.setValue("uMaterial.shininess", this.shininess);
+        scope.setValue("uDiffuse", this.diffuse);
+        scope.setValue("uDiffuseMap", this.diffuseMap);
+        scope.setValue("uSpecular", this.specular);
+        scope.setValue("uSpecularMap", this.specularMap);
+        scope.setValue("uShininess", this.shininess);
+        scope.setValue("uEnvironmentMap", this.environmentMap);
     }
 }
