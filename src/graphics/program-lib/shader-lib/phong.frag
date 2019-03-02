@@ -32,6 +32,7 @@ uniform samplerCube uEnvironmentMap;
 #include <shadowCommonVSFS>
 #include <shadowCommonFS>
 #include <lightingPhongFS>
+#include <reflectionCubeFS>
 
 void main() {
   
@@ -55,6 +56,10 @@ void main() {
   #endif
 
   dColor = (dAmbient * dLightAmbient + dDiffuse * dLightDiffuse + dSpecular * dLightSpecular);
+
+  #ifdef ENVIRONMENT_MAP
+  dColor = getEnvReflection(viewDir, vNormalW);
+  #endif
 
   #ifdef ALPHA_TEST
   alphaTest(dColor.a);

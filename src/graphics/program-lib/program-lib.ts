@@ -72,6 +72,7 @@ export default class ProgramLib {
             VERTEX_COLOR: !!material.vertexColor,
             DIFFUSE_MAP: !!material.diffuseMap,
             SPECULAR_MAP: !!material.specularMap,
+            ENVIRONMENT_MAP: !!material.environmentMap,
             AMBIENT: !!material.ambient,
             SHADOW_MAP: true,
             SKINNING: false

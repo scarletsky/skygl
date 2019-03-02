@@ -8,4 +8,5 @@ export { default as lightingPhongFS } from "./shader-chunks/lighting-phong.frag"
 export { default as shadowCommonVS } from "./shader-chunks/shadow-common.vert";
 export { default as shadowCommonFS } from "./shader-chunks/shadow-common.frag";
 export { default as shadowCommonVSFS } from "./shader-chunks/shadow-common.glsl";
+export { default as reflectionCubeFS } from "./shader-chunks/reflectionCube.frag";
 export { default as packDepthFS } from "./shader-chunks/pack-depth.frag";

@@ -1,6 +1,6 @@
 import Material, { MaterialParameters } from "./material";
 import Color from "math/color";
-import { Device, Texture } from "graphics";
+import { Device, Texture, Cubemap } from "graphics";
 
 export interface PhongMaterialParameters extends MaterialParameters {
     ambient: Color;
@@ -19,6 +19,7 @@ export default class PhongMaterial extends Material {
     public specular = new Color(1, 1, 1, 1);
     public specularmMap = null as Texture;
     public shininess = 25;
+    public environmentMap = null as Cubemap;
 
     constructor(parameters: PhongMaterialParameters) {
         super(parameters);
