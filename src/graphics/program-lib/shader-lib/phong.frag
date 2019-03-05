@@ -21,6 +21,8 @@ uniform vec4 uDiffuse;
 uniform sampler2D uDiffuseMap;
 uniform vec4 uSpecular;
 uniform sampler2D uSpecularMap;
+uniform vec4 uEmissive;
+uniform sampler2D uEmissiveMap;
 uniform float uShininess;
 uniform samplerCube uEnvironmentMap;
 uniform float uRefractiveIndex;
@@ -29,6 +31,7 @@ uniform float uRefractiveIndex;
 #include <alphaTestFS>
 #include <diffuseFS>
 #include <specularFS>
+#include <emissiveFS>
 #include <lightCommonFS>
 #include <shadowCommonVSFS>
 #include <shadowCommonFS>
@@ -43,6 +46,7 @@ void main() {
   vec4 dColor = vec4(0.0);
   vec4 dDiffuse = getDiffuse();
   vec4 dSpecular = getSpecular();
+  vec4 dEmissive = getEmissive();
   vec4 dAmbient = vec4(0.2, 0.2, 0.2, 1);
 
   #if NUM_DIRECTIONAL_LIGHTS > 0
@@ -57,7 +61,7 @@ void main() {
   calcSpotLighting(viewDir, vNormalW);
   #endif
 
-  dColor = (dAmbient * dLightAmbient + dDiffuse * dLightDiffuse + dSpecular * dLightSpecular);
+  dColor = (dAmbient * dLightAmbient + dEmissive + dDiffuse * dLightDiffuse + dSpecular * dLightSpecular);
 
   #ifdef ENVIRONMENT_MAP
   dColor = getEnvReflection(viewDir, vNormalW);
