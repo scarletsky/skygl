@@ -18,14 +18,22 @@ varying vec2 vUv0;
 #endif
 
 uniform vec4 uDiffuse;
-uniform sampler2D uDiffuseMap;
 uniform vec4 uSpecular;
-uniform sampler2D uSpecularMap;
 uniform vec4 uEmissive;
-uniform sampler2D uEmissiveMap;
 uniform float uShininess;
-uniform samplerCube uEnvironmentMap;
-uniform float uRefractiveIndex;
+
+#ifdef DIFFUSE_MAP
+uniform sampler2D uDiffuseMap;
+#endif
+
+#ifdef SPECULAR_MAP
+uniform sampler2D uSpecularMap;
+#endif
+
+#ifdef EMISSIVE_MAP
+uniform sampler2D uEmissiveMap;
+#endif
+
 
 #include <baseFS>
 #include <alphaTestFS>
@@ -36,8 +44,13 @@ uniform float uRefractiveIndex;
 #include <shadowCommonVSFS>
 #include <shadowCommonFS>
 #include <lightingPhongFS>
+
+#ifdef ENVIRONMENT_MAP
+uniform samplerCube uEnvironmentMap;
+uniform float uRefractiveIndex;
 #include <reflectionCubeFS>
 #include <refractionFS>
+#endif
 
 void main() {
   
