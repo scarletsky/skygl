@@ -55,7 +55,7 @@ void calcPointLighting(vec3 viewDir, vec3 normalDir) {
 
   for (int i = 0; i < NUM_POINT_LIGHTS; i++) {
     light = uPointLights[i];
-    lightDir = vPositionW - light.position;
+    lightDir = vPosition - light.position;
     dist = length(lightDir);
     // if (dist > light.range) continue;
     lightDir = normalize(lightDir);
@@ -84,7 +84,7 @@ void calcSpotLighting(vec3 viewDir, vec3 normalDir) {
   for (int i = 0; i < NUM_SPOT_LIGHTS; i++) {
     light = uSpotLights[i];
     shadow = uSpotLightShadows[i];
-    lightDir = normalize(vPositionW - light.position);
+    lightDir = normalize(vPosition - light.position);
     theta = dot(lightDir, light.direction);
 
     if (theta > light.outerConeRadian) {

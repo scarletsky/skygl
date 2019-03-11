@@ -6,8 +6,8 @@ precision highp int;
 uniform vec3 uViewPosition;
 uniform vec4 uAmbient;
 
-varying vec3 vNormalW;
-varying vec3 vPositionW;
+varying vec3 vNormal;
+varying vec3 vPosition;
 
 #ifdef VERTEX_COLOR
 varying vec4 vColor;
@@ -54,30 +54,35 @@ uniform float uRefractiveIndex;
 
 void main() {
   
-  vec3 viewDir = normalize(uViewPosition - vPositionW);
+  vec3 viewDir = normalize(uViewPosition - vPosition);
 
   vec4 dColor = vec4(0.0);
   vec4 dDiffuse = getDiffuse();
   vec4 dSpecular = getSpecular();
   vec4 dEmissive = getEmissive();
   vec4 dAmbient = vec4(0.2, 0.2, 0.2, 1);
+  vec3 dNormal = vNormal;
+
+  #ifdef NORMAL_MAP
+  dNormal = getNormal();
+  #endif
 
   #if NUM_DIRECTIONAL_LIGHTS > 0
-  calcDirectionalLighting(viewDir, vNormalW);
+  calcDirectionalLighting(viewDir, dNormal);
   #endif
 
   #if NUM_POINT_LIGHTS > 0
-  calcPointLighting(viewDir, vNormalW);
+  calcPointLighting(viewDir, dNormal);
   #endif
 
   #if NUM_SPOT_LIGHTS > 0
-  calcSpotLighting(viewDir, vNormalW);
+  calcSpotLighting(viewDir, dNormal);
   #endif
 
   dColor = (dAmbient * dLightAmbient + dEmissive + dDiffuse * dLightDiffuse + dSpecular * dLightSpecular);
 
   #ifdef ENVIRONMENT_MAP
-  dColor = getEnvReflection(viewDir, vNormalW);
+  dColor = getEnvReflection(viewDir, dNormal);
   #endif
 
   #ifdef ALPHA_TEST
