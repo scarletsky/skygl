@@ -4,6 +4,7 @@ export { default as alphaTestFS } from "./shader-chunks/alpha-test.frag";
 export { default as diffuseFS } from "./shader-chunks/diffuse.frag";
 export { default as specularFS } from "./shader-chunks/specular.frag";
 export { default as emissiveFS } from "./shader-chunks/emissive.frag";
+export { default as normalFS } from "./shader-chunks/normal.frag";
 export { default as lightCommonFS } from "./shader-chunks/light-common.frag";
 export { default as lightingPhongFS } from "./shader-chunks/lighting-phong.frag";
 export { default as shadowCommonVS } from "./shader-chunks/shadow-common.vert";

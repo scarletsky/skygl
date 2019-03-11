@@ -34,7 +34,6 @@ uniform sampler2D uSpecularMap;
 uniform sampler2D uEmissiveMap;
 #endif
 
-
 #include <baseFS>
 #include <alphaTestFS>
 #include <diffuseFS>
@@ -44,6 +43,12 @@ uniform sampler2D uEmissiveMap;
 #include <shadowCommonVSFS>
 #include <shadowCommonFS>
 #include <lightingPhongFS>
+
+#ifdef NORMAL_MAP
+uniform sampler2D uNormalMap;
+uniform float uNormalMapIntensity;
+#include <normalFS>
+#endif
 
 #ifdef ENVIRONMENT_MAP
 uniform samplerCube uEnvironmentMap;

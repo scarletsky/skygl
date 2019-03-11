@@ -10,6 +10,8 @@ export interface PhongMaterialParameters extends MaterialParameters {
     specularMap: Texture;
     emissive: Color;
     emissiveMap: Texture;
+    normalMap: Texture;
+    normalMapIntensity: number;
     shininess: number;
 }
 
@@ -20,6 +22,8 @@ export default class PhongMaterial extends Material {
     public specularmMap = null as Texture;
     public emissive = new Color(0, 0, 0, 0);
     public emissiveMap = null as Texture;
+    public normalMap = null as Texture;
+    public normalMapIntensity = 1;
     public shininess = 25;
     public environmentMap = null as Cubemap;
     public refractiveIndex = 1;
@@ -37,6 +41,8 @@ export default class PhongMaterial extends Material {
         scope.setValue("uSpecularMap", this.specularMap);
         scope.setValue("uEmissive", this.emissive);
         scope.setValue("uEmissiveMap", this.emissiveMap);
+        scope.setValue("uNormalMap", this.normalMap);
+        scope.setValue("uNormalMapIntensity", this.normalMapIntensity);
         scope.setValue("uShininess", this.shininess);
         scope.setValue("uEnvironmentMap", this.environmentMap);
         scope.setValue("uRefractiveIndex", this.refractiveIndex);
