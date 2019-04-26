@@ -13,3 +13,4 @@ export { default as shadowCommonVSFS } from "./shader-chunks/shadow-common.glsl"
 export { default as reflectionCubeFS } from "./shader-chunks/reflectionCube.frag";
 export { default as refractionFS } from "./shader-chunks/refraction.frag";
 export { default as packDepthFS } from "./shader-chunks/pack-depth.frag";
+export { default as tbnFS } from "./shader-chunks/tbn.frag";

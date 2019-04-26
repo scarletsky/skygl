@@ -8,7 +8,6 @@ varying vec2 vUv0;
 #endif
 
 #ifdef SHADOW_MAP
-varying vec4 vShadowCoord;
 #include <shadowCommonVSFS>
 #endif
 
@@ -19,6 +18,12 @@ void main() {
   #endif
 
   vNormal = normalize(uNormalMatrix * normal);
+
+  #ifdef USE_TBN
+  vTangent = normalize(uNormalMatrix * tangent.xyz);
+  vBitangent = cross(vNormal, vTangent) * tangent.w;
+  #endif
+
   vPosition = vec3(uModelMatrix * vec4(position, 1.0));
   gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(position, 1.0);
 

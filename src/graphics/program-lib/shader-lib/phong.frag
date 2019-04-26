@@ -44,15 +44,18 @@ uniform sampler2D uEmissiveMap;
 #include <shadowCommonFS>
 #include <lightingPhongFS>
 
+#ifdef USE_TBN
+varying vec3 vTangent;
+varying vec3 vBitangent;
+#include <tbnFS>
+#endif
+
 #ifdef NORMAL_MAP
-uniform sampler2D uNormalMap;
-uniform float uNormalMapIntensity;
 #include <normalFS>
 #endif
 
 #ifdef ENVIRONMENT_MAP
 uniform samplerCube uEnvironmentMap;
-uniform float uRefractiveIndex;
 #include <reflectionCubeFS>
 #include <refractionFS>
 #endif
@@ -66,10 +69,15 @@ void main() {
   vec4 dSpecular = getSpecular();
   vec4 dEmissive = getEmissive();
   vec4 dAmbient = vec4(0.2, 0.2, 0.2, 1);
+  mat3 dTBN = mat3(1.0);
   vec3 dNormal = vNormal;
 
+  #ifdef USE_TBN
+  dTBN = getTBN();
+  #endif
+
   #ifdef NORMAL_MAP
-  dNormal = getNormal();
+  dNormal = getNormal(dTBN);
   #endif
 
   #if NUM_DIRECTIONAL_LIGHTS > 0
