@@ -1,9 +1,10 @@
 import Device from "../device";
 import Shader from "../shader";
-import Scene from "scene/scene";
-import Light, { SortedLights } from "lights/light";
+import { Scene, Mesh } from "scene";
 import { Material, BasicMaterial, PhongMaterial, DepthMaterial, SkyboxMaterial } from "materials";
+import Light, { SortedLights } from "lights/light";
 import * as ShaderLib from "./shader-lib";
+import { Geometry } from "geometries";
 
 interface ProgramKeyOptions {
     [key: string]: any;
@@ -22,12 +23,21 @@ export default class ProgramLib {
         this.device = device;
     }
 
-    public getProgram(material: Material, scene?: Scene) {
+    public getProgram(source: Mesh | Material, scene?: Scene) {
+        let geometry, material;
         let options = {};
+
+        if (source instanceof Mesh) {
+            geometry = source.geometry;
+            material = source.material;
+        } else if (source instanceof Material) {
+            material = source;
+        }
+
         const type = this.getMaterialType(material) as keyof typeof ShaderLib;
 
         if (scene) {
-            options = this.generateOptions(material, scene.lights);
+            options = this.generateOptions(geometry, material, scene.lights);
         }
 
         const key = this.generateKey(type, options);
@@ -63,7 +73,7 @@ export default class ProgramLib {
         return chunks.join();
     }
 
-    private generateOptions(material: Material, lights: SortedLights): ProgramKeyOptions {
+    private generateOptions(geometry: Geometry, material: Material, lights: SortedLights): ProgramKeyOptions {
         const options = {
             NUM_DIRECTIONAL_LIGHTS: lights[Light.TYPE_DIRECTIONAL].length,
             NUM_POINT_LIGHTS: lights[Light.TYPE_POINT].length,
@@ -76,6 +86,7 @@ export default class ProgramLib {
             NORMAL_MAP: !!material.normalMap,
             ENVIRONMENT_MAP: !!material.environmentMap,
             AMBIENT: !!material.ambient,
+            USE_TBN: !!(geometry && geometry.attributes.tangent),
             SHADOW_MAP: true,
             SKINNING: false
         } as ProgramKeyOptions;
