@@ -40,9 +40,7 @@ function genConfig(name) {
         input: 'src/index.ts',
         output: opts.output,
         plugins: [
-            typescript({
-                typescript: require('typescript')
-            }),
+            typescript(),
             glsl(),
             json()
         ]
