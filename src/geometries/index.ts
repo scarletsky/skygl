@@ -1,5 +1,5 @@
-export { default as Geometry } from "./Geometry";
-export { default as BoxGeometry } from "./BoxGeometry";
-export { default as SphereGeometry } from "./SphereGeometry";
-export { default as PlaneGeometry } from "./PlaneGeometry";
-export { default as QuadGeometry } from "./QuadGeometry";
+export { default as Geometry } from "./geometry";
+export { default as BoxGeometry } from "./box-geometry";
+export { default as SphereGeometry } from "./sphere-geometry";
+export { default as PlaneGeometry } from "./plane-geometry";
+export { default as QuadGeometry } from "./quad-geometry";
