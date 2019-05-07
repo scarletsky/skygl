@@ -87,6 +87,8 @@ export default class ProgramLib {
             ENVIRONMENT_MAP: !!material.environmentMap,
             AMBIENT: !!material.ambient,
             USE_TBN: !!(geometry && geometry.attributes.tangent),
+            USE_PHONG: material.shading === Material.SHADING_PHONG,
+            USE_BLINN_PHONG: material.shading === Material.SHADING_BLINN_PHONG,
             SHADOW_MAP: true,
             SKINNING: false
         } as ProgramKeyOptions;

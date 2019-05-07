@@ -20,8 +20,13 @@ export default abstract class Material {
     public static readonly CULLFACE_BACK = 1;
     public static readonly CULLFACE_FRONT = 2;
     public static readonly CULLFACE_FRONT_AND_BACK = 3;
+    public static readonly SHADING_CUSTOM = -1;
+    public static readonly SHADING_LAMBERT = 0;
+    public static readonly SHADING_PHONG = 1;
+    public static readonly SHADING_BLINN_PHONG = 2;
 
     public shader: Shader;
+    public shading = Material.SHADING_CUSTOM;
     public id = idCounter++;
     public name = "Untitled";
     public alphaTest = 0;

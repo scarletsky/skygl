@@ -16,6 +16,7 @@ export interface PhongMaterialParameters extends MaterialParameters {
 }
 
 export default class PhongMaterial extends Material {
+    public shading = Material.SHADING_BLINN_PHONG;
     public diffuse = new Color(1, 1, 1, 1);
     public diffuseMap = null as Texture;
     public specular = new Color(1, 1, 1, 1);
