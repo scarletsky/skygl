@@ -5,29 +5,32 @@ float getLightAttenuation(const in float dist, const in vec4 attenuation) {
   return 1.0 / (constant + linear + quadratic);
 }
 
-float getLightDiffuseFactor(vec3 lightDir, vec3 normalDir) {
+float getLightDiffuseFactor(vec3 normalDir, vec3 lightDir) {
   return max(dot(normalDir, lightDir), 0.0);
 }
 
-float getLightSpecularFactor(vec3 viewDir, vec3 reflectDir, float shininess) {
-  return pow(max(dot(viewDir, reflectDir), 0.0), shininess);
+float getLightSpecularFactor(vec3 viewOrNormalDir, vec3 reflectDir, float shininess) {
+  return pow(max(dot(viewOrNormalDir, reflectDir), 0.0), shininess);
 }
 
 void calcLighting(vec3 viewDir, vec3 normalDir, vec3 lightDir, vec4 lightColor, float shininess) {
   float lightDiffuseFactor;
   float lightSpecularFactor;
   vec3 reflectDir;
+  vec3 viewOrNormalDir;
 
   #ifdef USE_PHONG
-    reflectDir = getLightReflectDir(lightDir, normalDir);
+    viewOrNormalDir = viewDir;
+    reflectDir = getLightReflectDir(-lightDir, normalDir);
   #endif
 
   #ifdef USE_BLINN_PHONG
-    reflectDir = normalize(-lightDir + viewDir);
+    viewOrNormalDir = normalDir;
+    reflectDir = normalize(lightDir + viewDir);
   #endif
 
-  lightDiffuseFactor = getLightDiffuseFactor(-lightDir, normalDir);
-  lightSpecularFactor = getLightSpecularFactor(viewDir, reflectDir, shininess);
+  lightDiffuseFactor = getLightDiffuseFactor(normalDir, lightDir);
+  lightSpecularFactor = getLightSpecularFactor(viewOrNormalDir, reflectDir, shininess);
   tLightAmbient = lightColor;
   tLightDiffuse = lightDiffuseFactor * lightColor;
   tLightSpecular = lightSpecularFactor * lightColor;
@@ -42,7 +45,7 @@ void calcDirectionalLighting(vec3 viewDir, vec3 normalDir) {
   for (int i = 0; i < NUM_DIRECTIONAL_LIGHTS; i++) {
     light = uDirectionalLights[i];
     shadow = uDirectionalLightShadows[i];
-    calcLighting(viewDir, normalDir, light.direction, light.color, uShininess);
+    calcLighting(viewDir, normalDir, -light.direction, light.color, uShininess);
     calcShadow(uDirectionalLightShadowMaps[i], vDirectionalLightShadowCoords[i], shadow.bias, shadow.size);
     dLightDiffuse += tLightDiffuse * light.intensity * dShadow;
     dLightSpecular += tLightSpecular * light.intensity * dShadow;
@@ -61,7 +64,7 @@ void calcPointLighting(vec3 viewDir, vec3 normalDir) {
 
   for (int i = 0; i < NUM_POINT_LIGHTS; i++) {
     light = uPointLights[i];
-    lightDir = vPosition - light.position;
+    lightDir = light.position - vPosition;
     dist = length(lightDir);
     // if (dist > light.range) continue;
     lightDir = normalize(lightDir);
@@ -90,7 +93,7 @@ void calcSpotLighting(vec3 viewDir, vec3 normalDir) {
   for (int i = 0; i < NUM_SPOT_LIGHTS; i++) {
     light = uSpotLights[i];
     shadow = uSpotLightShadows[i];
-    lightDir = normalize(vPosition - light.position);
+    lightDir = normalize(light.position - vPosition);
     theta = dot(lightDir, light.direction);
 
     if (theta > light.outerConeRadian) {
