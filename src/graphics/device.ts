@@ -7,6 +7,7 @@ import RenderTarget from "./render-target";
 import Geometry from "geometries/geometry";
 import Material from "materials/material";
 import Mesh from "scene/mesh";
+import { IResize } from "interfaces";
 
 interface DeviceOptions extends WebGLContextAttributes {
     preferWebgl2?: true;
@@ -16,7 +17,9 @@ interface TextureUnits {
     [target: number]: Texture;
 }
 
-export default class Device {
+export default class Device implements IResize {
+    public width = 0;
+    public height = 0;
     public canvas: HTMLCanvasElement;
     public gl: WebGLRenderingContext;
     // TODO: rename to webgl, value should be 1 or 2
@@ -36,6 +39,7 @@ export default class Device {
 
     public maxTextureSize: number;
     public maxCombinedTextureUnits: number;
+    public maxPixelRatio = window.devicePixelRatio;
 
     private shader: Shader;
     private renderTarget: RenderTarget;
@@ -45,6 +49,8 @@ export default class Device {
 
     constructor(canvas: HTMLCanvasElement, options: DeviceOptions = {}) {
         this.canvas = canvas;
+        this.width = canvas.width;
+        this.height = canvas.height;
         this.scope = new ScopeSpace();
         this.programlib = new ProgramLib(this);
         this.initializeContext(options);
@@ -119,6 +125,27 @@ export default class Device {
         this.cullFace = Material.CULLFACE_BACK;
         gl.enable(gl.CULL_FACE);
         gl.cullFace(gl.BACK);
+    }
+
+    public resize(width: number, height: number) {
+        if (this.width === width && this.height === height) return;
+
+        this.width = width;
+        this.height = height;
+
+        this.canvas.width = width * this.maxPixelRatio;
+        this.canvas.height = height * this.maxPixelRatio;
+    }
+
+    public setMaxPixelRatio(value: number) {
+        if (value > window.devicePixelRatio) {
+            console.error('[Device] maxPixelRatio can not bigger than window.devicePixelRatio.');
+            return;
+        };
+        if (this.maxPixelRatio === value) return;
+
+        this.maxPixelRatio = value;
+        this.resize(this.width, this.height);
     }
 
     public setShader(shader: Shader) {

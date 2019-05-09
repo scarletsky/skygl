@@ -4,6 +4,7 @@ import { Device } from "graphics";
 export default class PerspectiveCamera extends Camera {
     protected _fov = 45;
     protected _aspect = 1;
+    public autoUpdateAspect = true;
 
     constructor(params: CameraParameters) {
         super(params);
@@ -34,6 +35,11 @@ export default class PerspectiveCamera extends Camera {
 
     public apply(device: Device) {
         const scope = device.scope;
+
+        if (this.autoUpdateAspect) {
+            this.aspect = device.width / device.height;
+        }
+
         scope.setValue("uViewPosition", this.getWorldPosition());
         scope.setValue("uViewMatrix", this.viewMatrix);
         scope.setValue("uProjectionMatrix", this.projectionMatrix);
