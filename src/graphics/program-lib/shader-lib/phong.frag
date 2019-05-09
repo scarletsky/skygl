@@ -102,5 +102,5 @@ void main() {
   alphaTest(dColor.a);
   #endif
 
-  gl_FragColor = dColor;
+  gl_FragColor = linearTosRGB(dColor);
 }
