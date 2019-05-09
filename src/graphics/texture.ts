@@ -1,6 +1,7 @@
 import { TypedArray } from "./buffer";
 import { powerOfTwo } from "math/math";
 import Device from "./device";
+import { IResize } from "interfaces";
 
 let idCounter = 0;
 
@@ -27,7 +28,7 @@ export interface TextureParameters {
     [key: string]: any;
 }
 
-export default class Texture {
+export default class Texture implements IResize {
     // target
     public static readonly TEXTURE_2D = 0x0de1;
     public static readonly TEXTURE_CUBE_MAP = 0x8513;
@@ -194,6 +195,11 @@ export default class Texture {
             const value = params[key];
             this[key] = value;
         }
+    }
+
+    public resize(width: number, height: number) {
+        this.width = width;
+        this.height = height;
     }
 
     public verifySource(source: MipObject) {

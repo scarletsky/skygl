@@ -1,5 +1,6 @@
 import Device from "./device";
 import Texture from "./texture";
+import { IResize } from "interfaces";
 
 let idCounter = 0;
 
@@ -9,19 +10,30 @@ export interface RenderTargetParameters {
     depthBuffer?: Texture;
 }
 
-export default class RenderTarget {
+export default class RenderTarget implements IResize {
 
-    public id: number;
+    public id = idCounter++;
+    public width = 4;
+    public height = 4;
     public name: string;
     public colorBuffer: Texture;
     public depthBuffer: Texture;
     public _glFrameBufferId: WebGLFramebuffer;
 
     constructor(params: RenderTargetParameters = {}) {
-        this.id = idCounter++;
         this.name = params.name || "Untitled";
         this.colorBuffer = params.colorBuffer || null;
         this.depthBuffer = params.depthBuffer || null;
+    }
+
+    public resize(width: number, height: number) {
+        if (this.colorBuffer) {
+            this.colorBuffer.resize(width, height);
+        }
+
+        if (this.depthBuffer) {
+            this.depthBuffer.resize(width, height);
+        }
     }
 
     public apply(device: Device) {
