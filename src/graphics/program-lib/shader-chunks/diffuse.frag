@@ -1,3 +1,9 @@
+uniform vec4 uColor;
+
+#ifdef COLOR_MAP
+uniform sampler2D uColorMap;
+#endif
+
 vec4 getDiffuse() {
 
   vec4 dDiffuse = uColor;

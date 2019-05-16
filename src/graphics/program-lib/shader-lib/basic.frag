@@ -1,7 +1,6 @@
-precision highp float;
+#define BASIC_MATERIAL
 
-uniform vec4 uDiffuse;
-uniform sampler2D uDiffuseMap;
+precision highp float;
 
 #ifdef VERTEX_COLOR
 varying vec4 vColor;
@@ -11,25 +10,22 @@ varying vec4 vColor;
 varying vec2 vUv0;
 #endif
 
+#include <diffuseFS>
 #include <alphaTestFS>
 
 void main() {
   
-  vec4 color;
+  vec4 dColor;
 
   #ifdef VERTEX_COLOR
-  color = vColor;
+  dColor = vColor;
   #else
-  color = uDiffuse;
-  #endif
-
-  #ifdef COLOR_MAP
-  color *= texture2D(uDiffuseMap, vUv0);
+  dColor = geDiffuse();
   #endif
 
   #ifdef ALPHA_TEST
-  alphaTest(color.a);
+  alphaTest(dColor.a);
   #endif
 
-  gl_FragColor = color;
+  gl_FragColor = dColor;
 }

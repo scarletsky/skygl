@@ -17,22 +17,7 @@ varying vec4 vColor;
 varying vec2 vUv0;
 #endif
 
-uniform vec4 uColor;
-uniform vec4 uSpecular;
-uniform vec4 uEmissive;
 uniform float uShininess;
-
-#ifdef COLOR_MAP
-uniform sampler2D uColorMap;
-#endif
-
-#ifdef SPECULAR_MAP
-uniform sampler2D uSpecularMap;
-#endif
-
-#ifdef EMISSIVE_MAP
-uniform sampler2D uEmissiveMap;
-#endif
 
 #include <baseFS>
 #include <alphaTestFS>

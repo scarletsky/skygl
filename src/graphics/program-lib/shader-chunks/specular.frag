@@ -1,3 +1,9 @@
+uniform vec4 uSpecular;
+
+#ifdef SPECULAR_MAP
+uniform sampler2D uSpecularMap;
+#endif
+
 vec4 getSpecular() {
   vec4 dSpecular = uSpecular;
 
