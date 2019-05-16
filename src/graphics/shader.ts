@@ -70,24 +70,23 @@ function replaceLightNums(str: string, defines: ShaderDefines) {
 
 function unrollLoops(str: string) {
 
-	var pattern = /#pragma unroll_loop[\s]+?for \(int i \= (\d+)\; i < (\d+)\; i\+\+\) \{([\s\S]+?)(?=\})\}/g;
+    var pattern = /#pragma unroll_loop[\s]+?for \(int i \= (\d+)\; i < (\d+)\; i\+\+\) \{([\s\S]+?)(?=\})\}/g;
 
-	function replace(_match: string, start: string, end: string, snippet: string) {
+    function replace(_match: string, start: string, end: string, snippet: string) {
 
-		var unroll = '';
+        var unroll = '';
 
-		for (var i = parseInt(start); i < parseInt(end); i++) {
+        for (var i = parseInt(start); i < parseInt(end); i++) {
 
-			unroll += snippet.replace(/\[i\]/g, '[' + i + ']');
+            unroll += snippet.replace(/\[i\]/g, '[' + i + ']');
 
-		}
+        }
 
-		return unroll;
+        return unroll;
 
-	}
+    }
 
-	return str.replace(pattern, replace);
-
+    return str.replace(pattern, replace);
 }
 
 
