@@ -1,3 +1,10 @@
+vec4 dLightAmbient = vec4(0.0);
+vec4 dLightDiffuse = vec4(0.0);
+vec4 dLightSpecular = vec4(0.0);
+vec4 tLightAmbient = vec4(0.0);
+vec4 tLightDiffuse = vec4(0.0);
+vec4 tLightSpecular = vec4(0.0);
+
 float getLightAttenuation(const in float dist, const in vec4 attenuation) {
   float constant = attenuation.x;
   float linear = attenuation.y * dist;

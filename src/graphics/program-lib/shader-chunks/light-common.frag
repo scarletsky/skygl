@@ -1,10 +1,3 @@
-vec4 dLightAmbient = vec4(0.0);
-vec4 dLightDiffuse = vec4(0.0);
-vec4 dLightSpecular = vec4(0.0);
-vec4 tLightAmbient = vec4(0.0);
-vec4 tLightDiffuse = vec4(0.0);
-vec4 tLightSpecular = vec4(0.0);
-
 #if NUM_DIRECTIONAL_LIGHTS > 0
 struct DirectionalLight {
   vec3 direction;
@@ -39,7 +32,6 @@ struct SpotLight {
 };
 uniform SpotLight uSpotLights[NUM_SPOT_LIGHTS];
 #endif
-
 
 vec3 getLightReflectDir(vec3 lightDir, vec3 normalDir) {
   return normalize(reflect(lightDir, normalDir));
