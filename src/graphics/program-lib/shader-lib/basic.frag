@@ -7,7 +7,7 @@ uniform sampler2D uDiffuseMap;
 varying vec4 vColor;
 #endif
 
-#ifdef DIFFUSE_MAP
+#ifdef COLOR_MAP
 varying vec2 vUv0;
 #endif
 
@@ -23,7 +23,7 @@ void main() {
   color = uDiffuse;
   #endif
 
-  #ifdef DIFFUSE_MAP
+  #ifdef COLOR_MAP
   color *= texture2D(uDiffuseMap, vUv0);
   #endif
 

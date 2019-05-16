@@ -80,7 +80,7 @@ export default class ProgramLib {
             NUM_SPOT_LIGHTS: lights[Light.TYPE_SPOT].length,
             ALPHA_TEST: material.alphaTest > 0,
             VERTEX_COLOR: !!material.vertexColor,
-            DIFFUSE_MAP: !!material.diffuseMap,
+            COLOR_MAP: !!material.colorMap,
             SPECULAR_MAP: !!material.specularMap,
             EMISSIVE_MAP: !!material.emissiveMap,
             NORMAL_MAP: !!material.normalMap,
@@ -93,7 +93,7 @@ export default class ProgramLib {
             SKINNING: false
         } as ProgramKeyOptions;
 
-        if (options.DIFFUSE_MAP || options.SPECULAR_MAP) {
+        if (options.COLOR_MAP || options.SPECULAR_MAP) {
             options.UV0 = true;
         }
 

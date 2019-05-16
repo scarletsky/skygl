@@ -13,7 +13,7 @@ varying vec2 vUv0;
 
 void main() {
 
-  #ifdef DIFFUSE_MAP
+  #ifdef COLOR_MAP
   vUv0 = uv0;
   #endif
 

@@ -1,6 +1,6 @@
 #include <baseVS>
 
-#ifdef DIFFUSE_MAP
+#ifdef COLOR_MAP
 varying vec2 vUv0;
 #endif
 
@@ -10,7 +10,7 @@ void main() {
   vColor = aColor;
   #endif
 
-  #ifdef DIFFUSE_MAP
+  #ifdef COLOR_MAP
   vUv0 = uv0;
   #endif
 

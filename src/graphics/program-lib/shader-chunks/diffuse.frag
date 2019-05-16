@@ -1,9 +1,9 @@
 vec4 getDiffuse() {
 
-  vec4 dDiffuse = uDiffuse;
+  vec4 dDiffuse = uColor;
 
-  #ifdef DIFFUSE_MAP
-  dDiffuse *= sRGBToLinear(texture2D(uDiffuseMap, vUv0));
+  #ifdef COLOR_MAP
+  dDiffuse *= sRGBToLinear(texture2D(uColorMap, vUv0));
   #endif
 
   return dDiffuse;

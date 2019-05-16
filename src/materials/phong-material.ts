@@ -5,7 +5,7 @@ import { Device, Texture, Cubemap } from "graphics";
 export interface PhongMaterialParameters extends MaterialParameters {
     ambient: Color;
     diffuse: Color;
-    diffuseMap: Texture;
+    colorMap: Texture;
     specular: Color;
     specularMap: Texture;
     emissive: Color;
@@ -17,8 +17,8 @@ export interface PhongMaterialParameters extends MaterialParameters {
 
 export default class PhongMaterial extends Material {
     public shading = Material.SHADING_BLINN_PHONG;
-    public diffuse = new Color(1, 1, 1, 1);
-    public diffuseMap = null as Texture;
+    public color = new Color(1, 1, 1, 1);
+    public colorMap = null as Texture;
     public specular = new Color(1, 1, 1, 1);
     public specularmMap = null as Texture;
     public emissive = new Color(0, 0, 0, 0);
@@ -36,8 +36,8 @@ export default class PhongMaterial extends Material {
     public apply(device: Device) {
         super.apply(device);
         const scope = device.scope;
-        scope.setValue("uDiffuse", this.diffuse);
-        scope.setValue("uDiffuseMap", this.diffuseMap);
+        scope.setValue("uColor", this.color);
+        scope.setValue("uColorMap", this.colorMap);
         scope.setValue("uSpecular", this.specular);
         scope.setValue("uSpecularMap", this.specularMap);
         scope.setValue("uEmissive", this.emissive);
