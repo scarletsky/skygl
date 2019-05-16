@@ -46,41 +46,39 @@ uniform samplerCube uEnvironmentMap;
 #endif
 
 void main() {
-  
-  vec3 viewDir = normalize(uViewPosition - vPosition);
 
-  vec4 dColor = vec4(0.0);
+  vec3 N = vNormal;
+  vec3 V = normalize(uViewPosition - vPosition);
   vec4 dDiffuse = getMaterialDiffuse();
   vec4 dSpecular = getMaterialSpecular();
   vec4 dEmissive = getMaterialEmissive();
   vec4 dAmbient = vec4(0.2, 0.2, 0.2, 1);
   mat3 dTBN = mat3(1.0);
-  vec3 dNormal = vNormal;
 
   #ifdef USE_TBN
   dTBN = getTBN();
   #endif
 
   #ifdef NORMAL_MAP
-  dNormal = getNormal(dTBN);
+  N = getNormal(dTBN);
   #endif
 
   #if NUM_DIRECTIONAL_LIGHTS > 0
-  calcDirectionalLighting(viewDir, dNormal);
+  calcDirectionalLighting(V, N);
   #endif
 
   #if NUM_POINT_LIGHTS > 0
-  calcPointLighting(viewDir, dNormal);
+  calcPointLighting(V, N);
   #endif
 
   #if NUM_SPOT_LIGHTS > 0
-  calcSpotLighting(viewDir, dNormal);
+  calcSpotLighting(V, N);
   #endif
 
-  dColor = (dAmbient * dLightAmbient + dEmissive + dDiffuse * dLightDiffuse + dSpecular * dLightSpecular);
+  vec4 dColor = (dAmbient * dLightAmbient + dEmissive + dDiffuse * dLightDiffuse + dSpecular * dLightSpecular);
 
   #ifdef ENVIRONMENT_MAP
-  dColor = getEnvReflection(viewDir, dNormal);
+  dColor = getEnvReflection(V, N);
   #endif
 
   #ifdef ALPHA_TEST

@@ -33,6 +33,6 @@ struct SpotLight {
 uniform SpotLight uSpotLights[NUM_SPOT_LIGHTS];
 #endif
 
-vec3 getLightReflectDir(vec3 lightDir, vec3 normalDir) {
-  return normalize(reflect(lightDir, normalDir));
+vec3 getLightReflectDir(vec3 L, vec3 N) {
+  return normalize(reflect(-L, N));
 }
