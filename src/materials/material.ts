@@ -15,6 +15,10 @@ export interface MaterialParameters {
     [key: string]: any;
 }
 
+export interface MaterialProgramOptions {
+    [key: string]: boolean | number | string;
+}
+
 export default abstract class Material {
     public static readonly CULLFACE_NONE = 0;
     public static readonly CULLFACE_BACK = 1;
@@ -57,5 +61,12 @@ export default abstract class Material {
         device.setDepthWrite(this.depthWrite);
         device.setCullFace(this.cullFace);
         device.setColorWrite(this.redWrite, this.greenWrite, this.blueWrite, this.alphaWrite);
+    }
+
+    public getProgramOptions(): MaterialProgramOptions {
+        return {
+            USE_ALPHA_TEST: this.alphaTest > 0,
+            USE_VERTEX_COLOR: !!this.vertexColor,
+        };
     }
 }

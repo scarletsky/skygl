@@ -9,11 +9,11 @@ uniform vec4 uAmbient;
 varying vec3 vNormal;
 varying vec3 vPosition;
 
-#ifdef VERTEX_COLOR
+#ifdef USE_VERTEX_COLOR
 varying vec4 vColor;
 #endif
 
-#ifdef UV0
+#ifdef USE_UV0
 varying vec2 vUv0;
 #endif
 
@@ -81,7 +81,7 @@ void main() {
   dColor = getEnvReflection(V, N);
   #endif
 
-  #ifdef ALPHA_TEST
+  #ifdef USE_ALPHA_TEST
   alphaTest(dColor.a);
   #endif
 

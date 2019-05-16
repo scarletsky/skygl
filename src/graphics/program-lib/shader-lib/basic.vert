@@ -6,7 +6,7 @@ varying vec2 vUv0;
 
 void main() {
 
-  #ifdef VERTEX_COLOR
+  #ifdef USE_VERTEX_COLOR
   vColor = aColor;
   #endif
 

@@ -2,7 +2,7 @@
 
 precision highp float;
 
-#ifdef VERTEX_COLOR
+#ifdef USE_VERTEX_COLOR
 varying vec4 vColor;
 #endif
 
@@ -17,13 +17,13 @@ void main() {
   
   vec4 dColor;
 
-  #ifdef VERTEX_COLOR
+  #ifdef USE_VERTEX_COLOR
   dColor = vColor;
   #else
   dColor = geDiffuse();
   #endif
 
-  #ifdef ALPHA_TEST
+  #ifdef USE_ALPHA_TEST
   alphaTest(dColor.a);
   #endif
 

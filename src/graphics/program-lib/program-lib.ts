@@ -7,7 +7,7 @@ import * as ShaderLib from "./shader-lib";
 import { Geometry } from "geometries";
 
 interface ProgramKeyOptions {
-    [key: string]: any;
+    [key: string]: boolean | number | string;
 }
 
 interface ProgramsCached {
@@ -74,28 +74,14 @@ export default class ProgramLib {
     }
 
     private generateOptions(geometry: Geometry, material: Material, lights: SortedLights): ProgramKeyOptions {
-        const options = {
+        const options = Object.assign(material.getProgramOptions(), {
             NUM_DIRECTIONAL_LIGHTS: lights[Light.TYPE_DIRECTIONAL].length,
             NUM_POINT_LIGHTS: lights[Light.TYPE_POINT].length,
             NUM_SPOT_LIGHTS: lights[Light.TYPE_SPOT].length,
-            ALPHA_TEST: material.alphaTest > 0,
-            VERTEX_COLOR: !!material.vertexColor,
-            COLOR_MAP: !!material.colorMap,
-            SPECULAR_MAP: !!material.specularMap,
-            EMISSIVE_MAP: !!material.emissiveMap,
-            NORMAL_MAP: !!material.normalMap,
-            ENVIRONMENT_MAP: !!material.environmentMap,
-            AMBIENT: !!material.ambient,
             USE_TBN: !!(geometry && geometry.attributes.tangent),
-            USE_PHONG: material.shading === Material.SHADING_PHONG,
-            USE_BLINN_PHONG: material.shading === Material.SHADING_BLINN_PHONG,
             SHADOW_MAP: true,
             SKINNING: false
-        } as ProgramKeyOptions;
-
-        if (options.COLOR_MAP || options.SPECULAR_MAP) {
-            options.UV0 = true;
-        }
+        }) as ProgramKeyOptions;
 
         return options;
     }

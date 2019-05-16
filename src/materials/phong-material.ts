@@ -48,4 +48,18 @@ export default class PhongMaterial extends Material {
         scope.setValue("uEnvironmentMap", this.environmentMap);
         scope.setValue("uRefractiveIndex", this.refractiveIndex);
     }
+
+    public getProgramOptions() {
+        return Object.assign(super.getProgramOptions(), {
+            COLOR_MAP: !!this.colorMap,
+            SPECULAR_MAP: !!this.specularMap,
+            EMISSIVE_MAP: !!this.emissiveMap,
+            NORMAL_MAP: !!this.normalMap,
+            ENVIRONMENT_MAP: !!this.environmentMap,
+            AMBIENT: !!this.ambient,
+            USE_PHONG: this.shading === Material.SHADING_PHONG,
+            USE_BLINN_PHONG: this.shading === Material.SHADING_BLINN_PHONG,
+            USE_UV0: !!(this.colorMap || this.specularMap)
+        });
+    }
 }

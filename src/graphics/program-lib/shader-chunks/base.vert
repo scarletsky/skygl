@@ -9,7 +9,7 @@ varying vec3 vTangent;
 varying vec3 vBitangent;
 #endif
 
-#ifdef VERTEX_COLOR
+#ifdef USE_VERTEX_COLOR
 attribute vec3 aColor;
 varying vec3 vColor;
 #endif
