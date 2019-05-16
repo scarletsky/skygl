@@ -4,7 +4,7 @@ uniform vec4 uSpecular;
 uniform sampler2D uSpecularMap;
 #endif
 
-vec4 getSpecular() {
+vec4 getMaterialSpecular() {
   vec4 dSpecular = uSpecular;
 
   #ifdef SPECULAR_MAP

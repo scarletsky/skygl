@@ -4,7 +4,7 @@ uniform vec4 uColor;
 uniform sampler2D uColorMap;
 #endif
 
-vec4 getDiffuse() {
+vec4 getMaterialDiffuse() {
 
   vec4 dDiffuse = uColor;
 

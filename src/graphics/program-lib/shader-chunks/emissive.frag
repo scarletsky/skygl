@@ -4,7 +4,7 @@ uniform vec4 uEmissive;
 uniform sampler2D uEmissiveMap;
 #endif
 
-vec4 getEmissive() {
+vec4 getMaterialEmissive() {
   vec4 dEmissive = uEmissive;
 
   #ifdef EMISSIVE_MAP

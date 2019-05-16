@@ -50,9 +50,9 @@ void main() {
   vec3 viewDir = normalize(uViewPosition - vPosition);
 
   vec4 dColor = vec4(0.0);
-  vec4 dDiffuse = getDiffuse();
-  vec4 dSpecular = getSpecular();
-  vec4 dEmissive = getEmissive();
+  vec4 dDiffuse = getMaterialDiffuse();
+  vec4 dSpecular = getMaterialSpecular();
+  vec4 dEmissive = getMaterialEmissive();
   vec4 dAmbient = vec4(0.2, 0.2, 0.2, 1);
   mat3 dTBN = mat3(1.0);
   vec3 dNormal = vNormal;
