@@ -24,6 +24,14 @@ export default class Material {
     public static readonly CULLFACE_BACK = 1;
     public static readonly CULLFACE_FRONT = 2;
     public static readonly CULLFACE_FRONT_AND_BACK = 3;
+    public static readonly DEPTHFUNC_NEVER = 0x000200;
+    public static readonly DEPTHFUNC_LESS = 0x000201;
+    public static readonly DEPTHFUNC_EQUAL = 0x0202;
+    public static readonly DEPTHFUNC_LEQUAL = 0x0203;
+    public static readonly DEPTHFUNC_GREATER = 0x0204;
+    public static readonly DEPTHFUNC_NOTEQUAL = 0x0205;
+    public static readonly DEPTHFUNC_GEQUAL = 0x0206;
+    public static readonly DEPTHFUNC_ALWAYS = 0x0207;
     public static readonly SHADING_CUSTOM = -1;
     public static readonly SHADING_LAMBERT = 0;
     public static readonly SHADING_PHONG = 1;
@@ -37,6 +45,7 @@ export default class Material {
     public alphaToCoverage = false;
     public depthTest = true;
     public depthWrite = true;
+    public depthFunc = Material.DEPTHFUNC_LESS;
     public redWrite = true;
     public greenWrite = true;
     public blueWrite = true;
@@ -59,6 +68,7 @@ export default class Material {
     public apply(device: Device) {
         device.setDepthTest(this.depthTest);
         device.setDepthWrite(this.depthWrite);
+        device.setDepthFunc(this.depthFunc);
         device.setCullFace(this.cullFace);
         device.setColorWrite(this.redWrite, this.greenWrite, this.blueWrite, this.alphaWrite);
     }

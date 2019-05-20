@@ -32,6 +32,7 @@ export default class Device implements IResize {
     public blueWrite: boolean;
     public alphaWrite: boolean;
     public depthTest: boolean;
+    public depthFunc: number;
     public cullFace: number;
 
     public textureUnit: number;
@@ -121,6 +122,9 @@ export default class Device implements IResize {
 
         this.depthTest = true;
         gl.enable(gl.DEPTH_TEST);
+
+        this.depthFunc = Material.DEPTHFUNC_LESS;
+        gl.depthFunc(gl.LESS);
 
         this.cullFace = Material.CULLFACE_BACK;
         gl.enable(gl.CULL_FACE);
@@ -235,6 +239,14 @@ export default class Device implements IResize {
                 gl.disable(gl.DEPTH_TEST);
             }
             this.depthTest = depthTest;
+        }
+    }
+
+    public setDepthFunc(depthFunc: number) {
+        if (this.depthFunc !== depthFunc) {
+            const gl = this.gl;
+            gl.depthFunc(depthFunc);
+            this.depthFunc = depthFunc;
         }
     }
 
