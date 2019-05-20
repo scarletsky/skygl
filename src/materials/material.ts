@@ -19,7 +19,7 @@ export interface MaterialProgramOptions {
     [key: string]: boolean | number | string;
 }
 
-export default abstract class Material {
+export default class Material {
     public static readonly CULLFACE_NONE = 0;
     public static readonly CULLFACE_BACK = 1;
     public static readonly CULLFACE_FRONT = 2;
