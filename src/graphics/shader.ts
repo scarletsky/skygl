@@ -106,7 +106,10 @@ interface ShaderDefinition {
     fshader: string;
 }
 
+let idCounter = 0;
+
 export default class Shader {
+    public id = idCounter++;
     public ready = false;
     public attributes: ShaderAttribute[] = [];
     public uniforms: ShaderUniform[] = [];
