@@ -9,45 +9,46 @@ export default class SphereGeometry extends Geometry {
         if (geometry === undefined) geometry = new SphereGeometry();
 
         const vecA = new Vec3();
-        const radius = 0.5;
-        const latitudeSegments = 16;
-        const longitudeSegments = 16;
+        const radius = 1;
+        const divider = 1 / radius;
+        const heightSegments = 16;
+        const widthSegments = 16;
+        const phiStart = 0;
+        const phiLength = Math.PI * 2;
+        const thetaStart = 0;
+        const thetaLength = Math.PI;
+        const len = widthSegments + 1;
 
         const positions = [] as number[];
         const normals = [] as number[];
         const uvs = [] as number[];
         const indices = [] as number[];
 
-        for (let i = 0; i <= latitudeSegments; i++) {
-            let theta = Math.PI * i / latitudeSegments;
-            let sinTheta = Math.sin(theta);
-            let cosTheta = Math.cos(theta);
+        for (let j = 0; j <= heightSegments; j ++) {
+            for (let i = 0; i <= widthSegments; i ++) {
+                let u = i / widthSegments;
+                let v = j / heightSegments;
 
-            for (let j = 0; j <= longitudeSegments; j++) {
-                let phi = Math.PI * 2 * j / longitudeSegments;
-                let sinPhi = Math.sin(phi);
-                let cosPhi = Math.cos(phi);
+                // X axis is inverted so texture can be mapped from left to right
+                let x = -radius * Math.cos(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
+                let y = radius * Math.cos(thetaStart + v * thetaLength);
+                let z = radius * Math.sin(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
 
-                let x = radius * cosPhi * sinTheta;
-                let y = radius * cosTheta;
-                let z = radius * sinPhi * sinTheta;
-                let u = 1.0 - j / longitudeSegments;
-                let v = 1.0 - i / latitudeSegments;
-
-                vecA.set(x, y, z).normalize();
                 positions.push(x, y, z);
-                normals.push(vecA.x, vecA.y, vecA.z);
                 uvs.push(u, v);
+                normals.push(x * divider, y * divider, z * divider);
             }
         }
 
-        for (let i = 0; i < latitudeSegments; ++i) {
-            for (let j = 0; j < longitudeSegments; ++j) {
-                let first  = (i * (longitudeSegments + 1)) + j;
-                let second = first + longitudeSegments + 1;
+        for (let j = 0; j < heightSegments; j ++) {
+            for (let i = 0; i < widthSegments; i ++) {
+                let i2 = j * len + i;
+                let i1 = (j * len + i + 1);
+                let i4 = (j + 1) * len + i + 1;
+                let i3 = (j + 1) * len + i;
 
-                indices.push(first + 1, second, first);
-                indices.push(first + 1, second + 1, second);
+                indices.push(i1, i2, i4);
+                indices.push(i2, i3, i4);
             }
         }
 
@@ -65,7 +66,7 @@ export default class SphereGeometry extends Geometry {
         );
         geometry.primitive = new Primitive(
             Primitive.TRIANGLES,
-            new IndexBuffer(new Uint8Array(indices))
+            new IndexBuffer(new Uint16Array(indices))
         );
 
         return geometry;
