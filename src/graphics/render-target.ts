@@ -87,4 +87,21 @@ export default class RenderTarget implements IResize {
                 break;
         }
     }
+
+    public destroy(device: Device) {
+        const gl = device.gl;
+
+        if (this.colorBuffer) {
+            this.colorBuffer.destroy(device);
+        }
+
+        if (this.depthBuffer) {
+            this.depthBuffer.destroy(device);
+        }
+
+        if (this._glFrameBufferId) {
+            gl.deleteFramebuffer(this._glFrameBufferId);
+            this._glFrameBufferId = null;
+        }
+    }
 }

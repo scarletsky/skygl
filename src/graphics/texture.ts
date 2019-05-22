@@ -301,4 +301,13 @@ export default class Texture implements IResize {
             gl.generateMipmap(this.target);
         }
     }
+
+    public destroy(device: Device) {
+        const gl = device.gl;
+
+        if (this._glTextureId) {
+            gl.deleteTexture(this._glTextureId);
+            this._glTextureId = null;
+        }
+    }
 }
