@@ -140,8 +140,8 @@ export default class Shader {
         vshader = defines + vshader;
         fshader = defines + fshader;
 
-        console.log("vertex shader: \n", addLineNumbers(vshader));
-        console.log("fragment shader: \n", addLineNumbers(fshader));
+        // console.log("vertex shader: \n", addLineNumbers(vshader));
+        // console.log("fragment shader: \n", addLineNumbers(fshader));
 
         this.vshader = createShader(gl, gl.VERTEX_SHADER, vshader);
         this.fshader = createShader(gl, gl.FRAGMENT_SHADER, fshader);
@@ -149,12 +149,12 @@ export default class Shader {
         gl.linkProgram(this.program);
 
         if (!gl.getShaderParameter(this.vshader, gl.COMPILE_STATUS)) {
-            console.error("Failed to compile vertex shader:\n\n", gl.getShaderInfoLog(this.vshader));
+            console.error("Failed to compile vertex shader:\n\n", addLineNumbers(vshader), "\n\n", gl.getShaderInfoLog(this.vshader));
             return false;
         }
 
         if (!gl.getShaderParameter(this.fshader, gl.COMPILE_STATUS)) {
-            console.error("Failed to compile fragment shader:\n\n", gl.getShaderInfoLog(this.fshader));
+            console.error("Failed to compile fragment shader:\n\n", addLineNumbers(fshader), "\n\n", gl.getShaderInfoLog(this.fshader));
             return false;
         }
 
