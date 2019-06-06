@@ -1,6 +1,7 @@
 import typescript from 'rollup-plugin-typescript';
 import json from 'rollup-plugin-json';
 import serve from 'rollup-plugin-serve';
+import livereload from 'rollup-plugin-livereload'
 
 const builds = {
     dev: {
@@ -47,10 +48,13 @@ function genConfig(name) {
     };
 
     if (name === 'dev') {
-        config.plugins.push(serve({
-            contentBase: './',
-            port: 4444
-        }));
+        config.plugins.push(
+            serve({
+                contentBase: './',
+                port: 4444
+            }),
+            livereload()
+        );
     }
 
     return config;
