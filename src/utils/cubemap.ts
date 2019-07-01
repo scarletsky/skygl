@@ -39,6 +39,7 @@ export function prefilterCubemap(device: Device, cubemap: Cubemap, maxMipSize = 
         let size = maxMipSize * Math.pow(0.5, mip);
         let roughness = mip / (maxMipLevels - 1);
         let prefilteredCubemap = new Cubemap({
+            name: `Prefiltered Cubemap ${size}`,
             width: size,
             height: size,
             flipY: false
@@ -66,8 +67,8 @@ export function prefilterCubemap(device: Device, cubemap: Cubemap, maxMipSize = 
             switch (face) {
                 case 0: viewMatrix.setLookAt(Vec3.ZERO, Vec3.RIGHT, Vec3.DOWN); break;
                 case 1: viewMatrix.setLookAt(Vec3.ZERO, Vec3.LEFT, Vec3.DOWN); break;
-                case 2: viewMatrix.setLookAt(Vec3.ZERO, Vec3.UP, Vec3.BACK); break;
-                case 3: viewMatrix.setLookAt(Vec3.ZERO, Vec3.DOWN, Vec3.FORWARD); break;
+                case 2: viewMatrix.setLookAt(Vec3.ZERO, Vec3.DOWN, Vec3.FORWARD); break;
+                case 3: viewMatrix.setLookAt(Vec3.ZERO, Vec3.UP, Vec3.BACK); break;
                 case 4: viewMatrix.setLookAt(Vec3.ZERO, Vec3.BACK, Vec3.DOWN); break;
                 case 5: viewMatrix.setLookAt(Vec3.ZERO, Vec3.FORWARD, Vec3.DOWN); break;
             }
@@ -105,6 +106,7 @@ export function cubemapToIrradianceMap(device: Device, cubemap: Cubemap, size = 
         fshader: cubemapToIrradianceMapShader.fshader
     });
     const irradianceMap = new Cubemap({
+        name: "Cubemap to Irradiance Map",
         width: size,
         height: size,
         flipY: true
@@ -175,6 +177,7 @@ export function equirectangularToCubemap(device: Device, equirectangularMap: Tex
         fshader: equirectangularToCubemapShader.fshader,
     });
     const cubemap = new Cubemap({
+        name: "Equirectangular To Cubemap",
         width: size,
         height: size,
         flipY: true

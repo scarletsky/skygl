@@ -1,4 +1,4 @@
-vec3 getSampleDir(int face, vec2 uv) {
+vec3 getCubemapSampleDir(int face, vec2 uv) {
   vec3 sampleDir;
   vec2 st = uv * 2.0 - 1.0;
 
