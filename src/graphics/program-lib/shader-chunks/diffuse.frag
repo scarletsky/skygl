@@ -4,7 +4,7 @@ uniform vec4 uColor;
 uniform sampler2D uColorMap;
 #endif
 
-vec4 getMaterialDiffuse() {
+vec3 getMaterialDiffuse() {
 
   vec4 dDiffuse = uColor;
 
@@ -12,5 +12,5 @@ vec4 getMaterialDiffuse() {
   dDiffuse *= sRGBToLinear(texture2D(uColorMap, vUv0));
   #endif
 
-  return dDiffuse;
+  return dDiffuse.rgb;
 }

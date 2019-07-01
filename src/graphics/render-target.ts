@@ -13,8 +13,6 @@ export interface RenderTargetParameters {
 export default class RenderTarget implements IResize {
 
     public id = idCounter++;
-    public width = 4;
-    public height = 4;
     public name: string;
     public colorBuffer: Texture;
     public depthBuffer: Texture;

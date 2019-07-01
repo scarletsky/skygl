@@ -159,6 +159,7 @@ export default class Texture implements IResize {
     public internalFormatType = Texture.UNSIGNED_BYTE;
     public flipY = true;
     public mipmaps = true;
+    public level = 0;
     public _levels = [] as TextureLevels;
     public _pot = true;
     public _needsUpload = true;
@@ -212,9 +213,9 @@ export default class Texture implements IResize {
         }
     }
 
-    public setSource(source: MipObject) {
+    public setSource(source: MipObject, level = 0) {
         this.verifySource(source);
-        this._levels[0] = source;
+        this._levels[level] = source;
     }
 
     public upload() {
@@ -228,7 +229,7 @@ export default class Texture implements IResize {
             textureUnit = device.textureUnit;
         }
 
-        if (device.textureUnits[textureUnit][this.target] === this) {
+        if (device.textureUnits[textureUnit][this.target] === this && !this._needsUpload) {
             return;
         }
 
@@ -270,7 +271,7 @@ export default class Texture implements IResize {
 
     public applyTexImage2D(device: Device) {
         const gl = device.gl;
-        const mipObject = this._levels[0] || null;
+        const mipObject = this._levels[this.level] || null;
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
         gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
         if (this.compressed) {
