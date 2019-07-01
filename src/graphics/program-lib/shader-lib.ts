@@ -10,6 +10,10 @@ import skyboxVS from "./shader-lib/skybox.vert";
 import skyboxFS from "./shader-lib/skybox.frag";
 import quadVS from "./shader-lib/quad.vert";
 import quadFS from "./shader-lib/quad.frag";
+import prefilterCubemapFS from "./shader-lib/prefilter-cubemap.frag";
+import cubemapToIrradianceMapVS from "./shader-lib/cubemap-to-irradiancemap.vert";
+import cubemapToIrradianceMapFS from "./shader-lib/cubemap-to-irradiancemap.frag";
+import equirectangularToCubemapFS from "./shader-lib/equirectangular-to-cubemap.frag";
 
 export const basic = {
     vshader: basicVS,
@@ -39,4 +43,19 @@ export const skybox = {
 export const quad = {
     vshader: quadVS,
     fshader: quadFS
+};
+
+export const prefilterCubemap = {
+    vshader: cubemapToIrradianceMapVS,
+    fshader: prefilterCubemapFS
+};
+
+export const cubemapToIrradianceMap = {
+    vshader: cubemapToIrradianceMapVS,
+    fshader: cubemapToIrradianceMapFS
+};
+
+export const equirectangularToCubemap = {
+    vshader: cubemapToIrradianceMapVS,
+    fshader: equirectangularToCubemapFS
 };

@@ -37,6 +37,7 @@ export default class Material {
     public static readonly SHADING_LAMBERT = 0;
     public static readonly SHADING_PHONG = 1;
     public static readonly SHADING_BLINN_PHONG = 2;
+    public static readonly SHADING_PBR = 3;
 
     public shader: Shader;
     public shading = Material.SHADING_CUSTOM;
