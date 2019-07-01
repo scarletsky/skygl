@@ -1,8 +1,15 @@
 import Device from "../device";
 import Shader from "../shader";
 import { Scene, Mesh } from "scene";
-import { Material, BasicMaterial, PhongMaterial, DepthMaterial, SkyboxMaterial } from "materials";
-import Light, { SortedLights } from "lights/light";
+import {
+    Material,
+    BasicMaterial,
+    PhongMaterial,
+    DepthMaterial,
+    SkyboxMaterial,
+    PBRMaterial
+} from "materials";
+import Light from "lights/light";
 import * as ShaderLib from "./shader-lib";
 import { Geometry } from "geometries";
 
@@ -25,25 +32,28 @@ export default class ProgramLib {
 
     public getProgram(source: Mesh | Material, scene?: Scene) {
         let geometry, material;
+        let key;
         let options = {};
 
         if (source instanceof Mesh) {
             geometry = source.geometry;
             material = source.material;
         } else if (source instanceof Material) {
+            geometry = null;
             material = source;
         }
 
         const type = this.getMaterialType(material) as keyof typeof ShaderLib;
 
-        if (scene) {
-            options = this.generateOptions(geometry, material, scene.lights);
+        if (material.shader) {
+            key = type + `,SHADER_ID_${material.shader.id}`;
+        } else {
+            options = this.generateOptions(geometry, material, scene);
+            key = this.generateKey(type, options);
         }
 
-        const key = this.generateKey(type, options);
-
         if (!this._cached[key]) {
-            this._cached[key] = new Shader({
+            this._cached[key] = material.shader || new Shader({
                 defines: options,
                 vshader: ShaderLib[type].vshader,
                 fshader: ShaderLib[type].fshader
@@ -55,6 +65,7 @@ export default class ProgramLib {
 
     private getMaterialType(material: Material) {
         if (material instanceof DepthMaterial) return "depth";
+        if (material instanceof PBRMaterial) return "pbr";
         if (material instanceof PhongMaterial) return "phong";
         if (material instanceof SkyboxMaterial) return "skybox";
         if (material instanceof BasicMaterial) return "basic";
@@ -73,12 +84,14 @@ export default class ProgramLib {
         return chunks.join();
     }
 
-    private generateOptions(geometry: Geometry, material: Material, lights: SortedLights): ProgramKeyOptions {
+    private generateOptions(geometry: Geometry | null, material: Material, scene?: Scene): ProgramKeyOptions {
+        const lightNumbers = scene ? scene.lights.map(lights => lights.length) : [0, 0, 0];
         const options = Object.assign(material.getProgramOptions(), {
-            NUM_DIRECTIONAL_LIGHTS: lights[Light.TYPE_DIRECTIONAL].length,
-            NUM_POINT_LIGHTS: lights[Light.TYPE_POINT].length,
-            NUM_SPOT_LIGHTS: lights[Light.TYPE_SPOT].length,
+            NUM_DIRECTIONAL_LIGHTS: lightNumbers[Light.TYPE_DIRECTIONAL],
+            NUM_POINT_LIGHTS: lightNumbers[Light.TYPE_POINT],
+            NUM_SPOT_LIGHTS: lightNumbers[Light.TYPE_SPOT],
             USE_TBN: !!(geometry && geometry.attributes.tangent),
+            IRRADIANCE_MAP: !!(scene && scene.skybox && scene.skybox.material.irradianceMap),
             SHADOW_MAP: true,
             SKINNING: false
         }) as ProgramKeyOptions;

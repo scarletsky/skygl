@@ -4,6 +4,8 @@ import depthVS from "./shader-lib/depth.vert";
 import depthFS from "./shader-lib/depth.frag";
 import phongVS from "./shader-lib/phong.vert";
 import phongFS from "./shader-lib/phong.frag";
+import pbrVS from "./shader-lib/pbr.vert";
+import pbrFS from "./shader-lib/pbr.frag";
 import skyboxVS from "./shader-lib/skybox.vert";
 import skyboxFS from "./shader-lib/skybox.frag";
 import quadVS from "./shader-lib/quad.vert";
@@ -17,6 +19,11 @@ export const basic = {
 export const phong = {
     vshader: phongVS,
     fshader: phongFS
+};
+
+export const pbr = {
+    vshader: pbrVS,
+    fshader: pbrFS
 };
 
 export const depth = {
