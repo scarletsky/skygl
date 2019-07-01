@@ -7,6 +7,7 @@ export interface MaterialParameters {
     alphaTest?: boolean;
     depthTest?: boolean;
     depthWrite?: boolean;
+    depthFunc?: number;
     redWrite?: boolean;
     greenWrite?: boolean;
     blueWrite?: boolean;
