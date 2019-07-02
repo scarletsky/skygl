@@ -8,6 +8,8 @@ export default class Cubemap extends Texture {
 
     public id = idCounter++;
     public target = Texture.TEXTURE_CUBE_MAP;
+    public prefilteredCubemaps = [] as Cubemap[];
+    public irradianceMap = null as Texture;
     public _levels = [] as TextureLevels;
 
     constructor(parameters: TextureParameters = {}) {
