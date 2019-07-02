@@ -10,7 +10,11 @@ export interface RenderTargetParameters {
     depthBuffer?: Texture;
 }
 
+export type RenderTargetBufferTarget = "colorBuffer" | "depthBuffer";
+
 export default class RenderTarget implements IResize {
+    public static TARGET_COLOR_BUFFER = "colorBuffer";
+    public static TARGET_DEPTH_BUFFER = "depthBuffer";
 
     public id = idCounter++;
     public name: string;
@@ -22,6 +26,14 @@ export default class RenderTarget implements IResize {
         this.name = params.name || "Untitled";
         this.colorBuffer = params.colorBuffer || null;
         this.depthBuffer = params.depthBuffer || null;
+    }
+
+    public attach(target: RenderTargetBufferTarget, texture: Texture) {
+        this[target] = texture;
+    }
+
+    public detach(target: RenderTargetBufferTarget) {
+        this[target] = null;
     }
 
     public resize(width: number, height: number) {
@@ -86,14 +98,14 @@ export default class RenderTarget implements IResize {
         }
     }
 
-    public destroy(device: Device) {
+    public destroy(device: Device, clearBuffers = false) {
         const gl = device.gl;
 
-        if (this.colorBuffer) {
+        if (clearBuffers && this.colorBuffer) {
             this.colorBuffer.destroy(device);
         }
 
-        if (this.depthBuffer) {
+        if (clearBuffers && this.depthBuffer) {
             this.depthBuffer.destroy(device);
         }
 
