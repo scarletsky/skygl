@@ -13,8 +13,8 @@ export interface RenderTargetParameters {
 export type RenderTargetBufferTarget = "colorBuffer" | "depthBuffer";
 
 export default class RenderTarget implements IResize {
-    public static TARGET_COLOR_BUFFER = "colorBuffer";
-    public static TARGET_DEPTH_BUFFER = "depthBuffer";
+    public static TARGET_COLOR_BUFFER = "colorBuffer" as RenderTargetBufferTarget;
+    public static TARGET_DEPTH_BUFFER = "depthBuffer" as RenderTargetBufferTarget;
 
     public id = idCounter++;
     public name: string;
