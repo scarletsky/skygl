@@ -11,7 +11,7 @@ export { default as roughnessFS } from "./shader-chunks/roughness.frag";
 export { default as lightCommonFS } from "./shader-chunks/light-common.frag";
 export { default as lightingPhongFS } from "./shader-chunks/lighting-phong.frag";
 export { default as lightingPBRFS } from "./shader-chunks/lighting-pbr.frag";
-export { default as cubemapCommonFS } from './shader-chunks/cubemap-common.frag';
+export { default as cubemapCommonFS } from "./shader-chunks/cubemap-common.frag";
 export { default as shadowCommonVS } from "./shader-chunks/shadow-common.vert";
 export { default as shadowCommonFS } from "./shader-chunks/shadow-common.frag";
 export { default as shadowCommonVSFS } from "./shader-chunks/shadow-common.glsl";

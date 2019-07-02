@@ -1,12 +1,13 @@
 import { Cubemap, Device, RenderTarget, Texture, Shader } from "graphics";
-import { BoxGeometry } from "geometries";
+import { BoxGeometry, QuadGeometry } from "geometries";
 import { Mat4, Vec3, DEG_TO_RAD } from "math";
 import { Mesh } from "scene";
 import { Material } from "materials";
 import {
     prefilterCubemap as prefilterCubemapShader,
     cubemapToIrradianceMap as cubemapToIrradianceMapShader,
-    equirectangularToCubemap as equirectangularToCubemapShader
+    equirectangularToCubemap as equirectangularToCubemapShader,
+    integrateBRDF as integrateBRDFShader,
 } from "../graphics/program-lib/shader-lib";
 
 export function prefilterCubemap(device: Device, cubemap: Cubemap, maxMipSize = 128, maxMipLevels = 5) {
@@ -87,6 +88,42 @@ export function prefilterCubemap(device: Device, cubemap: Cubemap, maxMipSize = 
     targets.forEach(target => target.destroy(device));
 
     return prefilteredCubemaps;
+}
+
+export function generateIntegrateBRDFMap(device: Device, size = 512) {
+    const mesh = new Mesh(
+        new QuadGeometry(),
+        new Material()
+    );
+    const shader = new Shader({
+        vshader: integrateBRDFShader.vshader,
+        fshader: integrateBRDFShader.fshader
+    });
+    const rt = new RenderTarget({
+        colorBuffer: new Texture({
+            name: "Integrade BRDF Map",
+            width: size,
+            height: size,
+            magFilter: Texture.LINEAR,
+            minFilter: Texture.LINEAR_MIPMAP_LINEAR,
+            wrapS: Texture.CLAMP_TO_EDGE,
+            wrapT: Texture.CLAMP_TO_EDGE,
+        })
+    });
+
+    mesh.material.apply(device);
+
+    device.setShader(shader);
+    device.setColorWrite(true, true, true, true);
+    device.setViewport(0, 0, size, size);
+    device.clear();
+    device.setRenderTarget(rt);
+    device.draw(mesh);
+
+    device.setRenderTarget(null);
+    shader.destroy(device);
+
+    return rt;
 }
 
 export function cubemapToIrradianceMap(device: Device, cubemap: Cubemap, size = 128) {

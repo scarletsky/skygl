@@ -14,6 +14,7 @@ import prefilterCubemapFS from "./shader-lib/prefilter-cubemap.frag";
 import cubemapToIrradianceMapVS from "./shader-lib/cubemap-to-irradiancemap.vert";
 import cubemapToIrradianceMapFS from "./shader-lib/cubemap-to-irradiancemap.frag";
 import equirectangularToCubemapFS from "./shader-lib/equirectangular-to-cubemap.frag";
+import integrateBRDFFS from "./shader-lib/integrate-brdf.frag";
 
 export const basic = {
     vshader: basicVS,
@@ -58,4 +59,9 @@ export const cubemapToIrradianceMap = {
 export const equirectangularToCubemap = {
     vshader: cubemapToIrradianceMapVS,
     fshader: equirectangularToCubemapFS
+};
+
+export const integrateBRDF = {
+    vshader: quadVS,
+    fshader: integrateBRDFFS
 };
