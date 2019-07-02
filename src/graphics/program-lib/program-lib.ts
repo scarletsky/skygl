@@ -92,6 +92,7 @@ export default class ProgramLib {
             NUM_SPOT_LIGHTS: lightNumbers[Light.TYPE_SPOT],
             USE_TBN: !!(geometry && geometry.attributes.tangent),
             IRRADIANCE_MAP: !!(scene && scene.skybox && scene.skybox.material.irradianceMap),
+            ENVIRONMENT_MAP: !!(scene && scene.skybox && scene.skybox.material.environmentMap),
             SHADOW_MAP: true,
             SKINNING: false
         }) as ProgramKeyOptions;

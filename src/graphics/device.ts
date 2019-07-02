@@ -297,6 +297,11 @@ export default class Device implements IResize {
         }
     }
 
+    public setIntegrateBRDFMap(integrateBRDFMap: Texture) {
+        this.integrateBRDFMap = integrateBRDFMap;
+        this.scope.setValue("uIntegrateBRDFMap", integrateBRDFMap);
+    }
+
     public deleteBuffer(buffer: Buffer) {
         const gl = this.gl;
         if (buffer._glBufferId) {

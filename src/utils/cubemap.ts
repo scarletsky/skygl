@@ -86,8 +86,7 @@ export function prefilterCubemap(device: Device, cubemap: Cubemap, maxMipSize = 
     device.setRenderTarget(null);
     shader.destroy(device);
     targets.forEach(target => target.destroy(device));
-
-    return prefilteredCubemaps;
+    cubemap.prefilteredCubemaps = prefilteredCubemaps;
 }
 
 export function generateIntegrateBRDFMap(device: Device, size = 512) {
@@ -99,17 +98,18 @@ export function generateIntegrateBRDFMap(device: Device, size = 512) {
         vshader: integrateBRDFShader.vshader,
         fshader: integrateBRDFShader.fshader
     });
-    const rt = new RenderTarget({
-        colorBuffer: new Texture({
-            name: "Integrade BRDF Map",
-            width: size,
-            height: size,
-            magFilter: Texture.LINEAR,
-            minFilter: Texture.LINEAR_MIPMAP_LINEAR,
-            wrapS: Texture.CLAMP_TO_EDGE,
-            wrapT: Texture.CLAMP_TO_EDGE,
-        })
-    });
+    const rt = new RenderTarget();
+    const integrateBRDFMap = new Texture({
+        name: "Integrade BRDF Map",
+        width: size,
+        height: size,
+        magFilter: Texture.LINEAR,
+        minFilter: Texture.LINEAR,
+        wrapS: Texture.CLAMP_TO_EDGE,
+        wrapT: Texture.CLAMP_TO_EDGE,
+    })
+    const pixels = new Uint8Array(size * size * 4);
+    rt.attach(RenderTarget.TARGET_COLOR_BUFFER, integrateBRDFMap);
 
     mesh.material.apply(device);
 
@@ -122,8 +122,10 @@ export function generateIntegrateBRDFMap(device: Device, size = 512) {
 
     device.setRenderTarget(null);
     shader.destroy(device);
+    rt.detach(RenderTarget.TARGET_COLOR_BUFFER);
+    rt.destroy(device);
 
-    return rt;
+    device.setIntegrateBRDFMap(integrateBRDFMap);
 }
 
 export function cubemapToIrradianceMap(device: Device, cubemap: Cubemap, size = 128) {
@@ -190,11 +192,10 @@ export function cubemapToIrradianceMap(device: Device, cubemap: Cubemap, size = 
     }
 
     irradianceMap.setSource(cubemapPixels);
+    cubemap.irradianceMap = irradianceMap;
     device.setRenderTarget(null);
     shader.destroy(device);
     targets.forEach(target => target.destroy(device));
-
-    return irradianceMap;
 }
 
 export function equirectangularToCubemap(device: Device, equirectangularMap: Texture, size = 512) {
