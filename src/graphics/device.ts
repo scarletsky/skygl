@@ -31,12 +31,14 @@ export default class Device implements IResize {
     public greenWrite: boolean;
     public blueWrite: boolean;
     public alphaWrite: boolean;
+    public depthWrite: boolean;
     public depthTest: boolean;
     public depthFunc: number;
     public cullFace: number;
 
     public textureUnit: number;
     public textureUnits: TextureUnits[];
+    public integrateBRDFMap: Texture;
 
     public maxTextureSize: number;
     public maxCombinedTextureUnits: number;
@@ -274,11 +276,24 @@ export default class Device implements IResize {
     }
 
     public setColorWrite(redWrite: boolean, greenWrite: boolean, blueWrite: boolean, alphaWrite: boolean) {
-        this.gl.colorMask(redWrite, greenWrite, blueWrite, alphaWrite);
+        if (this.redWrite !== redWrite ||
+            this.greenWrite !== greenWrite ||
+            this.blueWrite !== blueWrite ||
+            this.alphaWrite !== alphaWrite
+           ) {
+            this.gl.colorMask(redWrite, greenWrite, blueWrite, alphaWrite);
+            this.redWrite = redWrite;
+            this.greenWrite = greenWrite;
+            this.blueWrite = blueWrite;
+            this.alphaWrite = alphaWrite;
+        }
     }
 
     public setDepthWrite(depthWrite: boolean) {
-        this.gl.depthMask(depthWrite);
+        if (this.depthWrite !== depthWrite) {
+            this.gl.depthMask(depthWrite);
+            this.depthWrite = depthWrite;
+        }
     }
 
     public setViewport(x: number, y: number, width: number, height: number) {
