@@ -8,6 +8,8 @@ import { SkyboxMaterial } from "materials";
 const matA = new Mat4();
 
 export default class Skybox extends Mesh {
+    public geometry: BoxGeometry;
+    public material: SkyboxMaterial;
 
     constructor() {
         super(new BoxGeometry(), new SkyboxMaterial());

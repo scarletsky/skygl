@@ -108,7 +108,6 @@ export function generateIntegrateBRDFMap(device: Device, size = 512) {
         wrapS: Texture.CLAMP_TO_EDGE,
         wrapT: Texture.CLAMP_TO_EDGE,
     })
-    const pixels = new Uint8Array(size * size * 4);
     rt.attach(RenderTarget.TARGET_COLOR_BUFFER, integrateBRDFMap);
 
     mesh.material.apply(device);
