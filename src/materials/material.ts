@@ -1,5 +1,6 @@
 import Device from "graphics/device";
 import Shader from "graphics/shader";
+import { IProgram } from "interfaces";
 
 let idCounter = 0;
 
@@ -16,11 +17,7 @@ export interface MaterialParameters {
     [key: string]: any;
 }
 
-export interface MaterialProgramOptions {
-    [key: string]: boolean | number | string;
-}
-
-export default class Material {
+export default class Material implements IProgram {
     public static readonly CULLFACE_NONE = 0;
     public static readonly CULLFACE_BACK = 1;
     public static readonly CULLFACE_FRONT = 2;
@@ -75,7 +72,7 @@ export default class Material {
         device.setColorWrite(this.redWrite, this.greenWrite, this.blueWrite, this.alphaWrite);
     }
 
-    public getProgramOptions(): MaterialProgramOptions {
+    public getProgramOptions() {
         return {
             USE_ALPHA_TEST: this.alphaTest > 0,
             USE_VERTEX_COLOR: !!this.vertexColor,

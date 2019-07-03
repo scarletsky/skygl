@@ -9,7 +9,6 @@ import {
     SkyboxMaterial,
     PBRMaterial
 } from "materials";
-import Light from "lights/light";
 import * as ShaderLib from "./shader-lib";
 import { Geometry } from "geometries";
 
@@ -85,17 +84,14 @@ export default class ProgramLib {
     }
 
     private generateOptions(geometry: Geometry | null, material: Material, scene?: Scene): ProgramKeyOptions {
-        const lightNumbers = scene ? scene.lights.map(lights => lights.length) : [0, 0, 0];
-        const options = Object.assign(material.getProgramOptions(), {
-            NUM_DIRECTIONAL_LIGHTS: lightNumbers[Light.TYPE_DIRECTIONAL],
-            NUM_POINT_LIGHTS: lightNumbers[Light.TYPE_POINT],
-            NUM_SPOT_LIGHTS: lightNumbers[Light.TYPE_SPOT],
-            USE_TBN: !!(geometry && geometry.attributes.tangent),
-            ENVIRONMENT_MAP: !!(scene && scene.skybox && scene.skybox.material.environmentMap),
-            IRRADIANCE_MAP: !!(scene && scene.skybox && scene.skybox.material.environmentMap && scene.skybox.material.environmentMap.irradianceMap),
-            SHADOW_MAP: true,
-            SKINNING: false
-        }) as ProgramKeyOptions;
+        const options = Object.assign(
+            material.getProgramOptions(),
+            scene ? scene.getProgramOptions() : {},
+            {
+                USE_TBN: !!(geometry && geometry.attributes.tangent),
+                SHADOW_MAP: true,
+                SKINNING: false
+            }) as ProgramKeyOptions;
 
         return options;
     }

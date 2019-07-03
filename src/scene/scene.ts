@@ -4,8 +4,9 @@ import { Color } from "math";
 import { Device } from "graphics";
 import Mesh from "./mesh";
 import Skybox from "./skybox";
+import { IProgram } from "interfaces";
 
-export default class Scene extends Node {
+export default class Scene extends Node implements IProgram {
     private static _current = null as Scene;
 
     public static getCurrentScene() {
@@ -35,6 +36,19 @@ export default class Scene extends Node {
     public apply(device: Device) {
         const scope = device.scope;
         scope.setValue("uAmbient", this.ambient);
+    }
+
+    public getProgramOptions() {
+        const environmentMap = this.skybox ? this.skybox.material.environmentMap : null;
+        const irradianceMap = environmentMap ? environmentMap.irradianceMap : null;
+
+        return {
+            ENVIRONMENT_MAP: !!(environmentMap),
+            IRRADIANCE_MAP: !!(irradianceMap),
+            NUM_DIRECTIONAL_LIGHTS: this.lights[Light.TYPE_DIRECTIONAL].length,
+            NUM_POINT_LIGHTS: this.lights[Light.TYPE_POINT].length,
+            NUM_SPOT_LIGHTS: this.lights[Light.TYPE_SPOT].length,
+        };
     }
 
     private project(node: Node) {
