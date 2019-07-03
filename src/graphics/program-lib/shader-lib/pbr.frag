@@ -47,7 +47,7 @@ void main() {
   #ifdef IRRADIANCE_MAP
   vec3 kS = F;
   vec3 kD = 1.0 - kS;
-  kD *= 1.0 - metallic;
+  kD *= 1.0 - metalness;
   vec3 irradiance = textureCube(uIrradianceMap, N).rgb;
   ambient = kD * irradiance;
   #endif
