@@ -14,13 +14,13 @@ varying vec2 vUv0;
 #include <alphaTestFS>
 
 void main() {
-  
+
   vec4 dColor;
 
   #ifdef USE_VERTEX_COLOR
   dColor = vColor;
   #else
-  dColor = geDiffuse();
+  dColor.rgb = getMaterialDiffuse();
   #endif
 
   #ifdef USE_ALPHA_TEST

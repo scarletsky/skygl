@@ -21,7 +21,7 @@ export default class BasicMaterial extends Material {
     public apply(device: Device) {
         super.apply(device);
         const scope = device.scope;
-        scope.setValue("color", this.color);
+        scope.setValue("uColor", this.color);
         scope.setValue("uColorMap", this.colorMap);
     }
 }
