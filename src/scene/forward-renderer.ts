@@ -38,8 +38,8 @@ export default class ForwardRenderer {
             });
         });
 
-        scene.apply(device);
         camera.apply(device);
+        scene.apply(device);
         device.clear();
         for (const mesh of scene.meshes) {
             shader = programlib.getProgram(mesh, scene);
@@ -51,7 +51,10 @@ export default class ForwardRenderer {
         }
 
         if (scene.skybox) {
+            shader = programlib.getProgram(scene.skybox.material);
             scene.skybox.apply(device, camera);
+            scene.skybox.material.apply(device);
+            device.setShader(shader);
             device.draw(scene.skybox);
         }
     }

@@ -36,6 +36,10 @@ export default class Scene extends Node implements IProgram {
     public apply(device: Device) {
         const scope = device.scope;
         scope.setValue("uAmbient", this.ambient);
+
+        if (this.skybox) {
+            this.skybox.material.apply(device);
+        }
     }
 
     public getProgramOptions() {
