@@ -11,10 +11,7 @@ import {
 } from "materials";
 import * as ShaderLib from "./shader-lib";
 import { Geometry } from "geometries";
-
-interface ProgramKeyOptions {
-    [key: string]: boolean | number | string;
-}
+import { ProgramOptions } from "interfaces";
 
 interface ProgramsCached {
     [key: string]: Shader;
@@ -71,7 +68,7 @@ export default class ProgramLib {
         if (material instanceof Material) return "raw";
     }
 
-    private generateKey(materialType: string, options: ProgramKeyOptions) {
+    private generateKey(materialType: string, options: ProgramOptions) {
         const chunks = [materialType];
 
         for (const k in options) {
@@ -83,15 +80,15 @@ export default class ProgramLib {
         return chunks.join();
     }
 
-    private generateOptions(geometry: Geometry | null, material: Material, scene?: Scene): ProgramKeyOptions {
+    private generateOptions(geometry: Geometry | null, material: Material, scene?: Scene): ProgramOptions {
         const options = Object.assign(
             material.getProgramOptions(),
             scene ? scene.getProgramOptions() : {},
+            geometry ? geometry.getProgramOptions() : {},
             {
-                USE_TBN: !!(geometry && geometry.attributes.tangent),
                 SHADOW_MAP: true,
                 SKINNING: false
-            }) as ProgramKeyOptions;
+            }) as ProgramOptions;
 
         return options;
     }
