@@ -1,4 +1,4 @@
-interface ProgramOptions {
+export interface ProgramOptions {
     [key: string]: boolean | number | string;
 }
 
