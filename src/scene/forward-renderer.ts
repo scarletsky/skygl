@@ -51,7 +51,7 @@ export default class ForwardRenderer {
         }
 
         if (scene.skybox) {
-            shader = programlib.getProgram(scene.skybox.material);
+            shader = programlib.getProgram(scene.skybox.material, scene);
             scene.skybox.apply(device, camera);
             scene.skybox.material.apply(device);
             device.setShader(shader);
