@@ -19,18 +19,21 @@ vec3 getCubemapSampleDir(int face, vec2 uv) {
   return sampleDir;
 }
 
-// float RadicalInverse_VdC(int bits) {
-//     bits = (bits << 16) | (bits >> 16);
-//     bits = ((bits & 0x55555555) << 1) | ((bits & 0xAAAAAAAA) >> 1);
-//     bits = ((bits & 0x33333333) << 2) | ((bits & 0xCCCCCCCC) >> 2);
-//     bits = ((bits & 0x0F0F0F0F) << 4) | ((bits & 0xF0F0F0F0) >> 4);
-//     bits = ((bits & 0x00FF00FF) << 8) | ((bits & 0xFF00FF00) >> 8);
-//     return float(bits) * 2.3283064365386963e-10; // / 0x100000000
-// }
-// // ----------------------------------------------------------------------------
-// vec2 Hammersley(int i, int N) {
-//     return vec2(float(i)/float(N), RadicalInverse_VdC(i));
-// }
+#ifdef GL2
+float RadicalInverse_VdC(int bits) {
+    bits = (bits << 16) | (bits >> 16);
+    bits = ((bits & 0x55555555) << 1) | ((bits & 0xAAAAAAAA) >> 1);
+    bits = ((bits & 0x33333333) << 2) | ((bits & 0xCCCCCCCC) >> 2);
+    bits = ((bits & 0x0F0F0F0F) << 4) | ((bits & 0xF0F0F0F0) >> 4);
+    bits = ((bits & 0x00FF00FF) << 8) | ((bits & 0xFF00FF00) >> 8);
+    return float(bits) * 2.3283064365386963e-10; // / 0x100000000
+}
+
+vec2 Hammersley(int i, int N) {
+    return vec2(float(i) / float(N), RadicalInverse_VdC(i));
+}
+
+#else
 
 float VanDerCorpus(int n, int base) {
     float invBase = 1.0 / float(base);
@@ -50,10 +53,11 @@ float VanDerCorpus(int n, int base) {
 
     return result;
 }
-// ----------------------------------------------------------------------------
-vec2 HammersleyNoBitOps(int i, int N) {
+// HammersleyNoBitOps
+vec2 Hammersley(int i, int N) {
     return vec2(float(i)/float(N), VanDerCorpus(i, 2));
 }
+#endif
 
 vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness) {
     float a = roughness * roughness;

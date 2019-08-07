@@ -19,8 +19,7 @@ void main() {
 
     for(int i = 0; i < SAMPLE_COUNT; ++i) {
 
-        // vec2 Xi = Hammersley(i, SAMPLE_COUNT);
-        vec2 Xi = HammersleyNoBitOps(i, SAMPLE_COUNT);
+        vec2 Xi = Hammersley(i, SAMPLE_COUNT);
         vec3 H = ImportanceSampleGGX(Xi, N, uRoughness);
         vec3 L = normalize(2.0 * dot(V, H) * H - V);
 
