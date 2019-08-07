@@ -49,6 +49,14 @@ function parseIncludes(source: string) {
     return source.replace(pattern, replacement);
 }
 
+function parseVersion(device: Device, version?: string) {
+    if (version === undefined) {
+        version = device.webgl2 ? "300 es" : "100";
+    }
+
+    return `#version ${version}\n${version.substr(0, 3) !== "100" ? "#define GL2 true\n" : ""}`;
+}
+
 function parseDefines(defines: ShaderDefines) {
     let chunks = [];
 
@@ -59,6 +67,14 @@ function parseDefines(defines: ShaderDefines) {
     }
 
     return chunks.join("");
+}
+
+function parsePrecision(device: Device, precision?: string) {
+    if (precision === undefined) {
+        precision = "highp";
+    }
+
+    return `precision ${precision} float;\n` + `precision ${precision} int;\n`;
 }
 
 function replaceLightNums(str: string, defines: ShaderDefines) {
@@ -100,8 +116,8 @@ interface ShaderDefines {
 
 interface ShaderDefinition {
     defines?: ShaderDefines;
-    // TODO support precision in shader
     precision?: string;
+    version?: string;
     vshader: string;
     fshader: string;
 }
@@ -109,11 +125,15 @@ interface ShaderDefinition {
 let idCounter = 0;
 
 export default class Shader {
+    public static TYPE_VERTEX = 0;
+    public static TYPE_FRAGMENT = 1;
+
     public id = idCounter++;
     public ready = false;
-    public attributes: ShaderAttribute[] = [];
-    public uniforms: ShaderUniform[] = [];
-    public samplers: ShaderUniform[] = [];
+    public version: string;
+    public attributes = [] as ShaderAttribute[];
+    public uniforms = [] as ShaderUniform[];
+    public samplers = [] as ShaderUniform[];
     public program: WebGLProgram;
 
     private definition: ShaderDefinition;
@@ -131,14 +151,16 @@ export default class Shader {
     public apply(device: Device) {
         const gl = device.gl;
 
+        let version = parseVersion(device, this.definition.version);
         let defines = parseDefines(this.definition.defines);
+        let precision = parsePrecision(device);
         let vshader = parseIncludes(this.definition.vshader);
         let fshader = parseIncludes(this.definition.fshader);
         vshader = unrollLoops(replaceLightNums(vshader, this.definition.defines));
         fshader = unrollLoops(replaceLightNums(fshader, this.definition.defines));
 
-        vshader = defines + vshader;
-        fshader = defines + fshader;
+        vshader = version + defines + precision + vshader;
+        fshader = version + defines + precision + fshader;
 
         // console.log("vertex shader: \n", addLineNumbers(vshader));
         // console.log("fragment shader: \n", addLineNumbers(fshader));

@@ -1,13 +1,5 @@
 #define PBR_MATERIAL
 
-precision highp float;
-
-uniform vec3 uViewPosition;
-uniform vec4 uAmbient;
-
-varying vec3 vNormal;
-varying vec3 vPosition;
-
 #include <baseFS>
 #include <alphaTestFS>
 #include <aoFS>
@@ -17,6 +9,16 @@ varying vec3 vPosition;
 #include <roughnessFS>
 #include <lightCommonFS>
 #include <lightingPBRFS>
+
+#ifdef TONE_MAPPING
+#include <toneMappingFS>
+#endif
+
+uniform vec3 uViewPosition;
+uniform vec4 uAmbient;
+
+varying vec3 vNormal;
+varying vec3 vPosition;
 
 #ifdef IRRADIANCE_MAP
 uniform samplerCube uIrradianceMap;
@@ -66,6 +68,10 @@ void main() {
 
   #ifdef USE_ALPHA_TEST
   alphaTest(fragColor.a);
+  #endif
+
+  #ifdef TONE_MAPPING
+  fragColor.rgb = TONE_MAPPING_METHOD(fragColor.rgb);
   #endif
 
   gl_FragColor = linearTosRGB(fragColor);

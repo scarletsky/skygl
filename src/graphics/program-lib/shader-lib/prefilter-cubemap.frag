@@ -1,9 +1,7 @@
-#define SAMPLE_COUNT 1024
-
-precision highp float;
-
 #include <baseFS>
 #include <cubemapCommonFS>
+
+#define SAMPLE_COUNT 1024
 
 uniform samplerCube uEnvironmentMap;
 uniform float uRoughness;

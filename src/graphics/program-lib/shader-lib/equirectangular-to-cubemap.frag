@@ -1,4 +1,4 @@
-precision highp float;
+#include <baseFS>
 
 uniform int uFace;
 uniform sampler2D uEquirectangularMap;

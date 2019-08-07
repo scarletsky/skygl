@@ -1,5 +1,4 @@
-attribute vec3 position;
-attribute vec2 uv0;
+#include <baseVS>
 
 varying vec2 vUv0;
 

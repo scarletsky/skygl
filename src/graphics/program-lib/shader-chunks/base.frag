@@ -1,3 +1,18 @@
+#ifdef GL2
+out highp vec4 sky_fragColor;
+#define varying in
+#define gl_FragColor sky_fragColor
+#define texture2D texture
+#define textureCube texture
+#define texture2DProj textureProj
+#define texture2DLodEXT textureLod
+#define texture2DProjLodEXT textureProjLod
+#define textureCubeLodEXT textureLod
+#define texture2DGradEXT textureGrad
+#define texture2DProjGradEXT textureProjGrad
+#define textureCubeGradEXT textureGrad
+#endif
+
 #define PI 3.1415926
 #define saturate(x) clamp(x, 0.0, 1.0);
 

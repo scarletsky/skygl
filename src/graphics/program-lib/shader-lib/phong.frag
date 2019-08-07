@@ -1,7 +1,14 @@
-#define PHONG_MATERIAL
+#include <baseFS>
+#include <alphaTestFS>
+#include <diffuseFS>
+#include <specularFS>
+#include <emissiveFS>
+#include <lightCommonFS>
+#include <shadowCommonVSFS>
+#include <shadowCommonFS>
+#include <lightingPhongFS>
 
-precision highp float;
-precision highp int;
+#define PHONG_MATERIAL
 
 uniform vec3 uViewPosition;
 uniform vec4 uAmbient;
@@ -18,16 +25,6 @@ varying vec2 vUv0;
 #endif
 
 uniform float uShininess;
-
-#include <baseFS>
-#include <alphaTestFS>
-#include <diffuseFS>
-#include <specularFS>
-#include <emissiveFS>
-#include <lightCommonFS>
-#include <shadowCommonVSFS>
-#include <shadowCommonFS>
-#include <lightingPhongFS>
 
 #ifdef USE_TBN
 varying vec3 vTangent;
@@ -49,7 +46,7 @@ void main() {
 
   vec3 N = vNormal;
   vec3 V = normalize(uViewPosition - vPosition);
-  vec4 dDiffuse = getMaterialDiffuse();
+  vec3 dDiffuse = getMaterialDiffuse();
   vec4 dSpecular = getMaterialSpecular();
   vec4 dEmissive = getMaterialEmissive();
   vec4 dAmbient = vec4(0.2, 0.2, 0.2, 1);

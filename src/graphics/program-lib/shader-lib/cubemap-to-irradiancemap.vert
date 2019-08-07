@@ -1,7 +1,4 @@
-attribute vec3 position;
-
-uniform mat4 uViewMatrix;
-uniform mat4 uProjectionMatrix;
+#include <baseVS>
 
 varying vec3 vPosition;
 

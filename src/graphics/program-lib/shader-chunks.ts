@@ -19,3 +19,4 @@ export { default as reflectionCubeFS } from "./shader-chunks/reflectionCube.frag
 export { default as refractionFS } from "./shader-chunks/refraction.frag";
 export { default as packDepthFS } from "./shader-chunks/pack-depth.frag";
 export { default as tbnFS } from "./shader-chunks/tbn.frag";
+export { default as toneMappingFS } from "./shader-chunks/tone-mapping.frag";

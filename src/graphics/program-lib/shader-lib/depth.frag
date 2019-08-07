@@ -1,6 +1,6 @@
-#define DEPTH_MATERIAL
+#include <baseFS>
 
-precision highp float;
+#define DEPTH_MATERIAL
 
 uniform bool uDepthPack;
 

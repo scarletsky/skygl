@@ -1,3 +1,9 @@
+#ifdef GL2
+#define attribute in
+#define varying out
+#define texture2D texture
+#endif
+
 attribute vec3 position;
 attribute vec3 normal;
 attribute vec2 uv0;

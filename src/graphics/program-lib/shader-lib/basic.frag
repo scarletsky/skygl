@@ -1,6 +1,8 @@
-#define BASIC_MATERIAL
+#include <baseFS>
+#include <diffuseFS>
+#include <alphaTestFS>
 
-precision highp float;
+#define BASIC_MATERIAL
 
 #ifdef USE_VERTEX_COLOR
 varying vec4 vColor;
@@ -9,9 +11,6 @@ varying vec4 vColor;
 #ifdef COLOR_MAP
 varying vec2 vUv0;
 #endif
-
-#include <diffuseFS>
-#include <alphaTestFS>
 
 void main() {
 
