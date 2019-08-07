@@ -73,7 +73,7 @@ export default class ProgramLib {
 
         for (const k in options) {
             if (options[k]) {
-                chunks.push(k);
+                chunks.push(`${k}=${options[k]}`);
             }
         }
 
