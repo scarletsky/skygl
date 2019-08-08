@@ -274,6 +274,12 @@ export default class Texture implements IResize {
         const mipObject = this._levels[this.level] || null;
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
         gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
+
+        if (this.format === Texture.DEPTH_COMPONENT && !device.webgl2) {
+            this.internalFormat = Texture.DEPTH_COMPONENT;
+            this.internalFormatType = Texture.UNSIGNED_SHORT;
+        }
+
         if (this.compressed) {
             gl.compressedTexImage2D(
                 this.target,
@@ -298,7 +304,7 @@ export default class Texture implements IResize {
             );
         }
 
-        if (!this.compressed && this.mipmaps) {
+        if (!this.compressed && this.mipmaps && (device.webgl2 || this._pot)) {
             gl.generateMipmap(this.target);
         }
     }
