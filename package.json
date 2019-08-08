@@ -25,26 +25,20 @@
     "typescript": "^3.5.3"
   },
   "jest": {
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
     "testRegex": "(/tests/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
     "moduleFileExtensions": [
-      "ts",
-      "tsx",
       "js",
-      "jsx",
       "json",
-      "node"
+      "jsx",
+      "node",
+      "ts",
+      "tsx"
     ],
     "modulePaths": [
       "<rootDir>/src"
     ],
-    "globals": {
-      "ts-jest": {
-        "skipBabel": true
-      }
-    }
+    "preset": "ts-jest",
+    "testMatch": null
   },
   "dependencies": {
     "tslib": "^1.10.0"
