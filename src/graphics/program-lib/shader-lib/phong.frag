@@ -3,10 +3,6 @@
 #include <diffuseFS>
 #include <specularFS>
 #include <emissiveFS>
-#include <lightCommonFS>
-#include <shadowCommonVSFS>
-#include <shadowCommonFS>
-#include <lightingPhongFS>
 
 #define PHONG_MATERIAL
 
@@ -42,11 +38,16 @@ uniform samplerCube uEnvironmentMap;
 #include <refractionFS>
 #endif
 
+#include <lightCommonFS>
+#include <shadowCommonVSFS>
+#include <shadowCommonFS>
+#include <lightingPhongFS>
+
 void main() {
 
   vec3 N = vNormal;
   vec3 V = normalize(uViewPosition - vPosition);
-  vec3 dDiffuse = getMaterialDiffuse();
+  vec4 dDiffuse = vec4(getMaterialDiffuse(), 1.0);
   vec4 dSpecular = getMaterialSpecular();
   vec4 dEmissive = getMaterialEmissive();
   vec4 dAmbient = vec4(0.2, 0.2, 0.2, 1);
