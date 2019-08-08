@@ -10,11 +10,21 @@ import Mesh from "scene/mesh";
 import { IResize } from "interfaces";
 
 interface DeviceOptions extends WebGLContextAttributes {
-    preferWebgl2?: true;
+    preferWebgl2?: boolean;
 }
 
 interface TextureUnits {
     [target: number]: Texture;
+}
+
+interface DeviceExtensions {
+    ANGLEInstancedArrays?: ANGLE_instanced_arrays;
+    EXTShaderTextureLod?: EXT_shader_texture_lod;
+    EXTsRGB?: EXT_sRGB;
+    EXTFragDepth?: EXT_frag_depth;
+    OESTextureFloat?: OES_texture_float;
+    OESVertexArrayObject?: OES_vertex_array_object;
+    WEBGLDepthTexture?: WEBGL_depth_texture;
 }
 
 export default class Device implements IResize {
@@ -40,6 +50,7 @@ export default class Device implements IResize {
     public textureUnits: TextureUnits[];
     public integrateBRDFMap: Texture;
 
+    public extensions: DeviceExtensions;
     public maxTextureSize: number;
     public maxCombinedTextureUnits: number;
     public maxPixelRatio = window.devicePixelRatio;
@@ -107,7 +118,15 @@ export default class Device implements IResize {
     }
 
     private initializeExtensions() {
-
+        const gl = this.gl;
+        this.extensions = {};
+        this.extensions.ANGLEInstancedArrays = gl.getExtension("ANGLE_instanced_arrays");
+        this.extensions.EXTsRGB = gl.getExtension("EXT_sRGB");
+        this.extensions.EXTFragDepth = gl.getExtension("EXT_frag_depth");
+        this.extensions.EXTShaderTextureLod = gl.getExtension("EXT_shader_texture_lod");
+        this.extensions.OESTextureFloat = gl.getExtension("OES_texture_float");
+        this.extensions.OESVertexArrayObject = gl.getExtension("OES_vertex_array_object");
+        this.extensions.WEBGLDepthTexture = gl.getExtension("WEBGL_depth_texture");
     }
 
     private initializeRenderState() {
