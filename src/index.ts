@@ -9,4 +9,5 @@ export * from "./cameras";
 export * from "./geometries";
 export * from "./lights";
 export * from "./materials";
+export * from "./effects";
 export * from "./utils";
