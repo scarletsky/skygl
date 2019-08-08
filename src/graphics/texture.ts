@@ -169,6 +169,7 @@ export default class Texture implements IResize {
 
     constructor(params: TextureParameters = {}) {
         this.setParameters(params);
+        this._pot = powerOfTwo(this.width) && powerOfTwo(this.height);
     }
 
     get compressed() {
@@ -201,15 +202,14 @@ export default class Texture implements IResize {
     public resize(width: number, height: number) {
         this.width = width;
         this.height = height;
+        this._pot = powerOfTwo(this.width) && powerOfTwo(this.height);
     }
 
     public verifySource(source: MipObject) {
-         if (source instanceof HTMLImageElement ||
+        if (source instanceof HTMLImageElement ||
             source instanceof HTMLCanvasElement ||
             source instanceof HTMLVideoElement) {
-            this.width = source.width;
-            this.height = source.height;
-            this._pot = powerOfTwo(this.width) && powerOfTwo(this.height);
+            this.resize(source.width, source.height);
         }
     }
 
