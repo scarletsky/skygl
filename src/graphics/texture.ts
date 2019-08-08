@@ -161,7 +161,7 @@ export default class Texture implements IResize {
     public mipmaps = true;
     public level = 0;
     public _levels = [] as TextureLevels;
-    public _pot = true;
+    public _pot = false;
     public _needsUpload = true;
     public _needsUploadMipmap = true;
     public _glTextureId = null as WebGLTexture;
