@@ -31,7 +31,7 @@ export default class Device implements IResize {
     public width = 0;
     public height = 0;
     public canvas: HTMLCanvasElement;
-    public gl: WebGLRenderingContext;
+    public gl: WebGL2RenderingContext | WebGLRenderingContext;
     // TODO: rename to webgl, value should be 1 or 2
     public webgl2: boolean;
     public scope: ScopeSpace;
@@ -55,11 +55,11 @@ export default class Device implements IResize {
     public maxCombinedTextureUnits: number;
     public maxPixelRatio = window.devicePixelRatio;
 
-    private shader: Shader;
-    private renderTarget: RenderTarget;
-    private vertexBuffer: WebGLBuffer;
-    private indexBuffer: WebGLBuffer;
-    private enabledAttributes: Uint8Array;
+    public shader: Shader;
+    public renderTarget: RenderTarget;
+    public vertexBuffer: WebGLBuffer;
+    public indexBuffer: WebGLBuffer;
+    public enabledAttributes: Uint8Array;
 
     constructor(canvas: HTMLCanvasElement, options: DeviceOptions = {}) {
         this.canvas = canvas;
@@ -91,7 +91,7 @@ export default class Device implements IResize {
             }
         }
 
-        if (!gl) throw new Error("Browser do not support WebGL.");
+        if (!gl) throw new Error("[Device] Browser do not support WebGL.");
     }
 
     private initializeDevice() {
