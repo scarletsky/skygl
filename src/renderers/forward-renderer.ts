@@ -1,7 +1,7 @@
-import Device from "graphics/device";
+import Renderer from "./renderer";
 import Camera from "cameras/camera";
 import Node from "core/node";
-import Scene from "./scene";
+import Scene from "scene/scene";
 
 function backToFront(a: Node, b: Node) {
     return b.worldPosition.z - a.worldPosition.z;
@@ -11,12 +11,7 @@ function frontToBack(a: Node, b: Node) {
     return a.worldPosition.z - b.worldPosition.z;
 }
 
-export default class ForwardRenderer {
-    private device: Device;
-
-    constructor(device: Device) {
-        this.device = device;
-    }
+export default class ForwardRenderer extends Renderer {
 
     public render(scene: Scene, camera: Camera) {
         let material, shader;
