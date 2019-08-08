@@ -16,6 +16,8 @@ export default class RenderPass extends Pass {
         this.output.attach(RenderTarget.TARGET_COLOR_BUFFER, new Texture());
         this.output.attach(RenderTarget.TARGET_DEPTH_BUFFER, new Texture({
             mipmaps: false,
+            magFilter: Texture.NEAREST,
+            minFilter: Texture.NEAREST,
             format: Texture.DEPTH_COMPONENT,
             internalFormat: Texture.DEPTH_COMPONENT32F,
             internalFormatType: Texture.FLOAT
