@@ -7,6 +7,7 @@ export default class EffectManager {
 
     constructor(renderer: Renderer) {
         this.renderer = renderer;
+        this.renderer.device.on("resize", this.onResize, this);
     }
 
     public add(pass: Pass) {
@@ -48,5 +49,11 @@ export default class EffectManager {
                 this.queue[i].render(renderer, this.queue[i - 1].output);
             }
         }
+    }
+
+    private onResize(width: number, height: number) {
+        this.queue.forEach((pass) => {
+            pass.output.resize(width, height);
+        });
     }
 }
