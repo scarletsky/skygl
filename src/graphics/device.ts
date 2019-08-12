@@ -8,6 +8,7 @@ import Geometry from "geometries/geometry";
 import Material from "materials/material";
 import Mesh from "scene/mesh";
 import { IResize } from "interfaces";
+import { EventEmitter } from "core";
 
 interface DeviceOptions extends WebGLContextAttributes {
     preferWebgl2?: boolean;
@@ -27,7 +28,7 @@ interface DeviceExtensions {
     WEBGLDepthTexture?: WEBGL_depth_texture;
 }
 
-export default class Device implements IResize {
+export default class Device extends EventEmitter implements IResize {
     public width = 0;
     public height = 0;
     public canvas: HTMLCanvasElement;
@@ -63,6 +64,7 @@ export default class Device implements IResize {
     public enabledAttributes: Uint8Array;
 
     constructor(canvas: HTMLCanvasElement, options: DeviceOptions = {}) {
+        super();
         this.canvas = canvas;
         this.width = canvas.width;
         this.height = canvas.height;
@@ -164,6 +166,8 @@ export default class Device implements IResize {
 
         this.canvas.width = width * this.maxPixelRatio;
         this.canvas.height = height * this.maxPixelRatio;
+
+        this.fire("resize", this.canvas.width, this.canvas.height);
     }
 
     public setMaxPixelRatio(value: number) {
