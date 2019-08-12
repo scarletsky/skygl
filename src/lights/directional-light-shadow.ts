@@ -48,12 +48,12 @@ export default class DirectionalLightShadow extends Shadow {
 
     public apply(device: Device, scene: Scene, index: number) {
         const scope = device.scope;
-        const canvas = device.canvas;
         const camera = this.camera;
         const light = this.light;
         const material = Shadow.DEPTH_MATERIAL;
         const uniformPrefix = `uDirectionalLightShadows[${index}].`;
         const shader = device.programlib.getProgram(material, scene);
+        const lastRTState = device.getRenderTargetState();
         camera.setWorldPosition2(light.getWorldPosition());
         camera.setWorldRotation(light.getWorldRotation());
         camera.rotateLocal(-90, 0, 0);
@@ -71,9 +71,7 @@ export default class DirectionalLightShadow extends Shadow {
             device.draw(mesh);
         }
 
-        device.setRenderTarget(null);
-        device.setViewport(0, 0, canvas.width, canvas.height);
-        device.setColorWrite(true, true, true, true);
+        device.setRenderTargetState(lastRTState);
 
         this.matrix.set([
             0.5, 0.0, 0.0, 0.0,

@@ -28,6 +28,7 @@ export function prefilterCubemap(device: Device, cubemap: Cubemap, maxMipSize = 
     const projectionMatrix = new Mat4().setPerspective(90 * DEG_TO_RAD, 1, 0.1, 10);
     const targets = [];
     const prefilteredCubemaps = [];
+    const lastRTState = device.getRenderTargetState();
 
     scope.setValue("uProjectionMatrix", projectionMatrix);
     scope.setValue("uEnvironmentMap", cubemap);
@@ -83,7 +84,7 @@ export function prefilterCubemap(device: Device, cubemap: Cubemap, maxMipSize = 
         prefilteredCubemap.setSource(cubemapPixels);
     }
 
-    device.setRenderTarget(null);
+    device.setRenderTargetState(lastRTState);
     shader.destroy(device);
     targets.forEach(target => target.destroy(device));
     cubemap.prefilteredCubemaps = prefilteredCubemaps;
@@ -99,6 +100,7 @@ export function generateIntegrateBRDFMap(device: Device, size = 512) {
         fshader: integrateBRDFShader.fshader
     });
     const rt = new RenderTarget();
+    const lastRTState = device.getRenderTargetState();
     const integrateBRDFMap = new Texture({
         name: "Integrade BRDF Map",
         width: size,
@@ -107,7 +109,7 @@ export function generateIntegrateBRDFMap(device: Device, size = 512) {
         minFilter: Texture.LINEAR,
         wrapS: Texture.CLAMP_TO_EDGE,
         wrapT: Texture.CLAMP_TO_EDGE,
-    })
+    });
     rt.attach(RenderTarget.TARGET_COLOR_BUFFER, integrateBRDFMap);
 
     mesh.material.apply(device);
@@ -117,9 +119,10 @@ export function generateIntegrateBRDFMap(device: Device, size = 512) {
     device.setViewport(0, 0, size, size);
     device.clear();
     device.setRenderTarget(rt);
+
     device.draw(mesh);
 
-    device.setRenderTarget(null);
+    device.setRenderTargetState(lastRTState);
     shader.destroy(device);
     rt.detach(RenderTarget.TARGET_COLOR_BUFFER);
     rt.destroy(device);
@@ -149,6 +152,7 @@ export function cubemapToIrradianceMap(device: Device, cubemap: Cubemap, size = 
         height: size,
         flipY: true
     });
+    const lastRTState = device.getRenderTargetState();
     const targets = [];
     const cubemapPixels = [];
 
@@ -192,7 +196,7 @@ export function cubemapToIrradianceMap(device: Device, cubemap: Cubemap, size = 
 
     irradianceMap.setSource(cubemapPixels);
     cubemap.irradianceMap = irradianceMap;
-    device.setRenderTarget(null);
+    device.setRenderTargetState(lastRTState);
     shader.destroy(device);
     targets.forEach(target => target.destroy(device));
 }
@@ -219,6 +223,7 @@ export function equirectangularToCubemap(device: Device, equirectangularMap: Tex
         height: size,
         flipY: true
     });
+    const lastRTState = device.getRenderTargetState();
     const targets = [];
     const pixels = [];
 
@@ -261,7 +266,7 @@ export function equirectangularToCubemap(device: Device, equirectangularMap: Tex
     }
 
     cubemap.setSource(pixels);
-    device.setRenderTarget(null);
+    device.setRenderTargetState(lastRTState);
     shader.destroy(device);
     targets.forEach(target => target.destroy(device));
 

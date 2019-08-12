@@ -3,7 +3,7 @@ import ScopeSpace from "./scope-space";
 import Shader from "./shader";
 import Buffer from "./buffer";
 import Texture from "./texture";
-import RenderTarget from "./render-target";
+import RenderTarget, { RenderTargetState } from "./render-target";
 import Geometry from "geometries/geometry";
 import Material from "materials/material";
 import Mesh from "scene/mesh";
@@ -45,6 +45,7 @@ export default class Device implements IResize {
     public depthTest: boolean;
     public depthFunc: number;
     public cullFace: number;
+    public viewport: [number, number, number, number];
 
     public textureUnit: number;
     public textureUnits: TextureUnits[];
@@ -131,6 +132,9 @@ export default class Device implements IResize {
 
     private initializeRenderState() {
         const gl = this.gl;
+
+        this.renderTarget = null;
+        this.viewport = [0, 0, this.canvas.width, this.canvas.height];
 
         this.blending = false;
         gl.disable(gl.BLEND);
@@ -316,7 +320,39 @@ export default class Device implements IResize {
     }
 
     public setViewport(x: number, y: number, width: number, height: number) {
-        this.gl.viewport(x, y, width, height);
+        if (this.viewport[0] !== x ||
+            this.viewport[1] !== y ||
+            this.viewport[2] !== width ||
+            this.viewport[3] !== height
+           ) {
+            this.viewport[0] = x;
+            this.viewport[1] = y;
+            this.viewport[2] = width;
+            this.viewport[3] = height;
+            this.gl.viewport(x, y, width, height);
+        }
+    }
+
+    public getRenderTargetState() : RenderTargetState {
+        return {
+            renderTarget: this.renderTarget,
+            viewport: [this.viewport[0], this.viewport[1], this.viewport[2], this.viewport[3]],
+            colorWrite: [this.redWrite, this.greenWrite, this.blueWrite, this.alphaWrite],
+            depthTest: this.depthTest,
+            depthWrite: this.depthWrite,
+            depthFunc: this.depthFunc,
+            cullFace: this.cullFace
+        };
+    }
+
+    public setRenderTargetState(state: RenderTargetState) {
+        this.setRenderTarget(state.renderTarget);
+        this.setViewport(...state.viewport);
+        this.setColorWrite(...state.colorWrite);
+        this.setDepthTest(state.depthTest);
+        this.setDepthWrite(state.depthWrite);
+        this.setDepthFunc(state.depthFunc);
+        this.setCullFace(state.cullFace);
     }
 
     public setRenderTarget(renderTarget: RenderTarget) {

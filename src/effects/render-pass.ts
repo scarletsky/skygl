@@ -26,12 +26,13 @@ export default class RenderPass extends Pass {
 
     public render(renderer: Renderer) {
         const device = renderer.device;
+        const lastRTState = device.getRenderTargetState();
 
         if (!this.renderToScreen) {
             device.setRenderTarget(this.output);
         }
 
         renderer.render(this.scene, this.camera);
-        device.setRenderTarget(null);
+        device.setRenderTargetState(lastRTState);
     }
 }

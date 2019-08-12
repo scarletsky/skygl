@@ -29,6 +29,7 @@ export default class CopyPass extends Pass {
             gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
             gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
         } else {
+            const lastRTState = device.getRenderTargetState();
             device.setRenderTarget(input);
             this.output.colorBuffer.apply(device);
             gl.copyTexImage2D(
@@ -36,7 +37,7 @@ export default class CopyPass extends Pass {
                 0, 0, this.output.colorBuffer.width, this.output.colorBuffer.height,
                 0
             );
-            device.setRenderTarget(null);
+            device.setRenderTargetState(lastRTState);
         }
 
     }

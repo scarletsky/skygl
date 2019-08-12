@@ -10,6 +10,16 @@ export interface RenderTargetParameters {
     depthBuffer?: Texture;
 }
 
+export interface RenderTargetState {
+    renderTarget: RenderTarget;
+    viewport: [number, number, number, number];
+    colorWrite: [boolean, boolean, boolean, boolean];
+    depthTest: boolean;
+    depthWrite: boolean;
+    depthFunc: number;
+    cullFace: number;
+}
+
 export type RenderTargetBufferTarget = "colorBuffer" | "depthBuffer";
 
 export default class RenderTarget implements IResize {
