@@ -169,7 +169,7 @@ export default class Texture implements IResize {
 
     constructor(params: TextureParameters = {}) {
         this.setParameters(params);
-        this._pot = powerOfTwo(this.width) && powerOfTwo(this.height);
+        this.resize(this.width, this.height);
     }
 
     get compressed() {
@@ -203,6 +203,7 @@ export default class Texture implements IResize {
         this.width = width;
         this.height = height;
         this._pot = powerOfTwo(this.width) && powerOfTwo(this.height);
+        this.upload();
     }
 
     public verifySource(source: MipObject) {
