@@ -341,28 +341,36 @@ export class Mat4 {
 
         if (trace > 0) {
             S = Math.sqrt(trace + 1.0) * 2;
-            res.w = 0.25 * S;
-            res.x = (sm23 - sm32) / S;
-            res.y = (sm31 - sm13) / S;
-            res.z = (sm12 - sm21) / S;
+            res.set(
+                (sm23 - sm32) / S,
+                (sm31 - sm13) / S,
+                (sm12 - sm21) / S,
+                0.25 * S
+            );
         } else if (sm11 > sm22 && sm11 > sm33) {
             S = Math.sqrt(1.0 + sm11 - sm22 - sm33) * 2;
-            res.w = (sm23 - sm32) / S;
-            res.x = 0.25 * S;
-            res.y = (sm12 + sm21) / S;
-            res.z = (sm31 + sm13) / S;
+            res.set(
+                0.25 * S,
+                (sm12 + sm21) / S,
+                (sm31 + sm13) / S,
+                (sm23 - sm32) / S
+            );
         } else if (sm22 > sm33) {
             S = Math.sqrt(1.0 + sm22 - sm11 - sm33) * 2;
-            res.w = (sm31 - sm13) / S;
-            res.x = (sm12 + sm21) / S;
-            res.y = 0.25 * S;
-            res.z = (sm23 + sm32) / S;
+            res.set(
+                (sm12 + sm21) / S,
+                0.25 * S,
+                (sm23 + sm32) / S,
+                (sm31 - sm13) / S
+            );
         } else {
             S = Math.sqrt(1.0 + sm33 - sm11 - sm22) * 2;
-            res.w = (sm12 - sm21) / S;
-            res.x = (sm31 + sm13) / S;
-            res.y = (sm23 + sm32) / S;
-            res.z = 0.25 * S;
+            res.set(
+                (sm31 + sm13) / S,
+                (sm23 + sm32) / S,
+                0.25 * S,
+                (sm12 - sm21) / S
+            );
         }
 
         return res;
@@ -388,6 +396,124 @@ export class Mat4 {
         );
 
         return res;
+    }
+
+    getTRS(translation = new Vec3(), rotation = new Quat(), scale = new Vec3()) {
+        const data = this.data;
+        translation.set(data[12], data[13], data[14]);
+
+        let m11 = data[0];
+        let m12 = data[1];
+        let m13 = data[2];
+        let m21 = data[4];
+        let m22 = data[5];
+        let m23 = data[6];
+        let m31 = data[8];
+        let m32 = data[9];
+        let m33 = data[10];
+
+        scale.set(
+            Math.hypot(m11, m12, m13),
+            Math.hypot(m21, m22, m23),
+            Math.hypot(m31, m32, m33)
+        );
+
+        let is1 = 1 / scale.x;
+        let is2 = 1 / scale.y;
+        let is3 = 1 / scale.z;
+
+        let sm11 = m11 * is1;
+        let sm12 = m12 * is2;
+        let sm13 = m13 * is3;
+        let sm21 = m21 * is1;
+        let sm22 = m22 * is2;
+        let sm23 = m23 * is3;
+        let sm31 = m31 * is1;
+        let sm32 = m32 * is2;
+        let sm33 = m33 * is3;
+
+        let trace = sm11 + sm22 + sm33;
+        let S = 0;
+
+        if (trace > 0) {
+            S = Math.sqrt(trace + 1.0) * 2;
+            rotation.set(
+                (sm23 - sm32) / S,
+                (sm31 - sm13) / S,
+                (sm12 - sm21) / S,
+                0.25 * S
+            );
+        } else if (sm11 > sm22 && sm11 > sm33) {
+            S = Math.sqrt(1.0 + sm11 - sm22 - sm33) * 2;
+            rotation.set(
+                0.25 * S,
+                (sm12 + sm21) / S,
+                (sm31 + sm13) / S,
+                (sm23 - sm32) / S
+            );
+        } else if (sm22 > sm33) {
+            S = Math.sqrt(1.0 + sm22 - sm11 - sm33) * 2;
+            rotation.set(
+                (sm12 + sm21) / S,
+                0.25 * S,
+                (sm23 + sm32) / S,
+                (sm31 - sm13) / S
+            );
+        } else {
+            S = Math.sqrt(1.0 + sm33 - sm11 - sm22) * 2;
+            rotation.set(
+                (sm31 + sm13) / S,
+                (sm23 + sm32) / S,
+                0.25 * S,
+                (sm12 - sm21) / S
+            );
+        }
+
+        return rotation;
+    }
+
+    setTRS(translation: Vec3, rotation: Quat, scale: Vec3) {
+        let x = rotation.x,
+            y = rotation.y,
+            z = rotation.z,
+            w = rotation.w;
+        let x2 = x + x;
+        let y2 = y + y;
+        let z2 = z + z;
+
+        let xx = x * x2;
+        let xy = x * y2;
+        let xz = x * z2;
+        let yy = y * y2;
+        let yz = y * z2;
+        let zz = z * z2;
+        let wx = w * x2;
+        let wy = w * y2;
+        let wz = w * z2;
+        let sx = scale.x;
+        let sy = scale.y;
+        let sz = scale.z;
+
+        const data = this.data;
+
+        data[0] = (1 - (yy + zz)) * sx;
+        data[1] = (xy + wz) * sx;
+        data[2] = (xz - wy) * sx;
+        data[3] = 0;
+        data[4] = (xy - wz) * sy;
+        data[5] = (1 - (xx + zz)) * sy;
+        data[6] = (yz + wx) * sy;
+        data[7] = 0;
+        data[8] = (xz + wy) * sz;
+        data[9] = (yz - wx) * sz;
+        data[10] = (1 - (xx + yy)) * sz;
+        data[11] = 0;
+        data[12] = translation.x;
+        data[13] = translation.x;
+        data[14] = translation.x;
+        data[15] = 1;
+
+        return this;
     }
 
     toJSON() {
