@@ -8,6 +8,7 @@ const vecA = new Vec3();
 const vecB = new Vec3();
 const quatA = new Quat();
 const matA = new Mat4();
+const matB = new Mat4();
 
 export class Node extends BaseObject {
     public cache: Cache<Node>;
@@ -92,7 +93,7 @@ export class Node extends BaseObject {
     }
 
     getLocalPosition(res = new Vec3()) {
-        return this.getLocalTransform().getTranslation(res);
+        return res.copy(this.localPosition);
     }
 
     setLocalPosition(x: Vec3 | number, y = 0, z = 0) {
@@ -128,7 +129,7 @@ export class Node extends BaseObject {
     }
 
     getLocalRotation(res = new Quat()) {
-        return this.getLocalTransform().getRotation(res);
+        return res.copy(this.localRotation);
     }
 
     setLocalRotation(value: Quat) {
@@ -162,8 +163,8 @@ export class Node extends BaseObject {
     }
 
     getLocalEulerAngle(res = new Vec3()) {
-        this.getLocalTransform().getRotation(quatA);
-        return quatA.getEulerAngle(res);
+        this.localRotation.getEulerAngle(res);
+        return res;
     }
 
     setLocalEulerAngle(x: Vec3 | number, y = 0, z = 0) {
@@ -179,7 +180,7 @@ export class Node extends BaseObject {
     }
 
     getLocalScale(res = new Vec3()) {
-        return this.getLocalTransform().getScale(res);
+        return res.copy(this.localScale);
     }
 
     setLocalScale(x: Vec3 | number, y = 1, z = 1) {
@@ -203,8 +204,8 @@ export class Node extends BaseObject {
         return this.localTransform;
     }
 
-    setLocalTransform(value: Mat4) {
-        this.localTransform.copy(value);
+    setLocalTransform(transform: Mat4) {
+        this.localTransform.copy(transform);
         this.localTransform.getTRS(this.localPosition, this.localRotation, this.localScale);
         this._dirtifyLocal();
 
@@ -221,14 +222,16 @@ export class Node extends BaseObject {
         return this.worldTransform;
     }
 
-    setWorldTransform(value: Mat4) {
+    setWorldTransform(transform: Mat4) {
         if (this.parent === null) {
-            this.setLocalTransform(value);
+            this.setLocalTransform(transform);
         } else {
-            matA.copy(this.parent.getWorldTransform());
-            matA.invert();
-            matA.mul(value);
-            this.setLocalTransform(matA);
+            matA.copy(this.parent.getWorldTransform()).invert();
+            matB.mul2(matA, transform);
+            matB.getTRS(vecA, quatA, vecB);
+            this.setLocalPosition(vecA);
+            this.setLocalRotation(quatA);
+            this.setLocalScale(vecB);
         }
 
         return this;

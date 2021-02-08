@@ -3,10 +3,26 @@ import { Quat } from 'math/Quat';
 import { Mat4 } from 'math/Mat4';
 import { Node } from 'scene/Node';
 
-test('Node#addChild', () => {
-    const root = new Node();
-    const child = new Node();
+let root: Node;
+let child: Node;
+let child1: Node;
+let child2: Node;
+const vec1 = new Vec3(3, 4, 5);
+const vec2 = new Vec3(5, 2, 2);
+const vec3 = new Vec3(30, 20, 10);
+const vec4 = new Vec3(10, 10, 10);
+const quat1 = new Quat().setEulerAngle(30, 20, 10);
+const quat2 = new Quat().setEulerAngle(45, 45, 45);
 
+
+beforeEach(() => {
+    root = new Node();
+    child = new Node();
+    child1 = new Node();
+    child2 = new Node();
+});
+
+test('Node#addChild', () => {
     expect(root.children.length).toBe(0);
     expect(child.parent).toBeNull();
 
@@ -18,10 +34,6 @@ test('Node#addChild', () => {
 });
 
 test('Node#removeChild', () => {
-    const root = new Node();
-    const child1 = new Node();
-    const child2 = new Node();
-
     root.addChild(child1);
     root.addChild(child2);
 
@@ -41,10 +53,7 @@ test('Node#removeChild', () => {
 });
 
 test('Node#getLocalPosition and Node#setLocalPosition', () => {
-    const root = new Node();
-    const input = [1, 2, 3];
-
-    root.setLocalPosition(new Vec3(...input));
+    root.setLocalPosition(vec1);
 
     expect([
         root.localTransform.data[12],
@@ -52,16 +61,10 @@ test('Node#getLocalPosition and Node#setLocalPosition', () => {
         root.localTransform.data[14]
     ]).toEqual([0, 0, 0]);
 
-    const position = root.getLocalPosition();
-
-    expect(position.toJSON()).toEqual(input);
+    expect(root.getLocalPosition().equals(vec1)).toBeTruthy();
 });
 
 test('Node#getWorldPosition and Node#setWorldPosition', () => {
-    const root = new Node();
-    const child = new Node();
-    const vec1 = new Vec3(3, 4, 5);
-    const vec2 = new Vec3(3, 2, 1);
     const vec3 = new Vec3();
 
     root.setWorldPosition(vec1);
@@ -79,21 +82,13 @@ test('Node#getWorldPosition and Node#setWorldPosition', () => {
 });
 
 test('Node#getLocalRotation and Node#setLocalRotation', () => {
-    const root = new Node();
-    const quat = new Quat().setEulerAngle(10, 20, 30);
-
     expect(root.getLocalRotation().equals(Quat.IDENTITY)).toBeTruthy();
 
-    root.setLocalRotation(quat);
-    expect(root.getLocalRotation().equals(quat)).toBeTruthy();
+    root.setLocalRotation(quat1);
+    expect(root.getLocalRotation().equals(quat1)).toBeTruthy();
 });
 
 test('Node#getWorldRotation and Node#setWorldRotation', () => {
-    const root = new Node();
-    const child = new Node();
-    const quat1 = new Quat().setEulerAngle(30, 20, 10);
-    const quat2 = new Quat().setEulerAngle(45, 45, 45);
-
     expect(root.getWorldRotation().equals(Quat.IDENTITY)).toBeTruthy();
 
     root.setWorldRotation(quat1);
@@ -109,8 +104,6 @@ test('Node#getWorldRotation and Node#setWorldRotation', () => {
 });
 
 test('Node#getLocalEulerAngle and Node#setLocalEulerAngle', () => {
-    const root = new Node();
-    const vec1 = new Vec3(10, 20, 30);
 
     expect(root.getLocalEulerAngle().equals(Vec3.ZERO)).toBeTruthy();
 
@@ -119,11 +112,6 @@ test('Node#getLocalEulerAngle and Node#setLocalEulerAngle', () => {
 });
 
 test('Node#getWorldEulerAngle and Node#getWorldEulerAngle', () => {
-    const root = new Node();
-    const child = new Node();
-    const vec1 = new Vec3(10, 20, 30);
-    const vec2 = new Vec3(45, 45, 45);
-
     expect(root.getWorldEulerAngle().equals(Vec3.ZERO)).toBeTruthy();
 
     root.setWorldEulerAngle(vec1);
@@ -139,10 +127,6 @@ test('Node#getWorldEulerAngle and Node#getWorldEulerAngle', () => {
 });
 
 test('Node#getLocalScale and Node#setLocalScale', () => {
-    const root = new Node();
-    const child = new Node();
-    const vec1 = new Vec3(5, 5, 5);
-
     expect(root.getLocalScale().equals(Vec3.ONE)).toBeTruthy();
 
     root.setLocalScale(vec1);
@@ -153,10 +137,6 @@ test('Node#getLocalScale and Node#setLocalScale', () => {
 });
 
 test('Node#getLocalTransform and Node#setLocalTransform', () => {
-    const root = new Node();
-    const vec1 = new Vec3(10, 20, 30);
-    const vec2 = new Vec3(5, 5, 5);
-    const quat1 = new Quat().setEulerAngle(45, 45, 45);
     const mat1 = new Mat4().setTRS(vec1, quat1, vec2);
 
     expect(root.getLocalTransform().equals(Mat4.IDENTITY)).toBeTruthy();
@@ -170,22 +150,18 @@ test('Node#getLocalTransform and Node#setLocalTransform', () => {
 });
 
 test('Node#getWorldTransform and Node#setWorldTransform', () => {
-    const root = new Node();
-    const child = new Node();
-    const vec1 = new Vec3(10, 20, 30);
-    const vec2 = new Vec3(5, 5, 5);
-    const vec3 = new Vec3(30, 20, 10);
-    const vec4 = new Vec3(10, 10, 10);
-    const quat1 = new Quat().setEulerAngle(30, 30, 30);
-    const quat2 = new Quat().setEulerAngle(60, 60, 60);
     const mat1 = new Mat4().setTRS(vec1, quat1, vec2);
     const mat2 = new Mat4().setTRS(vec3, quat2, vec4);
 
     expect(root.getWorldTransform().equals(Mat4.IDENTITY)).toBeTruthy();
 
     root.setWorldTransform(mat1);
-    expect(root.getWorldPosition().equals(vec1)).toBeTruthy();
-    expect(root.getWorldRotation().equals(quat1)).toBeTruthy();
+
+    console.log('111', root.getWorldRotation());
+    console.log('111', root.getLocalRotation());
+
+    expect(root.getLocalPosition().equals(vec1)).toBeTruthy();
+    expect(root.getLocalRotation().equals(quat1)).toBeTruthy();
     expect(root.getLocalScale().equals(vec2)).toBeTruthy();
     expect(root.getWorldTransform().equals(mat1)).toBeTruthy();
 
@@ -193,6 +169,9 @@ test('Node#getWorldTransform and Node#setWorldTransform', () => {
     expect(child.getWorldTransform().equals(mat1)).toBeTruthy();
 
     child.setWorldTransform(mat2);
+    console.log('position: ', child.getWorldPosition(), mat2.getTranslation());
+    console.log('rotation: ', child.getWorldRotation().getEulerAngle(), mat2.getRotation().getEulerAngle());
+    console.log('scale: ', child.getLocalScale(), mat2.getScale());
     expect(child.getWorldPosition().equals(vec3)).toBeTruthy();
     expect(child.getWorldRotation().equals(quat2)).toBeTruthy();
     expect(child.getLocalScale().equals(vec4)).toBeTruthy();
