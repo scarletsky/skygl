@@ -417,56 +417,7 @@ export class Mat4 {
             Math.hypot(m31, m32, m33)
         );
 
-        let is1 = 1 / scale.x;
-        let is2 = 1 / scale.y;
-        let is3 = 1 / scale.z;
-
-        let sm11 = m11 * is1;
-        let sm12 = m12 * is2;
-        let sm13 = m13 * is3;
-        let sm21 = m21 * is1;
-        let sm22 = m22 * is2;
-        let sm23 = m23 * is3;
-        let sm31 = m31 * is1;
-        let sm32 = m32 * is2;
-        let sm33 = m33 * is3;
-
-        let trace = sm11 + sm22 + sm33;
-        let S = 0;
-
-        if (trace > 0) {
-            S = Math.sqrt(trace + 1.0) * 2;
-            rotation.set(
-                (sm23 - sm32) / S,
-                (sm31 - sm13) / S,
-                (sm12 - sm21) / S,
-                0.25 * S
-            );
-        } else if (sm11 > sm22 && sm11 > sm33) {
-            S = Math.sqrt(1.0 + sm11 - sm22 - sm33) * 2;
-            rotation.set(
-                0.25 * S,
-                (sm12 + sm21) / S,
-                (sm31 + sm13) / S,
-                (sm23 - sm32) / S
-            );
-        } else if (sm22 > sm33) {
-            S = Math.sqrt(1.0 + sm22 - sm11 - sm33) * 2;
-            rotation.set(
-                (sm12 + sm21) / S,
-                0.25 * S,
-                (sm23 + sm32) / S,
-                (sm31 - sm13) / S
-            );
-        } else {
-            S = Math.sqrt(1.0 + sm33 - sm11 - sm22) * 2;
-            rotation.set(
-                (sm31 + sm13) / S,
-                (sm23 + sm32) / S,
-                0.25 * S,
-                (sm12 - sm21) / S
-            );
-        }
+        rotation.setMat4(this);
 
         return rotation;
     }

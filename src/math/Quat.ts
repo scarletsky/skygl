@@ -1,4 +1,5 @@
 import { Vec3 } from './Vec3';
+import { Mat4, Mat4Data } from './Mat4';
 import { EPSILON, HALF_RAD, RAD_TO_DEG } from './math';
 
 export class Quat {
@@ -164,7 +165,13 @@ export class Quat {
         return res.set(x, y, z).scale(RAD_TO_DEG);
     }
 
-    setEulerAngle(x: number, y: number, z: number) {
+    setEulerAngle(x: Vec3 | number, y = 0, z = 0) {
+        if (x instanceof Vec3) {
+            y = x.y;
+            z = x.z;
+            x = x.x;
+        }
+
         x *= HALF_RAD;
         z *= HALF_RAD;
         y *= HALF_RAD;
@@ -180,6 +187,106 @@ export class Quat {
         this.y = cx * sy * cz + sx * cy * sz;
         this.z = cx * cy * sz - sx * sy * cz;
         this.w = cx * cy * cz + sx * sy * sz;
+
+        return this;
+    }
+
+    setMat4(mat: Mat4) {
+        let m00, m01, m02, m10, m11, m12, m20, m21, m22,
+            tr, s, rs, lx, ly, lz;
+
+        let m = mat.data as Mat4Data;
+
+        // Cache matrix values for super-speed
+        m00 = m[0];
+        m01 = m[1];
+        m02 = m[2];
+        m10 = m[4];
+        m11 = m[5];
+        m12 = m[6];
+        m20 = m[8];
+        m21 = m[9];
+        m22 = m[10];
+
+        // Remove the scale from the matrix
+        lx = m00 * m00 + m01 * m01 + m02 * m02;
+        if (lx === 0)
+            return this;
+        lx = 1 / Math.sqrt(lx);
+        ly = m10 * m10 + m11 * m11 + m12 * m12;
+        if (ly === 0)
+            return this;
+        ly = 1 / Math.sqrt(ly);
+        lz = m20 * m20 + m21 * m21 + m22 * m22;
+        if (lz === 0)
+            return this;
+        lz = 1 / Math.sqrt(lz);
+
+        m00 *= lx;
+        m01 *= lx;
+        m02 *= lx;
+        m10 *= ly;
+        m11 *= ly;
+        m12 *= ly;
+        m20 *= lz;
+        m21 *= lz;
+        m22 *= lz;
+
+        // http://www.cs.ucr.edu/~vbz/resources/quatut.pdf
+
+        tr = m00 + m11 + m22;
+        if (tr >= 0) {
+            s = Math.sqrt(tr + 1);
+            this.w = s * 0.5;
+            s = 0.5 / s;
+            this.x = (m12 - m21) * s;
+            this.y = (m20 - m02) * s;
+            this.z = (m01 - m10) * s;
+        } else {
+            if (m00 > m11) {
+                if (m00 > m22) {
+                    // XDiagDomMatrix
+                    rs = (m00 - (m11 + m22)) + 1;
+                    rs = Math.sqrt(rs);
+
+                    this.x = rs * 0.5;
+                    rs = 0.5 / rs;
+                    this.w = (m12 - m21) * rs;
+                    this.y = (m01 + m10) * rs;
+                    this.z = (m02 + m20) * rs;
+                } else {
+                    // ZDiagDomMatrix
+                    rs = (m22 - (m00 + m11)) + 1;
+                    rs = Math.sqrt(rs);
+
+                    this.z = rs * 0.5;
+                    rs = 0.5 / rs;
+                    this.w = (m01 - m10) * rs;
+                    this.x = (m20 + m02) * rs;
+                    this.y = (m21 + m12) * rs;
+                }
+            } else if (m11 > m22) {
+                // YDiagDomMatrix
+                rs = (m11 - (m22 + m00)) + 1;
+                rs = Math.sqrt(rs);
+
+                this.y = rs * 0.5;
+                rs = 0.5 / rs;
+                this.w = (m20 - m02) * rs;
+                this.z = (m12 + m21) * rs;
+                this.x = (m10 + m01) * rs;
+            } else {
+                // ZDiagDomMatrix
+                rs = (m22 - (m00 + m11)) + 1;
+                rs = Math.sqrt(rs);
+
+                this.z = rs * 0.5;
+                rs = 0.5 / rs;
+                this.w = (m01 - m10) * rs;
+                this.x = (m20 + m02) * rs;
+                this.y = (m21 + m12) * rs;
+            }
+        }
 
         return this;
     }
