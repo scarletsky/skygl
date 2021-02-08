@@ -1,5 +1,5 @@
 import { Vec3 } from './Vec3';
-import { EPSILON } from './math';
+import { EPSILON, HALF_TO_RAD, RAD_TO_DEG } from './math';
 
 export class Quat {
     public x: number;
@@ -109,7 +109,7 @@ export class Quat {
     }
 
     getAxisAngle(res = new Vec3()) {
-        const rad = Math.acos(q[3]) * 2.0;
+        const rad = Math.acos(this.w) * 2.0;
         const s = Math.sin(rad / 2.0);
         if (s > EPSILON) {
             res.x = this.x / s;
@@ -132,6 +132,52 @@ export class Quat {
         this.y = s * axis.y;
         this.z = s * axis.z;
         this.w = Math.cos(rad);
+
+        return this;
+    }
+
+    getEulerAngle(res = new Vec3()) {
+        let x, y, z, qx, qy, qz, qw, a2;
+
+        qx = this.x;
+        qy = this.y;
+        qz = this.z;
+        qw = this.w;
+
+        a2 = 2 * (qw * qy - qx * qz);
+        if (a2 <= -0.99999) {
+            x = 2 * Math.atan2(qx, qw);
+            y = -Math.PI / 2;
+            z = 0;
+        } else if (a2 >= 0.99999) {
+            x = 2 * Math.atan2(qx, qw);
+            y = Math.PI / 2;
+            z = 0;
+        } else {
+            x = Math.atan2(2 * (qw * qx + qy * qz), 1 - 2 * (qx * qx + qy * qy));
+            y = Math.asin(a2);
+            z = Math.atan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz));
+        }
+
+        return res.set(x, y, z).scale(RAD_TO_DEG);
+    }
+
+    setEulerAngle(x: number, y: number, z: number) {
+        x *= HALF_TO_RAD;
+        z *= HALF_TO_RAD;
+        y *= HALF_TO_RAD;
+
+        let sx = Math.sin(x);
+        let cx = Math.cos(x);
+        let sy = Math.sin(y);
+        let cy = Math.cos(y);
+        let sz = Math.sin(z);
+        let cz = Math.cos(z);
+
+        this.x = sx * cy * cz - cx * sy * sz;
+        this.y = cx * sy * cz + sx * cy * sz;
+        this.z = cx * cy * sz - sx * sy * cz;
+        this.w = cx * cy * cz + sx * sy * sz;
 
         return this;
     }

@@ -4,8 +4,6 @@ import { Quat } from './Quat'
 const x = new Vec3();
 const y = new Vec3();
 const z = new Vec3();
-const scale = new Vec3();
-
 
 export type Mat4Data = [
     number, number, number, number,
