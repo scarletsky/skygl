@@ -1,11 +1,13 @@
 import { Vec3 } from './Vec3';
-import { EPSILON, HALF_TO_RAD, RAD_TO_DEG } from './math';
+import { EPSILON, HALF_RAD, RAD_TO_DEG } from './math';
 
 export class Quat {
     public x: number;
     public y: number;
     public z: number;
     public w: number;
+
+    static IDENTITY = Object.freeze(new Quat());
 
     constructor() {
         this.x = 0;
@@ -163,9 +165,9 @@ export class Quat {
     }
 
     setEulerAngle(x: number, y: number, z: number) {
-        x *= HALF_TO_RAD;
-        z *= HALF_TO_RAD;
-        y *= HALF_TO_RAD;
+        x *= HALF_RAD;
+        z *= HALF_RAD;
+        y *= HALF_RAD;
 
         let sx = Math.sin(x);
         let cx = Math.cos(x);
@@ -180,6 +182,28 @@ export class Quat {
         this.w = cx * cy * cz + sx * sy * sz;
 
         return this;
+    }
+
+    equals(b: Quat) {
+        const a0 = this.x;
+        const a1 = this.y;
+        const a2 = this.z;
+        const a3 = this.w;
+        const b0 = b.x;
+        const b1 = b.y;
+        const b2 = b.z;
+        const b3 = b.w;
+
+        return (
+            Math.abs(a0 - b0) <=
+            EPSILON * Math.max(1.0, Math.abs(a0), Math.abs(b0)) &&
+            Math.abs(a1 - b1) <=
+            EPSILON * Math.max(1.0, Math.abs(a1), Math.abs(b1)) &&
+            Math.abs(a2 - b2) <=
+            EPSILON * Math.max(1.0, Math.abs(a2), Math.abs(b2)) &&
+            Math.abs(a3 - b3) <=
+            EPSILON * Math.max(1.0, Math.abs(a3), Math.abs(b3))
+        );
     }
 
     toJSON() {

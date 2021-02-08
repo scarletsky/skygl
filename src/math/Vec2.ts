@@ -1,3 +1,5 @@
+import { EPSILON } from './math';
+
 export class Vec2 {
     public x: number;
     public y: number;
@@ -137,7 +139,17 @@ export class Vec2 {
     }
 
     equals(b: Vec2) {
-        return (this.x === b.x) && (this.y === b.y);
+        let a0 = this.x;
+        let a1 = this.y;
+        let b0 = b.x;
+        let b1 = b.y;
+
+        return (
+            Math.abs(a0 - b0) <=
+                EPSILON * Math.max(1.0, Math.abs(a0), Math.abs(b0)) &&
+            Math.abs(a1 - b1) <=
+                EPSILON * Math.max(1.0, Math.abs(a1), Math.abs(b1))
+        );
     }
 
     clone() {

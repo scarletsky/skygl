@@ -1,5 +1,6 @@
 import { Vec3 } from './Vec3';
 import { Quat } from './Quat'
+import { EPSILON } from './math';
 
 const x = new Vec3();
 const y = new Vec3();
@@ -512,6 +513,66 @@ export class Mat4 {
         data[15] = 1;
 
         return this;
+    }
+
+    transformPoint(point: Vec3, res = new Vec3()) {
+        const m = this.data;
+        const x = point.x;
+        const y = point.y;
+        const z = point.z;
+
+        res.x = x * m[0] + y * m[4] + z * m[8] + m[12];
+        res.y = x * m[1] + y * m[5] + z * m[9] + m[13];
+        res.z = x * m[2] + y * m[6] + z * m[10] + m[14];
+
+        return res;
+    }
+
+    equals(b: Mat4) {
+        const [
+            a0, a1, a2, a3, a4, a5, a6, a7,
+            a8, a9, a10, a11, a12, a13, a14, a15
+        ] = this.data
+        const [
+            b0, b1, b2, b3, b4, b5, b6, b7,
+            b8, b9, b10, b11, b12, b13, b14, b15
+        ] = b.data
+
+
+        return (
+            Math.abs(a0 - b0) <=
+                EPSILON * Math.max(1.0, Math.abs(a0), Math.abs(b0)) &&
+            Math.abs(a1 - b1) <=
+                EPSILON * Math.max(1.0, Math.abs(a1), Math.abs(b1)) &&
+            Math.abs(a2 - b2) <=
+                EPSILON * Math.max(1.0, Math.abs(a2), Math.abs(b2)) &&
+            Math.abs(a3 - b3) <=
+                EPSILON * Math.max(1.0, Math.abs(a3), Math.abs(b3)) &&
+            Math.abs(a4 - b4) <=
+                EPSILON * Math.max(1.0, Math.abs(a4), Math.abs(b4)) &&
+            Math.abs(a5 - b5) <=
+                EPSILON * Math.max(1.0, Math.abs(a5), Math.abs(b5)) &&
+            Math.abs(a6 - b6) <=
+                EPSILON * Math.max(1.0, Math.abs(a6), Math.abs(b6)) &&
+            Math.abs(a7 - b7) <=
+                EPSILON * Math.max(1.0, Math.abs(a7), Math.abs(b7)) &&
+            Math.abs(a8 - b8) <=
+                EPSILON * Math.max(1.0, Math.abs(a8), Math.abs(b8)) &&
+            Math.abs(a9 - b9) <=
+                EPSILON * Math.max(1.0, Math.abs(a9), Math.abs(b9)) &&
+            Math.abs(a10 - b10) <=
+                EPSILON * Math.max(1.0, Math.abs(a10), Math.abs(b10)) &&
+            Math.abs(a11 - b11) <=
+                EPSILON * Math.max(1.0, Math.abs(a11), Math.abs(b11)) &&
+            Math.abs(a12 - b12) <=
+                EPSILON * Math.max(1.0, Math.abs(a12), Math.abs(b12)) &&
+            Math.abs(a13 - b13) <=
+                EPSILON * Math.max(1.0, Math.abs(a13), Math.abs(b13)) &&
+            Math.abs(a14 - b14) <=
+                EPSILON * Math.max(1.0, Math.abs(a14), Math.abs(b14)) &&
+            Math.abs(a15 - b15) <=
+                EPSILON * Math.max(1.0, Math.abs(a15), Math.abs(b15))
+        );
     }
 
     toJSON() {

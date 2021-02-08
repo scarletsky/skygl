@@ -5,6 +5,7 @@ import { BaseObject } from '../core/BaseObject';
 import { Cache } from '../core/Cache';
 
 const vecA = new Vec3();
+const vecB = new Vec3();
 const quatA = new Quat();
 const matA = new Mat4();
 
@@ -12,12 +13,10 @@ export class Node extends BaseObject {
     public cache: Cache<Node>;
     public localPosition: Vec3;
     public localRotation: Quat;
-    public localEulerAngle: Vec3;
     public localScale: Vec3;
     public localTransform: Mat4;
     public worldPosition: Vec3;
     public worldRotation: Quat;
-    public worldEulerAngle: Vec3;
     public worldTransform: Mat4;
     public enabled: boolean;
     public parent: Node | null;
@@ -30,18 +29,16 @@ export class Node extends BaseObject {
         this.cache = new Cache();
         this.localPosition = new Vec3();
         this.localRotation = new Quat();
-        this.localEulerAngle = new Vec3();
         this.localScale = new Vec3(1, 1, 1);
         this.localTransform = new Mat4();
         this.worldPosition = new Vec3();
         this.worldRotation = new Quat();
-        this.worldEulerAngle = new Vec3();
         this.worldTransform = new Mat4();
         this.parent = null;
         this.enabled = true;
         this.children = [];
 
-        this._dirtyLocal = false;
+        this._dirtyLocal = true;
         this._dirtyWorld = true;
     }
 
@@ -75,9 +72,21 @@ export class Node extends BaseObject {
         return this.getWorldTransform().getTranslation(res);
     }
 
-    setWorldPosition(value: Vec3) {
-        this.worldPosition.copy(value);
-        this._dirtyWorld = true;
+    setWorldPosition(x: Vec3 | number, y = 0, z = 0) {
+        if (x instanceof Vec3) {
+            vecA.copy(x);
+        } else {
+            vecA.set(x, y, z);
+        }
+
+        if (this.parent === null) {
+            this.localPosition.copy(vecA);
+        } else {
+            matA.copy(this.parent.getWorldTransform()).invert();
+            matA.transformPoint(vecA, this.localPosition);
+        }
+
+        this._dirtifyLocal();
 
         return this;
     }
@@ -86,9 +95,15 @@ export class Node extends BaseObject {
         return this.getLocalTransform().getTranslation(res);
     }
 
-    setLocalPosition(value: Vec3) {
-        this.localPosition.copy(value);
-        this._dirtyLocal = true;
+    setLocalPosition(x: Vec3 | number, y = 0, z = 0) {
+        if (x instanceof Vec3) {
+            vecA.copy(x);
+        } else {
+            vecA.set(x, y, z);
+        }
+
+        this.localPosition.copy(vecA);
+        this._dirtifyLocal();
 
         return this;
     }
@@ -98,8 +113,16 @@ export class Node extends BaseObject {
     }
 
     setWorldRotation(value: Quat) {
-        this.worldRotation.copy(value);
-        this._dirtyWorld = true;
+
+        if (this.parent === null) {
+            this.localRotation.copy(value);
+        } else {
+            this.parent.getWorldRotation(quatA);
+            quatA.invert();
+            this.localRotation.mul2(quatA, value)
+        }
+
+        this._dirtifyLocal();
 
         return this;
     }
@@ -110,7 +133,7 @@ export class Node extends BaseObject {
 
     setLocalRotation(value: Quat) {
         this.localRotation.copy(value);
-        this._dirtyLocal = true;
+        this._dirtifyLocal();
 
         return this;
     }
@@ -120,14 +143,20 @@ export class Node extends BaseObject {
         return quatA.getEulerAngle(res);
     }
 
-    setWorldEulerAngle(x: Vec3 | number, y?: number, z?: number) {
+    setWorldEulerAngle(x: Vec3 | number, y = 0, z = 0) {
         if (x instanceof Vec3) {
-            this.worldEulerAngle.copy(x);
+            this.localRotation.setEulerAngle(x.x, x.y, x.z);
         } else {
-            this.worldEulerAngle.set(x, y as number, z as number);
+            this.localRotation.setEulerAngle(x, y, z);
         }
 
-        this._dirtyWorld = true;
+        if (this.parent) {
+            this.parent.getWorldRotation(quatA);
+            quatA.invert();
+            this.localRotation.mul2(quatA, this.localRotation);
+        }
+
+        this._dirtifyLocal();
 
         return this;
     }
@@ -137,14 +166,14 @@ export class Node extends BaseObject {
         return quatA.getEulerAngle(res);
     }
 
-    setLocalEulerAngle(x: Vec3 | number, y?: number, z?: number) {
+    setLocalEulerAngle(x: Vec3 | number, y = 0, z = 0) {
         if (x instanceof Vec3) {
-            this.localEulerAngle.copy(x);
+            this.localRotation.setEulerAngle(x.x, x.y, x.z);
         } else {
-            this.localEulerAngle.set(x, y as number, z as number);
+            this.localRotation.setEulerAngle(x, y, z);
         }
 
-        this._dirtyLocal = true;
+        this._dirtifyLocal();
 
         return this;
     }
@@ -153,9 +182,14 @@ export class Node extends BaseObject {
         return this.getLocalTransform().getScale(res);
     }
 
-    setLocalScale(value: Vec3) {
-        this.localScale.copy(value);
-        this._dirtyLocal = true;
+    setLocalScale(x: Vec3 | number, y = 1, z = 1) {
+        if (x instanceof Vec3) {
+            this.localScale.copy(x);
+        } else {
+            this.localScale.set(x, y, z);
+        }
+
+        this._dirtifyLocal();
 
         return this;
     }
@@ -172,8 +206,7 @@ export class Node extends BaseObject {
     setLocalTransform(value: Mat4) {
         this.localTransform.copy(value);
         this.localTransform.getTRS(this.localPosition, this.localRotation, this.localScale);
-        this.localRotation.getEulerAngle(this.localEulerAngle);
-        this._dirtyLocal = true;
+        this._dirtifyLocal();
 
         return this;
     }
@@ -188,12 +221,38 @@ export class Node extends BaseObject {
         return this.worldTransform;
     }
 
+    setWorldTransform(value: Mat4) {
+        if (this.parent === null) {
+            this.setLocalTransform(value);
+        } else {
+            matA.copy(this.parent.getWorldTransform());
+            matA.invert();
+            matA.mul(value);
+            this.setLocalTransform(matA);
+        }
+
+        return this;
+    }
+
     syncHierarchy() {
         if (!this.enabled) return;
 
-        this.getWorldTransform();
+        this._sync();
 
         this.children.forEach(node => node.syncHierarchy());
+    }
+
+    private _dirtifyLocal() {
+        if (!this._dirtyLocal) {
+            this._dirtyLocal = true;
+            this._dirtifyWorld();
+        }
+    }
+
+    private _dirtifyWorld() {
+        if (!this._dirtyWorld) {
+            this._dirtyWorld = true;
+        }
     }
 
     private _sync() {
