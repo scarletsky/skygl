@@ -123,11 +123,11 @@ export class Vec3 {
     }
 
     length() {
-        return Math.sqrt(this.lengthSq());
+        return Math.hypot(this.x, this.y, this.z);
     }
 
     lengthSq() {
-        return this.x * this.x + this.y + this.y + this.z * this.z;
+        return this.x * this.x + this.y * this.y + this.z * this.z;
     }
 
     distance(b: Vec3) {
@@ -160,6 +160,18 @@ export class Vec3 {
         this.x = a.x + (b.x - a.x) * alpha;
         this.y = a.y + (b.y - a.y) * alpha
         this.z = a.z + (b.z - a.z) * alpha
+
+        return this;
+    }
+
+    project(b: Vec3) {
+        const aDotB = this.dot(b);
+        const bDotB = b.dot(b);
+        const s = aDotB / bDotB;
+
+        this.x = b.x * s;
+        this.y = b.y * s;
+        this.z = b.z * s;
 
         return this;
     }

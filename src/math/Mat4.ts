@@ -507,8 +507,8 @@ export class Mat4 {
         data[10] = (1 - (xx + yy)) * sz;
         data[11] = 0;
         data[12] = translation.x;
-        data[13] = translation.x;
-        data[14] = translation.x;
+        data[13] = translation.y;
+        data[14] = translation.z;
         data[15] = 1;
 
         return this;
