@@ -1,4 +1,5 @@
 import { Vec3 } from './Vec3';
+import { Mat3 } from './Mat3';
 import { Mat4, Mat4Data } from './Mat4';
 import { EPSILON, HALF_RAD, RAD_TO_DEG } from './math';
 
@@ -191,7 +192,46 @@ export class Quat {
         return this;
     }
 
-    setMat4(mat: Mat4) {
+    setFromMat3(mat: Mat3) {
+        // Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes
+        // article "Quaternion Calculus and Fast Animation".
+        const m = mat.data;
+        let fTrace = m[0] + m[4] + m[8];
+        let fRoot;
+        if (fTrace > 0.0) {
+            // |w| > 1/2, may as well choose w > 1/2
+            fRoot = Math.sqrt(fTrace + 1.0); // 2w
+            this.w = 0.5 * fRoot;
+            fRoot = 0.5 / fRoot; // 1/(4w)
+            this.x = (m[5] - m[7]) * fRoot;
+            this.y = (m[6] - m[2]) * fRoot;
+            this.z = (m[1] - m[3]) * fRoot;
+        } else {
+            // |w| <= 1/2
+            let out = [0, 0, 0];
+            let i = 0;
+            if (m[4] > m[0]) i = 1;
+            if (m[8] > m[i * 3 + i]) i = 2;
+            let j = (i + 1) % 3;
+            let k = (i + 2) % 3;
+            fRoot = Math.sqrt(m[i * 3 + i] - m[j * 3 + j] - m[k * 3 + k] + 1.0);
+            out[i] = 0.5 * fRoot;
+            fRoot = 0.5 / fRoot;
+            this.w = (m[j * 3 + k] - m[k * 3 + j]) * fRoot;
+            out[j] = (m[j * 3 + i] + m[i * 3 + j]) * fRoot;
+            out[k] = (m[k * 3 + i] + m[i * 3 + k]) * fRoot;
+            this.x = out[0];
+            this.y = out[1];
+            this.z = out[2];
+        }
+
+        return this;
+    }
+
+    setFromMat4(mat: Mat4) {
+        // Mat3.tmpA.setFromMat4(mat);
+        // return this.setFromMat3(Mat3.tmpA);
+
         let m00, m01, m02, m10, m11, m12, m20, m21, m22,
             tr, s, rs, lx, ly, lz;
 

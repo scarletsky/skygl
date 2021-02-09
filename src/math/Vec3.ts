@@ -150,6 +150,14 @@ export class Vec3 {
         return this;
     }
 
+    inverse() {
+        this.x = 1 / this.x;
+        this.y = 1 / this.y;
+        this.z = 1 / this.z;
+
+        return this;
+    }
+
     lerp(b: Vec3, alpha: number) {
         this.x += (b.x - this.x) * alpha;
         this.y += (b.y - this.y) * alpha

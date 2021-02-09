@@ -16,6 +16,8 @@ export type Mat4Data = [
 export class Mat4 {
     public data: Mat4Data;
 
+    static tmpA = new Mat4();
+    static tmpB = new Mat4();
     static IDENTITY = Object.freeze(new Mat4());
 
     static create() {
@@ -321,62 +323,53 @@ export class Mat4 {
         const data = this.data;
         const scale = this.getScale(x);
 
-        const is1 = 1 / scale.x;
-        const is2 = 1 / scale.y;
-        const is3 = 1 / scale.z;
+        let is1 = 1 / scale.x;
+        let is2 = 1 / scale.y;
+        let is3 = 1 / scale.z;
 
-        const sm11 = data[0] * is1;
-        const sm12 = data[1] * is2;
-        const sm13 = data[2] * is3;
-        const sm21 = data[4] * is1;
-        const sm22 = data[5] * is2;
-        const sm23 = data[6] * is3;
-        const sm31 = data[8] * is1;
-        const sm32 = data[9] * is2;
-        const sm33 = data[10] * is3;
+        let sm11 = data[0] * is1;
+        let sm12 = data[1] * is2;
+        let sm13 = data[2] * is3;
+        let sm21 = data[4] * is1;
+        let sm22 = data[5] * is2;
+        let sm23 = data[6] * is3;
+        let sm31 = data[8] * is1;
+        let sm32 = data[9] * is2;
+        let sm33 = data[10] * is3;
 
-        const trace = sm11 + sm22 + sm33;
+        let trace = sm11 + sm22 + sm33;
         let S = 0;
 
         if (trace > 0) {
             S = Math.sqrt(trace + 1.0) * 2;
-            res.set(
-                (sm23 - sm32) / S,
-                (sm31 - sm13) / S,
-                (sm12 - sm21) / S,
-                0.25 * S
-            );
+            res.w = 0.25 * S;
+            res.x = (sm23 - sm32) / S;
+            res.y = (sm31 - sm13) / S;
+            res.z = (sm12 - sm21) / S;
         } else if (sm11 > sm22 && sm11 > sm33) {
             S = Math.sqrt(1.0 + sm11 - sm22 - sm33) * 2;
-            res.set(
-                0.25 * S,
-                (sm12 + sm21) / S,
-                (sm31 + sm13) / S,
-                (sm23 - sm32) / S
-            );
+            res.w = (sm23 - sm32) / S;
+            res.x = 0.25 * S;
+            res.y = (sm12 + sm21) / S;
+            res.z = (sm31 + sm13) / S;
         } else if (sm22 > sm33) {
             S = Math.sqrt(1.0 + sm22 - sm11 - sm33) * 2;
-            res.set(
-                (sm12 + sm21) / S,
-                0.25 * S,
-                (sm23 + sm32) / S,
-                (sm31 - sm13) / S
-            );
+            res.w = (sm31 - sm13) / S;
+            res.x = (sm12 + sm21) / S;
+            res.y = 0.25 * S;
+            res.z = (sm23 + sm32) / S;
         } else {
             S = Math.sqrt(1.0 + sm33 - sm11 - sm22) * 2;
-            res.set(
-                (sm31 + sm13) / S,
-                (sm23 + sm32) / S,
-                0.25 * S,
-                (sm12 - sm21) / S
-            );
+            res.w = (sm12 - sm21) / S;
+            res.x = (sm31 + sm13) / S;
+            res.y = (sm23 + sm32) / S;
+            res.z = 0.25 * S;
         }
 
         return res;
     }
 
     getScale(res = new Vec3()) {
-
         const data = this.data;
         const m11 = data[0];
         const m12 = data[1];
@@ -417,7 +410,7 @@ export class Mat4 {
             Math.hypot(m31, m32, m33)
         );
 
-        rotation.setMat4(this);
+        rotation.setFromMat4(this);
 
         return rotation;
     }

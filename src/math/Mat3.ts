@@ -1,3 +1,5 @@
+import { Mat4 } from './Mat4';
+
 export type Mat3Data = [
     number, number, number,
     number, number, number,
@@ -7,6 +9,8 @@ export type Mat3Data = [
 export class Mat3 {
     public data: Mat3Data;
 
+    static tmpA = new Mat3();
+    static tmpB = new Mat3();
     static IDENTITY = Object.freeze(new Mat3());
 
     static create() {
@@ -99,6 +103,15 @@ export class Mat3 {
         data[8] = 1;
 
         return this;
+    }
+
+    setFromMat4(mat: Mat4) {
+        const data = mat.data;
+        this.set([
+            data[0], data[1], data[2],
+            data[4], data[5], data[6],
+            data[8], data[9], data[10]
+        ]);
     }
 
     toJSON() {
