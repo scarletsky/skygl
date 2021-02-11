@@ -207,7 +207,7 @@ export class Node extends BaseObject {
     setLocalTransform(transform: Mat4) {
         this.localTransform.copy(transform);
         this.localTransform.getTRS(this.localPosition, this.localRotation, this.localScale);
-        this._dirtifyLocal();
+        this._dirtifyWorld();
 
         return this;
     }
@@ -226,11 +226,9 @@ export class Node extends BaseObject {
         if (this.parent === null) {
             this.setLocalTransform(transform);
         } else {
-            matA.copy(this.parent.getWorldTransform()).invert();
-            matB.mul2(matA, transform);
-            matB.getTRS(vecA, quatA, vecB);
-            this.setLocalPosition(vecA);
-            this.setLocalRotation(quatA);
+            transform.getTRS(vecA, quatA, vecB);
+            this.setWorldPosition(vecA);
+            this.setWorldRotation(quatA);
             this.setLocalScale(vecB);
         }
 
