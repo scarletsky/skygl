@@ -146,9 +146,9 @@ export class Node extends BaseObject {
 
     setWorldEulerAngle(x: Vec3 | number, y = 0, z = 0) {
         if (x instanceof Vec3) {
-            this.localRotation.setEulerAngle(x.x, x.y, x.z);
+            this.localRotation.setFromEulerAngle(x.x, x.y, x.z);
         } else {
-            this.localRotation.setEulerAngle(x, y, z);
+            this.localRotation.setFromEulerAngle(x, y, z);
         }
 
         if (this.parent) {
@@ -169,9 +169,9 @@ export class Node extends BaseObject {
 
     setLocalEulerAngle(x: Vec3 | number, y = 0, z = 0) {
         if (x instanceof Vec3) {
-            this.localRotation.setEulerAngle(x.x, x.y, x.z);
+            this.localRotation.setFromEulerAngle(x.x, x.y, x.z);
         } else {
-            this.localRotation.setEulerAngle(x, y, z);
+            this.localRotation.setFromEulerAngle(x, y, z);
         }
 
         this._dirtifyLocal();

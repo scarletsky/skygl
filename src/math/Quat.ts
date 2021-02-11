@@ -11,11 +11,11 @@ export class Quat {
 
     static IDENTITY = Object.freeze(new Quat());
 
-    constructor() {
-        this.x = 0;
-        this.y = 0;
-        this.z = 0;
-        this.w = 1;
+    constructor(x = 0, y = 0, z = 0, w = 1) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.w = w;
     }
 
     set(x: number, y: number, z: number, w: number) {
@@ -128,7 +128,7 @@ export class Quat {
         return rad;
     }
 
-    setAxisAngle(axis: Vec3, rad: number) {
+    setFromAxisAngle(axis: Vec3, rad: number) {
         rad = rad * 0.5;
 
         const s = Math.sin(rad);
@@ -166,7 +166,7 @@ export class Quat {
         return res.set(x, y, z).scale(RAD_TO_DEG);
     }
 
-    setEulerAngle(x: Vec3 | number, y = 0, z = 0) {
+    setFromEulerAngle(x: Vec3 | number, y = 0, z = 0) {
         if (x instanceof Vec3) {
             y = x.y;
             z = x.z;

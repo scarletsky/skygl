@@ -11,8 +11,8 @@ const vec1 = new Vec3(3, 4, 5);
 const vec2 = new Vec3(5, 2, 2);
 const vec3 = new Vec3(30, 20, 10);
 const vec4 = new Vec3(10, 10, 10);
-const quat1 = new Quat().setEulerAngle(30, 20, 10);
-const quat2 = new Quat().setEulerAngle(45, 45, 45);
+const quat1 = new Quat().setFromEulerAngle(30, 20, 10);
+const quat2 = new Quat().setFromEulerAngle(45, 45, 45);
 
 
 beforeEach(() => {
