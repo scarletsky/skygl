@@ -1,0 +1,102 @@
+import { Nullable } from 'types';
+import { VertexBuffer } from './buffer/VertexBuffer';
+import { IndexBuffer } from './buffer/IndexBuffer';
+import { Primitive } from './Primitive';
+import { UniformScope } from './shader/UniformScope';
+import { Drawable } from './Drawable';
+import { Shader } from './shader/Shader';
+
+export interface DeviceOptions extends WebGLContextAttributes {
+    preferredWebGL2?: boolean;
+}
+
+export class Device {
+    public canvas: HTMLCanvasElement;
+    public gl: Nullable<WebGLRenderingContext | WebGL2RenderingContext>;;
+    public uniforms: Nullable<UniformScope>;
+    public shader: Nullable<Shader>;
+
+    constructor(canvas: HTMLCanvasElement, options: DeviceOptions = {}) {
+        this.gl = null;
+        this.uniforms = null;
+        this.shader = null;
+        this.canvas = canvas;
+        this.initContext(options);
+        this.initCapabilities();
+        this.initExtensions();
+    }
+
+    private initContext(options: DeviceOptions) {
+        this.gl = this.canvas.getContext('webgl', options);
+
+        if (!this.gl) {
+            throw new Error('[Device] WebGL not supported');
+        }
+
+        this.uniforms = new UniformScope();
+    }
+
+    private initCapabilities() {
+
+    }
+
+    private initExtensions() {
+
+    }
+
+    setShader(shader: Shader) {
+        if (this.shader === shader) return;
+
+        if (!shader._inited) {
+            shader.onGLCreate(this);
+        }
+
+        shader.onGLBind(this);
+        this.shader = shader;
+    }
+
+    setVertices(vertices: VertexBuffer[]) {
+        vertices.forEach(vertexBuffer => vertexBuffer.onGLBind(this));
+    }
+
+    setIndices(indices: IndexBuffer) {
+        indices.onGLBind(this);
+    }
+
+    setUniforms() {
+        const shader = this.shader as Shader;
+        const gl = this.gl as WebGLRenderingContext;
+        const deviceUniforms = this.uniforms as UniformScope;
+        const shaderUniforms = shader.uniforms;
+        const shaderSamplers = shader.samplers;
+
+        shaderUniforms.forEach(uniform => {
+            const value = deviceUniforms.resolve(uniform.name).getValue();
+            uniform.setValue(gl, value);
+        });
+    }
+
+    draw(drawable: Drawable) {
+
+        this.setShader(drawable.shader);
+        this.setVertices(drawable.vertices);
+        this.setUniforms();
+
+        if (drawable.indices) {
+            this.setIndices(drawable.indices);
+            this.drawElements(drawable.primitive);
+        } else {
+            this.drawArrays(drawable.primitive);
+        }
+    }
+
+    drawArrays(primitive: Primitive) {
+        const gl = this.gl as WebGLRenderingContext;
+        gl.drawArrays(primitive.mode, primitive.first, primitive.count);
+    }
+
+    drawElements(primitive: Primitive) {
+        const gl = this.gl as WebGLRenderingContext;
+        gl.drawElements(primitive.mode, primitive.count, primitive.type, primitive.offset);
+    }
+}
