@@ -1,4 +1,11 @@
 let nextId = 0;
+const DEFAULT_NODE_NAME = '';
+const DEFAULT_NODE_UID = '';
+
+export interface BaseObjectOptions {
+    name?: string;
+    uid?: string;
+}
 
 export class BaseObject {
     public id: number;
@@ -7,7 +14,7 @@ export class BaseObject {
 
     constructor() {
         this.id = nextId++;
-        this.name = '';
-        this.uid = '';
+        this.name = DEFAULT_NODE_NAME;
+        this.uid = DEFAULT_NODE_UID;
     }
 }

@@ -1,3 +1,4 @@
+import { Nullable } from 'types';
 import { Vec3 } from '../math/Vec3';
 import { Quat } from '../math/Quat';
 import { Mat4 } from '../math/Mat4';
@@ -20,7 +21,7 @@ export class Node extends BaseObject {
     public worldRotation: Quat;
     public worldTransform: Mat4;
     public enabled: boolean;
-    public parent: Node | null;
+    public parent: Nullable<Node>;
     public children: Node[];
     public _dirtyLocal: boolean;
     public _dirtyWorld: boolean;
@@ -241,6 +242,16 @@ export class Node extends BaseObject {
         this._sync();
 
         this.children.forEach(node => node.syncHierarchy());
+    }
+
+    toJSON() {
+        return {
+            uid: this.uid,
+            name: this.name,
+            position: this.getLocalPosition().toJSON(),
+            rotation: this.getLocalRotation().toJSON(),
+            scale: this.getLocalScale().toJSON(),
+        };
     }
 
     private _dirtifyLocal() {
