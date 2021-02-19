@@ -2,7 +2,7 @@ import { Nullable } from 'types';
 import { Vec3 } from '../math/Vec3';
 import { Quat } from '../math/Quat';
 import { Mat4 } from '../math/Mat4';
-import { BaseObject } from '../core/BaseObject';
+import { BaseObject, BaseObjectOptions } from '../core/BaseObject';
 import { Cache } from '../core/Cache';
 
 const vecA = new Vec3();
@@ -11,15 +11,19 @@ const quatA = new Quat();
 const matA = new Mat4();
 const matB = new Mat4();
 
+export interface NodeOptions extends BaseObjectOptions {
+
+}
+
 export class Node extends BaseObject {
     public cache: Cache<Node>;
     public localPosition: Vec3;
     public localRotation: Quat;
     public localScale: Vec3;
-    public localTransform: Mat4;
+    public localMatrix: Mat4;
     public worldPosition: Vec3;
     public worldRotation: Quat;
-    public worldTransform: Mat4;
+    public worldMatrix: Mat4;
     public enabled: boolean;
     public parent: Nullable<Node>;
     public children: Node[];
@@ -32,10 +36,10 @@ export class Node extends BaseObject {
         this.localPosition = new Vec3();
         this.localRotation = new Quat();
         this.localScale = new Vec3(1, 1, 1);
-        this.localTransform = new Mat4();
+        this.localMatrix = new Mat4();
         this.worldPosition = new Vec3();
         this.worldRotation = new Quat();
-        this.worldTransform = new Mat4();
+        this.worldMatrix = new Mat4();
         this.parent = null;
         this.enabled = true;
         this.children = [];
@@ -71,7 +75,7 @@ export class Node extends BaseObject {
     }
 
     getWorldPosition(res = new Vec3()) {
-        return this.getWorldTransform().getTranslation(res);
+        return this.getWorldMatrix().getTranslation(res);
     }
 
     setWorldPosition(x: Vec3 | number, y = 0, z = 0) {
@@ -84,7 +88,7 @@ export class Node extends BaseObject {
         if (this.parent === null) {
             this.localPosition.copy(vecA);
         } else {
-            matA.copy(this.parent.getWorldTransform()).invert();
+            matA.copy(this.parent.getWorldMatrix()).invert();
             matA.transformPoint(vecA, this.localPosition);
         }
 
@@ -111,7 +115,7 @@ export class Node extends BaseObject {
     }
 
     getWorldRotation(res = new Quat()) {
-        return this.getWorldTransform().getRotation(res);
+        return this.getWorldMatrix().getRotation(res);
     }
 
     setWorldRotation(value: Quat) {
@@ -141,7 +145,7 @@ export class Node extends BaseObject {
     }
 
     getWorldEulerAngle(res = new Vec3()) {
-        this.getWorldTransform().getRotation(quatA);
+        this.getWorldMatrix().getRotation(quatA);
         return quatA.getEulerAngle(res);
     }
 
@@ -196,36 +200,36 @@ export class Node extends BaseObject {
         return this;
     }
 
-    getLocalTransform() {
+    getLocalMatrix() {
         if (this._dirtyLocal) {
-            this.localTransform.setTRS(this.localPosition, this.localRotation, this.localScale);
+            this.localMatrix.setTRS(this.localPosition, this.localRotation, this.localScale);
             this._dirtyLocal = false;
         }
 
-        return this.localTransform;
+        return this.localMatrix;
     }
 
-    setLocalTransform(transform: Mat4) {
-        this.localTransform.copy(transform);
-        this.localTransform.getTRS(this.localPosition, this.localRotation, this.localScale);
+    setLocalMatrix(transform: Mat4) {
+        this.localMatrix.copy(transform);
+        this.localMatrix.getTRS(this.localPosition, this.localRotation, this.localScale);
         this._dirtifyWorld();
 
         return this;
     }
 
-    getWorldTransform() {
+    getWorldMatrix() {
         if (!this._dirtyLocal && !this._dirtyWorld) {
-            return this.worldTransform;
+            return this.worldMatrix;
         }
 
         this._sync();
 
-        return this.worldTransform;
+        return this.worldMatrix;
     }
 
-    setWorldTransform(transform: Mat4) {
+    setWorldMatrix(transform: Mat4) {
         if (this.parent === null) {
-            this.setLocalTransform(transform);
+            this.setLocalMatrix(transform);
         } else {
             transform.getTRS(vecA, quatA, vecB);
             this.setWorldPosition(vecA);
@@ -269,15 +273,15 @@ export class Node extends BaseObject {
 
     private _sync() {
         if (this._dirtyLocal) {
-            this.getLocalTransform();
+            this.getLocalMatrix();
         }
 
         if (this._dirtyWorld) {
             if (this.parent === null) {
-                this.worldTransform.copy(this.localTransform);
+                this.worldMatrix.copy(this.localMatrix);
             } else {
-                this.parent.getWorldTransform();
-                this.worldTransform.mul2(this.parent.worldTransform, this.localTransform);
+                this.parent.getWorldMatrix();
+                this.worldMatrix.mul2(this.parent.worldMatrix, this.localMatrix);
             }
             this._dirtyWorld = false;
         }

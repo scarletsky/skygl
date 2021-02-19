@@ -56,9 +56,9 @@ test('Node#getLocalPosition and Node#setLocalPosition', () => {
     root.setLocalPosition(vec1);
 
     expect([
-        root.localTransform.data[12],
-        root.localTransform.data[13],
-        root.localTransform.data[14]
+        root.localMatrix.data[12],
+        root.localMatrix.data[13],
+        root.localMatrix.data[14]
     ]).toEqual([0, 0, 0]);
 
     expect(root.getLocalPosition().equals(vec1)).toBeTruthy();
@@ -136,40 +136,40 @@ test('Node#getLocalScale and Node#setLocalScale', () => {
     expect(child.getLocalScale().equals(Vec3.ONE)).toBeTruthy();
 });
 
-test('Node#getLocalTransform and Node#setLocalTransform', () => {
+test('Node#getLocalMatrix and Node#setLocalMatrix', () => {
     const mat1 = new Mat4().setTRS(vec1, quat1, vec2);
 
-    expect(root.getLocalTransform().equals(Mat4.IDENTITY)).toBeTruthy();
+    expect(root.getLocalMatrix().equals(Mat4.IDENTITY)).toBeTruthy();
 
-    root.setLocalTransform(mat1);
+    root.setLocalMatrix(mat1);
 
-    expect(root.getLocalTransform().equals(mat1)).toBeTruthy();
+    expect(root.getLocalMatrix().equals(mat1)).toBeTruthy();
     expect(root.getLocalPosition().equals(vec1)).toBeTruthy();
     expect(root.getLocalRotation().equals(quat1)).toBeTruthy();
     expect(root.getLocalScale().equals(vec2)).toBeTruthy();
 });
 
-test('Node#getWorldTransform and Node#setWorldTransform', () => {
+test('Node#getWorldMatrix and Node#setWorldMatrix', () => {
     const mat1 = new Mat4().setTRS(vec1, quat1, vec2);
     const mat2 = new Mat4().setTRS(vec3, quat2, vec4);
 
-    expect(root.getWorldTransform().equals(Mat4.IDENTITY)).toBeTruthy();
+    expect(root.getWorldMatrix().equals(Mat4.IDENTITY)).toBeTruthy();
 
-    root.setWorldTransform(mat1);
-    expect(root.getWorldTransform().equals(mat1)).toBeTruthy();
+    root.setWorldMatrix(mat1);
+    expect(root.getWorldMatrix().equals(mat1)).toBeTruthy();
     expect(root.getLocalPosition().equals(vec1)).toBeTruthy();
     expect(root.getLocalRotation().equals(quat1)).toBeTruthy();
     expect(root.getLocalScale().equals(vec2)).toBeTruthy();
 
     root.addChild(child);
-    expect(child.getWorldTransform().equals(mat1)).toBeTruthy();
+    expect(child.getWorldMatrix().equals(mat1)).toBeTruthy();
     expect(child.getLocalPosition().equals(Vec3.ZERO)).toBeTruthy();
     expect(child.getLocalRotation().equals(Quat.IDENTITY)).toBeTruthy();
     expect(child.getLocalScale().equals(Vec3.ONE)).toBeTruthy();
 
-    child.setWorldTransform(mat2);
+    child.setWorldMatrix(mat2);
     expect(child.getWorldPosition().equals(vec3)).toBeTruthy();
     // expect(child.getWorldRotation().equals(quat2)).toBeTruthy();
     expect(child.getLocalScale().equals(vec4)).toBeTruthy();
-    // expect(child.getWorldTransform().equals(mat2)).toBeTruthy();
+    // expect(child.getWorldMatrix().equals(mat2)).toBeTruthy();
 });
