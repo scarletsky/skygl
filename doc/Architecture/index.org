@@ -2,17 +2,23 @@
 
 #+begin_src dot :file archiecture.png :exports results
 digraph Architecture {
+    compound = true;
     label = Architecture;
-    node[shape=box];
 
     WebGL -> Device;
-    Device -> { Buffer, Texture, Shader };
+    Device -> { Shader, Buffer, Texture };
     Buffer -> { VertexBuffer, IndexBuffer };
 
-    VertexBuffer -> Geometry;
-    IndexBuffer -> Geometry;
-    Primitive -> Geometry;
+    subgraph cluster_Drawable {
+        label = "Drawable";
+
+        VertexBuffer;
+        IndexBuffer;
+        Shader;
+        Primitive;
+    }
 }
+
 #+end_src
 
 #+RESULTS:
