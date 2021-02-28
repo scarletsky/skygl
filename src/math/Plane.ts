@@ -10,14 +10,14 @@ export class Plane {
     public constant: number;
 
     constructor(options: PlaneOptions = {}) {
-        let constant, normal;
+        let constant = 0;
+        let normal = [1, 0, 0];
 
-        if (!options.constant) constant = 0;
-        if (!options.normal) normal = new Vec3(1, 0, 0);
-        if (Array.isArray(options.normal)) normal = new Vec3(options.normal[0], options.normal[1], options.normal[2]);
+        if (options.constant) constant = options.constant;
+        if (options.normal) normal = options.normal;
 
-        this.constant = constant as number;
-        this.normal = normal as Vec3;
+        this.constant = constant;
+        this.normal = new Vec3(normal[0], normal[1], normal[2]);
     }
 
     copy(b: Plane) {
