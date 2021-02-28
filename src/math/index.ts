@@ -5,3 +5,5 @@ export * from './Vec4';
 export * from './Quat';
 export * from './Mat3';
 export * from './Mat4';
+export * from './Plane';
+export * from './Frustum';
