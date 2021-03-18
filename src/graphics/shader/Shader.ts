@@ -15,8 +15,7 @@ export class Shader extends BaseObject {
     public vertexSource: string;
     public fragmentSource: string;
     public attributes: { [semantic: string]: ShaderInput };
-    public uniforms: UniformInput[];
-    public samplers: UniformInput[];
+    public uniforms: { [name: string]: UniformInput };
     public _glProgramId: Nullable<WebGLProgram>;
     public _inited: boolean;
     public _destroying: boolean;
@@ -28,8 +27,7 @@ export class Shader extends BaseObject {
         this.vertexSource = options.vertexSource || '';
         this.fragmentSource = options.fragmentSource || '';
         this.attributes = {};
-        this.uniforms = [];
-        this.samplers = [];
+        this.uniforms = {};
         this._glProgramId = null;
         this._inited = false;
         this._destroying = false;
@@ -118,11 +116,7 @@ export class Shader extends BaseObject {
                     location: gl.getUniformLocation(program, info.name) as WebGLUniformLocation
                 });
 
-                if (info.type === gl.SAMPLER_2D || info.type === gl.SAMPLER_CUBE) {
-                    this.samplers.push(uniformInput);
-                } else {
-                    this.uniforms.push(uniformInput);
-                }
+                this.uniforms[uniformInput.name] = uniformInput;
             }
         }
 

@@ -68,16 +68,15 @@ export class Device {
         const gl = this.gl as WebGLRenderingContext;
         const deviceUniforms = this.uniforms as UniformScope;
         const shaderUniforms = shader.uniforms;
-        const shaderSamplers = shader.samplers;
 
-        shaderUniforms.forEach(uniform => {
-            const value = deviceUniforms.resolve(uniform.name).getValue();
+        for (let uniformName in shaderUniforms) {
+            let uniform = shaderUniforms[uniformName];
+            let value = deviceUniforms.resolve(uniform.name).getValue();
             uniform.setValue(gl, value);
-        });
+        }
     }
 
     draw(drawable: Drawable) {
-
         this.setShader(drawable.shader);
         this.setVertices(drawable.vertices);
         this.setUniforms();
