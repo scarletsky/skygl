@@ -1,5 +1,5 @@
 import { Nullable } from 'types';
-import { VertexBuffer } from './buffer/VertexBuffer';
+import { VertexBuffer, VertexBufferGroup } from './buffer/VertexBuffer';
 import { IndexBuffer } from './buffer/IndexBuffer';
 import { Primitive } from './Primitive';
 import { UniformScope } from './shader/UniformScope';
@@ -55,8 +55,11 @@ export class Device {
         this.shader = shader;
     }
 
-    setVertices(vertices: VertexBuffer[]) {
-        vertices.forEach(vertexBuffer => vertexBuffer.onGLBind(this));
+    setVertices(vertices: VertexBufferGroup) {
+        for (let semantic in vertices) {
+            const vertexBuffer = vertices[semantic];
+            vertexBuffer.onGLBind(this);
+        }
     }
 
     setIndices(indices: IndexBuffer) {

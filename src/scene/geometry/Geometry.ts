@@ -1,23 +1,23 @@
 import { Nullable } from 'types';
 import { BaseObject } from 'core/BaseObject';
-import { VertexBuffer } from 'graphics/buffer/VertexBuffer';
+import { VertexBuffer, VertexBufferGroup } from 'graphics/buffer/VertexBuffer';
 import { IndexBuffer, IndexBufferOptions } from 'graphics/buffer/IndexBuffer';
 import { Primitive, PrimitiveOptions } from 'graphics/Primitive';
 
 export interface GeometryOptions {
-    vertices?: VertexBuffer[];
+    vertices?: VertexBufferGroup;
     indices?: IndexBufferOptions;
     primitive?: PrimitiveOptions;
 }
 
 export class Geometry extends BaseObject {
-    public vertices: VertexBuffer[];
+    public vertices: VertexBufferGroup;
     public indices: Nullable<IndexBuffer>;
     public primitive: Nullable<Primitive>;
 
     constructor(options: GeometryOptions = {}) {
         super();
-        this.vertices = [];
+        this.vertices = {};
         this.indices = null;
         this.primitive = null;
 
@@ -38,23 +38,25 @@ export class Geometry extends BaseObject {
     }
 
     addVertices(vertexBuffer: VertexBuffer) {
-        if (this.vertices.indexOf(vertexBuffer) > -1) {
+        const semantic = vertexBuffer.attribute.semantic;
+
+        if (this.vertices[semantic]) {
             console.error(`[Geometry] vertices existed.`);
             return this;
         }
 
-        this.vertices.push(vertexBuffer);
+        this.vertices[semantic] = vertexBuffer;
 
         return this;
     }
 
     removeVertices(vertexBuffer: VertexBuffer) {
-        const index = this.vertices.indexOf(vertexBuffer);
+        const semantic = vertexBuffer.attribute.semantic;
 
-        if (index === -1) {
+        if (!this.vertices[semantic]) {
             console.error('[Geometry] vertices do not exist.');
         } else {
-            this.vertices.splice(index, 1);
+            delete this.vertices[semantic];
         }
 
         return this;
