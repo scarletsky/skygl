@@ -2,9 +2,9 @@ import { ARRAY_BUFFER } from 'graphics/constants';
 import { Device } from 'graphics/Device';
 import { Shader } from 'graphics/shader/Shader';
 import { Buffer, BufferOptions } from './Buffer';
-import { VertexAttribute, VertexAttributeOptions } from './VertexAttribute';
+import { VertexAttribute, VertexAttributeOptions, VertexAttributeSemantic } from './VertexAttribute';
 
-export type VertexBufferGroup = { [semantic: string]: VertexBuffer };
+export type VertexBufferGroup = { [semantic in VertexAttributeSemantic]?: VertexBuffer };
 
 export interface VertexBufferOptions {
     buffer?: Buffer | BufferOptions;

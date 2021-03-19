@@ -5,6 +5,7 @@ import { Primitive } from './Primitive';
 import { UniformScope } from './shader/UniformScope';
 import { Drawable } from './Drawable';
 import { Shader } from './shader/Shader';
+import { VertexAttributeSemantic } from './buffer';
 
 export interface DeviceOptions extends WebGLContextAttributes {
     preferredWebGL2?: boolean;
@@ -57,8 +58,11 @@ export class Device {
 
     setVertices(vertices: VertexBufferGroup) {
         for (let semantic in vertices) {
-            const vertexBuffer = vertices[semantic];
-            vertexBuffer.onGLBind(this);
+            const vertexBuffer = vertices[semantic as VertexAttributeSemantic];
+
+            if (vertexBuffer) {
+                vertexBuffer.onGLBind(this);
+            }
         }
     }
 

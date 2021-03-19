@@ -1,6 +1,7 @@
 import { Nullable } from 'types';
 import { BaseObject } from 'core/BaseObject';
 import { VertexBuffer, VertexBufferGroup } from 'graphics/buffer/VertexBuffer';
+import { VertexAttributeSemantic } from 'graphics/buffer/VertexAttribute';
 import { IndexBuffer, IndexBufferOptions } from 'graphics/buffer/IndexBuffer';
 import { Primitive, PrimitiveOptions } from 'graphics/Primitive';
 
@@ -23,8 +24,11 @@ export class Geometry extends BaseObject {
 
         if (options.vertices) {
             for (const semantic in options.vertices) {
-                const vertexBuffer = options.vertices[semantic];
-                this.addVertices(vertexBuffer);
+                const vertexBuffer = options.vertices[semantic as VertexAttributeSemantic];
+
+                if (vertexBuffer) {
+                    this.addVertices(vertexBuffer);
+                }
             }
         }
 
