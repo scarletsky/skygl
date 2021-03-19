@@ -4,15 +4,23 @@ import { Device } from '../Device';
 import { ShaderInput } from './ShaderInput';
 import { UniformInput } from './UniformInput';
 
+export interface ShaderSourceDefines {
+    [name: string]: string;
+}
+
 export interface ShaderOptions {
     precision?: string;
+    vertexDefines?: ShaderSourceDefines;
+    fragmentDefines?: ShaderSourceDefines;
     vertexSource: string;
     fragmentSource: string;
 }
 
 export class Shader extends BaseObject {
     public precision: string;
+    public vertexDefines: ShaderSourceDefines;
     public vertexSource: string;
+    public fragmentDefines: ShaderSourceDefines;
     public fragmentSource: string;
     public attributes: { [semantic: string]: ShaderInput };
     public uniforms: { [name: string]: UniformInput };
@@ -26,6 +34,8 @@ export class Shader extends BaseObject {
         this.precision = options.precision || 'highp';
         this.vertexSource = options.vertexSource || '';
         this.fragmentSource = options.fragmentSource || '';
+        this.vertexDefines = options.vertexDefines || {};
+        this.fragmentDefines = options.fragmentDefines || {};
         this.attributes = {};
         this.uniforms = {};
         this._glProgramId = null;
