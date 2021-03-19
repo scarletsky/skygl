@@ -38,3 +38,8 @@ export const ARRAY_BUFFER = 0x8892;
 export const STATIC_DRAW = 0x88e4;
 export const DYNAMIC_DRAW = 0x88e8;
 export const STREAM_DRAW = 0x88e0;
+
+// NOTE: clear
+export const COLOR_BUFFER_BIT = 0x00004000;
+export const DEPTH_BUFFER_BIT = 0x00000100;
+export const STENCIL_BUFFER_BIT = 0x00000400;

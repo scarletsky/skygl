@@ -6,9 +6,16 @@ import { UniformScope } from './shader/UniformScope';
 import { Drawable } from './Drawable';
 import { Shader } from './shader/Shader';
 import { VertexAttributeSemantic } from './buffer';
+import { COLOR_BUFFER_BIT, DEPTH_BUFFER_BIT, STENCIL_BUFFER_BIT } from './constants';
 
 export interface DeviceOptions extends WebGLContextAttributes {
     preferredWebGL2?: boolean;
+}
+
+export interface ClearOptions {
+    color?: boolean;
+    depth?: boolean;
+    stencil?: boolean;
 }
 
 export class Device {
@@ -16,12 +23,14 @@ export class Device {
     public gl: Nullable<WebGLRenderingContext | WebGL2RenderingContext>;;
     public uniforms: Nullable<UniformScope>;
     public shader: Nullable<Shader>;
+    public clearOptions: ClearOptions;
 
     constructor(canvas: HTMLCanvasElement, options: DeviceOptions = {}) {
         this.gl = null;
         this.uniforms = null;
         this.shader = null;
         this.canvas = canvas;
+        this.clearOptions = { color: true, depth: true };
         this.initContext(options);
         this.initCapabilities();
         this.initExtensions();
@@ -104,5 +113,29 @@ export class Device {
     drawElements(primitive: Primitive) {
         const gl = this.gl as WebGLRenderingContext;
         gl.drawElements(primitive.mode, primitive.count, primitive.type, primitive.offset);
+    }
+
+    clear(options?: ClearOptions) {
+        const gl = this.gl as WebGLRenderingContext;
+
+        let bit = 0;
+
+        if (!options) {
+            options = this.clearOptions;
+        }
+
+        if (options.color) {
+            bit |= COLOR_BUFFER_BIT;
+        }
+
+        if (options.depth) {
+            bit |= DEPTH_BUFFER_BIT;
+        }
+
+        if (options.stencil) {
+            bit |= STENCIL_BUFFER_BIT;
+        }
+
+        gl.clear(bit);
     }
 }
