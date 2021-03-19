@@ -29,6 +29,12 @@ export class VertexBuffer {
         const shader = device.shader as Shader;
         const attribute = this.attribute;
         const shaderInput = shader.attributes[attribute.semantic];
+
+        // NOTE: if current shader do not have this attribute, skip it.
+        if (!shaderInput) {
+            return;
+        }
+
         const location = shaderInput.location as number;
 
         if (!this.buffer._inited) {
