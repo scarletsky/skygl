@@ -1,3 +1,4 @@
+import { isNumber } from 'util/index';
 import { BaseObject } from './BaseObject';
 
 export class Cache<T extends BaseObject> {
@@ -12,7 +13,7 @@ export class Cache<T extends BaseObject> {
     }
 
     get(key: number | string) {
-        if (typeof key === 'number') {
+        if ( isNumber(key)) {
             return this.idCaches[key];
         } else {
             return this.uidCaches[key] || this.nameCaches[key];

@@ -1,3 +1,4 @@
+import { isNumber } from 'util/index';
 import { TRIANGLES, FLOAT } from './constants';
 
 export interface PrimitiveOptions {
@@ -18,8 +19,8 @@ export class Primitive {
     constructor(options: PrimitiveOptions = { mode: TRIANGLES, count: 0 }) {
         this.mode = options.mode;
         this.count = options.count;
-        this.first = typeof (options.first) === 'number' ? options.first : 0;
-        this.type = typeof (options.type) === 'number' ? options.type : FLOAT;
-        this.offset = typeof (options.offset) === 'number' ? options.offset : 0;
+        this.first = isNumber(options.first) ? options.first : 0;
+        this.type = isNumber(options.type) ? options.type : FLOAT;
+        this.offset = isNumber(options.offset)  ? options.offset : 0;
     }
 }

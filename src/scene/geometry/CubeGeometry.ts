@@ -4,6 +4,7 @@ import { IndexBuffer } from 'graphics/buffer/IndexBuffer';
 import { Primitive } from 'graphics/Primitive';
 import { Geometry } from './Geometry';
 import { TRIANGLES, UNSIGNED_BYTE, UNSIGNED_INT, UNSIGNED_SHORT, VertexAttributeSemantic } from 'graphics';
+import { isNil } from 'util/index';
 
 export interface CubeGeometryOptions {
     width?: number;
@@ -25,9 +26,9 @@ export class CubeGeometry {
         const width = options.width || 1;
         const height = options.height || 1;
         const depth = options.depth || 1;
-        const needsIndices = (typeof options.needsIndices !== 'undefined') ? options.needsIndices : true;
-        const needsNormals = (typeof options.needsNormals !== 'undefined') ? options.needsNormals : true;
-        const needsTexCoord0 = (typeof options.needsTexCoord0 !== 'undefined') ? options.needsTexCoord0 : true;
+        const needsIndices = !isNil(options.needsIndices) ? options.needsIndices : true;
+        const needsNormals = !isNil(options.needsNormals) ? options.needsNormals : true;
+        const needsTexCoord0 = !isNil(options.needsTexCoord0) ? options.needsTexCoord0 : true;
 
         const positions = [] as number[];
         const normals = [] as number[];
