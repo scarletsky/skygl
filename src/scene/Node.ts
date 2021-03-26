@@ -8,11 +8,14 @@ import { Cache } from '../core/Cache';
 const vecA = new Vec3();
 const vecB = new Vec3();
 const quatA = new Quat();
+const quatB = new Quat();
 const matA = new Mat4();
 const matB = new Mat4();
 
 export interface NodeOptions extends BaseObjectOptions {
-
+    position?: [number, number, number];
+    rotation?: [number, number, number, number];
+    scale?: [number, number, number];
 }
 
 export class Node extends BaseObject {
@@ -118,14 +121,19 @@ export class Node extends BaseObject {
         return this.getWorldMatrix().getRotation(res);
     }
 
-    setWorldRotation(value: Quat) {
+    setWorldRotation(x: Quat | number, y = 0, z = 0, w = 1) {
+        if (x instanceof Quat) {
+            quatA.copy(x);
+        } else {
+            quatA.set(x, y, z, w);
+        }
 
         if (this.parent === null) {
-            this.localRotation.copy(value);
+            this.localRotation.copy(quatA);
         } else {
-            this.parent.getWorldRotation(quatA);
-            quatA.invert();
-            this.localRotation.mul2(quatA, value)
+            this.parent.getWorldRotation(quatB);
+            quatB.invert();
+            this.localRotation.mul2(quatB, quatA)
         }
 
         this._dirtifyLocal();
@@ -137,8 +145,13 @@ export class Node extends BaseObject {
         return res.copy(this.localRotation);
     }
 
-    setLocalRotation(value: Quat) {
-        this.localRotation.copy(value);
+    setLocalRotation(x: Quat | number, y = 0, z = 0, w = 1) {
+        if (x instanceof Quat) {
+            this.localRotation.copy(x);
+        } else {
+            this.localRotation.set(x, y, z, w);
+        }
+
         this._dirtifyLocal();
 
         return this;
@@ -248,7 +261,15 @@ export class Node extends BaseObject {
         this.children.forEach(node => node.syncHierarchy());
     }
 
-    toJSON() {
+    fromJSON(options: NodeOptions) {
+        if (options.name) this.name = options.name;
+        if (options.uid) this.uid = options.uid;
+        if (options.position) this.setLocalPosition(...options.position);
+        if (options.rotation) this.setLocalRotation(...options.rotation);
+        if (options.scale) this.setLocalScale(...options.scale);
+    }
+
+    toJSON(): NodeOptions {
         return {
             uid: this.uid,
             name: this.name,

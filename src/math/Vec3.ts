@@ -216,7 +216,7 @@ export class Vec3 {
         return this;
     }
 
-    toJSON() {
+    toJSON(): [number, number, number] {
         return [this.x, this.y, this.z];
     }
 }

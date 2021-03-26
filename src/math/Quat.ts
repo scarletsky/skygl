@@ -353,7 +353,7 @@ export class Quat {
         );
     }
 
-    toJSON() {
+    toJSON(): [number, number, number, number] {
         return [this.x, this.y, this.z, this.w];
     }
 }

@@ -163,7 +163,7 @@ export class Vec2 {
         return this;
     }
 
-    toJSON() {
+    toJSON(): [number, number] {
         return [this.x, this.y];
     }
 }

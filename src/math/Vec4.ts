@@ -193,7 +193,7 @@ export class Vec4 {
         return this;
     }
 
-    toJSON() {
+    toJSON(): [number, number, number, number] {
         return [this.x, this.y, this.z, this.w];
     }
 }

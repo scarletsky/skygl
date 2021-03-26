@@ -14,3 +14,7 @@ export function isNumber(value: any): value is number {
 export function isBoolean(value: any): value is boolean {
     return typeof value === 'boolean';
 }
+
+export function isFunction(value: any): value is (...rest: any[]) => any {
+    return typeof value === 'function';
+}
