@@ -1,4 +1,4 @@
-import { Node } from 'scene/Node';
+import { Node, NodeOptions } from 'scene/Node';
 import { Geometry } from 'scene/geometry/Geometry';
 import { Material } from 'scene/material/Material';
 import { Drawable } from 'graphics/Drawable';
@@ -7,7 +7,7 @@ import { Primitive } from 'graphics/Primitive';
 import { Shader } from 'graphics/shader/Shader';
 
 
-export interface MeshOptions {
+export interface MeshOptions extends NodeOptions {
     geometry: Geometry;
     material: Material;
 }
@@ -31,7 +31,7 @@ export class Mesh extends Node {
         };
     }
 
-    fromJSON(data: MeshOptions) {
+    fromJSON(options: MeshOptions) {
 
     }
 

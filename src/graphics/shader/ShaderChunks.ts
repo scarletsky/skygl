@@ -1,12 +1,13 @@
-export interface ShaderChunksOptions {
-    [name: string]: string;
-}
+import { Dictionary } from 'types';
+
+export type ShaderChunksOptions = Dictionary<string>;
 
 export class ShaderChunks {
-    public chunks: { [name: string]: string };
+    public chunks: ShaderChunksOptions;
 
-    constructor(_options: ShaderChunksOptions = {}) {
+    constructor(options: ShaderChunksOptions = {}) {
         this.chunks = {};
+        this.fromJSON(options);
     }
 
     add(name: string, chunk: string) {

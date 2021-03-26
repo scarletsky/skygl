@@ -1,12 +1,10 @@
-import { Nullable } from 'types';
+import { Dictionary, Nullable } from 'types';
 import { BaseObject } from 'core/BaseObject';
 import { Device } from '../Device';
 import { ShaderInput } from './ShaderInput';
 import { UniformInput } from './UniformInput';
 
-export interface ShaderSourceDefines {
-    [name: string]: string;
-}
+export type ShaderSourceDefines = Dictionary<string>;
 
 export interface ShaderOptions {
     precision?: string;
@@ -22,8 +20,8 @@ export class Shader extends BaseObject {
     public vertexSource: string;
     public fragmentDefines: ShaderSourceDefines;
     public fragmentSource: string;
-    public attributes: { [semantic: string]: ShaderInput };
-    public uniforms: { [name: string]: UniformInput };
+    public attributes: Dictionary<ShaderInput>
+    public uniforms: Dictionary<UniformInput>;
     public _glProgramId: Nullable<WebGLProgram>;
     public _inited: boolean;
     public _destroying: boolean;

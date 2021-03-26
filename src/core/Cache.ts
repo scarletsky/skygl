@@ -1,10 +1,11 @@
+import { Dictionary } from 'types';
 import { isNumber } from 'util/index';
 import { BaseObject } from './BaseObject';
 
 export class Cache<T extends BaseObject> {
     public idCaches: { [id: number]: T };
-    public nameCaches: { [name: string]: T };
-    public uidCaches: { [uid: string]: T };
+    public nameCaches: Dictionary<T>;
+    public uidCaches: Dictionary<T>;
 
     constructor() {
         this.idCaches = {};
