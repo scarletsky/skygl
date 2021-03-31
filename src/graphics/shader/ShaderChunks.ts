@@ -1,4 +1,5 @@
 import { Dictionary } from 'types';
+import * as chunks from './chunks';
 
 export type ShaderChunksOptions = Dictionary<string>;
 
@@ -47,3 +48,5 @@ export class ShaderChunks {
         return result;
     }
 }
+
+export const shaderChunks = new ShaderChunks(chunks);
