@@ -3,6 +3,8 @@ import { BaseObject } from 'core/BaseObject';
 import { Device } from '../Device';
 import { ShaderInput } from './ShaderInput';
 import { UniformInput } from './UniformInput';
+import { ShaderChunks } from './ShaderChunks';
+import { parseFragmentShader, parseVertexShader } from './util';
 
 export type ShaderSourceDefines = Dictionary<string>;
 
@@ -22,6 +24,7 @@ export class Shader extends BaseObject {
     public fragmentSource: string;
     public attributes: Dictionary<ShaderInput>
     public uniforms: Dictionary<UniformInput>;
+    public chunks: Nullable<ShaderChunks>;
     public _glProgramId: Nullable<WebGLProgram>;
     public _inited: boolean;
     public _destroying: boolean;
@@ -36,6 +39,7 @@ export class Shader extends BaseObject {
         this.fragmentDefines = options.fragmentDefines || {};
         this.attributes = {};
         this.uniforms = {};
+        this.chunks = null;
         this._glProgramId = null;
         this._inited = false;
         this._destroying = false;
@@ -72,7 +76,7 @@ export class Shader extends BaseObject {
             return false;
         }
 
-        const vertexSource = this.vertexSource;
+        const vertexSource = parseVertexShader(this);
         gl.shaderSource(vertexShader, vertexSource);
         gl.compileShader(vertexShader);
 
@@ -81,7 +85,7 @@ export class Shader extends BaseObject {
             throw new Error("Could not compile vertex shader. \n\n" + info);
         }
 
-        const fragmentSource = this.fragmentSource;
+        const fragmentSource = parseFragmentShader(this);
         gl.shaderSource(fragmentShader, fragmentSource);
         gl.compileShader(fragmentShader);
 
