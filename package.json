@@ -15,6 +15,7 @@
     "@types/jest": "^26.0.20",
     "jest": "^26.6.3",
     "rollup": "^2.38.5",
+    "rollup-plugin-glslify": "^1.2.0",
     "rollup-plugin-serve": "^1.1.0",
     "ts-jest": "^26.5.0"
   },

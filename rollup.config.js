@@ -1,5 +1,7 @@
 import typescript from '@rollup/plugin-typescript';
 import serve from 'rollup-plugin-serve';
+import glslify from 'rollup-plugin-glslify';
+
 
 function generateConfig(name) {
     const config = {
@@ -11,6 +13,7 @@ function generateConfig(name) {
         },
         plugins: [
             typescript(),
+            glslify(),
         ]
     };
 
