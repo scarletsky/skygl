@@ -1,6 +1,6 @@
 import typescript from '@rollup/plugin-typescript';
 import serve from 'rollup-plugin-serve';
-import glslify from 'rollup-plugin-glslify';
+import glsl from './config/plugin/glsl';
 
 
 function generateConfig(name) {
@@ -13,7 +13,7 @@ function generateConfig(name) {
         },
         plugins: [
             typescript(),
-            glslify(),
+            glsl(),
         ]
     };
 
