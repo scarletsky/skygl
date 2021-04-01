@@ -1,5 +1,6 @@
 import { Dictionary } from 'types';
 import * as chunks from './chunks';
+import * as libs from './libs';
 
 export type ShaderChunksOptions = Dictionary<string>;
 
@@ -49,4 +50,6 @@ export class ShaderChunks {
     }
 }
 
-export const shaderChunks = new ShaderChunks(chunks);
+export const shaderChunks = new ShaderChunks();
+shaderChunks.fromJSON(chunks);
+shaderChunks.fromJSON(libs);
