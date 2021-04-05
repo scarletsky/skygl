@@ -1,15 +1,15 @@
-import { Shader, ShaderSourceDefines } from './Shader';
+import { Shader, ShaderSourceDefine } from './Shader';
 import { shaderChunks } from './ShaderChunks';
 
-export function parseDefines(defines: ShaderSourceDefines) {
-    let defs = '';
+export function parseDefine(define: ShaderSourceDefine) {
+    let result = '';
 
-    for (let key in defines) {
-        let value = defines[key];
-        defs += `#define ${key} ${value}\n`;
+    for (let key in define) {
+        let value = define[key];
+        result += `#define ${key} ${value}\n`;
     }
 
-    return defs;
+    return result;
 }
 
 export function parseIncludes(src: string, chunks = shaderChunks) {
@@ -17,9 +17,9 @@ export function parseIncludes(src: string, chunks = shaderChunks) {
 }
 
 export function parseVertexShader(shader: Shader) {
-    return parseDefines(shader.vertexDefines) + parseIncludes(shader.vertexSource, shader.chunks || shaderChunks);
+    return parseDefine(shader.vertexDefine) + parseIncludes(shader.vertexSource, shader.chunks || shaderChunks);
 }
 
 export function parseFragmentShader(shader: Shader) {
-    return parseDefines(shader.fragmentDefines) + parseIncludes(shader.fragmentSource, shader.chunks || shaderChunks);
+    return parseDefine(shader.fragmentDefine) + parseIncludes(shader.fragmentSource, shader.chunks || shaderChunks);
 }

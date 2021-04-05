@@ -6,21 +6,21 @@ import { UniformInput } from './UniformInput';
 import { ShaderChunks } from './ShaderChunks';
 import { parseFragmentShader, parseVertexShader } from './utils';
 
-export type ShaderSourceDefines = Dictionary<string>;
+export type ShaderSourceDefine = Dictionary<string>;
 
 export interface ShaderOptions {
     precision?: string;
-    vertexDefines?: ShaderSourceDefines;
-    fragmentDefines?: ShaderSourceDefines;
+    vertexDefine?: ShaderSourceDefine;
+    fragmentDefine?: ShaderSourceDefine;
     vertexSource: string;
     fragmentSource: string;
 }
 
 export class Shader extends BaseObject {
     public precision: string;
-    public vertexDefines: ShaderSourceDefines;
+    public vertexDefine: ShaderSourceDefine;
     public vertexSource: string;
-    public fragmentDefines: ShaderSourceDefines;
+    public fragmentDefine: ShaderSourceDefine;
     public fragmentSource: string;
     public attributes: Dictionary<ShaderInput>
     public uniforms: Dictionary<UniformInput>;
@@ -35,8 +35,8 @@ export class Shader extends BaseObject {
         this.precision = options.precision || 'highp';
         this.vertexSource = options.vertexSource || '';
         this.fragmentSource = options.fragmentSource || '';
-        this.vertexDefines = options.vertexDefines || {};
-        this.fragmentDefines = options.fragmentDefines || {};
+        this.vertexDefine = options.vertexDefine || {};
+        this.fragmentDefine = options.fragmentDefine || {};
         this.attributes = {};
         this.uniforms = {};
         this.chunks = null;

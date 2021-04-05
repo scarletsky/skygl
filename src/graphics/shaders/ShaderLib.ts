@@ -1,13 +1,8 @@
 import { Cache } from 'core/Cache';
-import { Shader } from './Shader';
+import { Shader, ShaderOptions } from './Shader';
 import { Dictionary } from 'types';
 
-export type ShaderLibDefinition = {
-    vertexSource: string;
-    fragmentSource: string;
-}
-
-export type ShaderLibOptions = Dictionary<string>;
+export type ShaderLibOptions = Dictionary<ShaderOptions>;
 
 export class ShaderLib  {
     public lib: ShaderLibOptions;
