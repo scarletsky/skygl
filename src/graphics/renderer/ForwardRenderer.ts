@@ -1,4 +1,6 @@
 import { Device } from 'graphics/Device';
+import { Camera } from 'scene/camera/Camera';
+import { Scene } from 'scene/Scene';
 import { Renderer, RendererOptions } from './Renderer';
 
 export interface ForwardRendererOptions extends RendererOptions {
@@ -11,4 +13,7 @@ export class ForwardRenderer extends Renderer {
         super(device);
     }
 
+    render(scene: Scene, camera: Camera) {
+
+    }
 }

@@ -1,4 +1,6 @@
 import { Device } from 'graphics/Device';
+import { Camera } from 'scene/camera/Camera';
+import { Scene } from 'scene/Scene';
 
 export class RendererOptions {
 
@@ -11,7 +13,7 @@ export class Renderer {
         this.device = device;
     }
 
-    render() {
+    render(scene: Scene, camera: Camera) {
 
     }
 }
