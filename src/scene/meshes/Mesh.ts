@@ -1,10 +1,10 @@
 import { Node, NodeOptions } from 'scene/Node';
-import { Geometry } from 'scene/geometry/Geometry';
-import { Material } from 'scene/material/Material';
+import { Geometry } from 'scene/geometries/Geometry';
+import { Material } from 'scene/materials/Material';
 import { Drawable } from 'graphics/Drawable';
 import { Device } from 'graphics/Device';
 import { Primitive } from 'graphics/Primitive';
-import { Shader } from 'graphics/shader/Shader';
+import { Shader } from 'graphics/shaders/Shader';
 
 
 export interface MeshOptions extends NodeOptions {

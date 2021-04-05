@@ -1,7 +1,7 @@
-import { Light } from './light';
+import { Light } from './lights';
 import { Node, NodeOptions } from './Node';
 import { Dictionary } from 'types';
-import { Mesh } from './mesh';
+import { Mesh } from './meshes';
 
 export type SceneMeshes = Dictionary<Mesh>;
 export type SceneLights = Dictionary<Light>;

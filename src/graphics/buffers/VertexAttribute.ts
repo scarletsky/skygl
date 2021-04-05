@@ -1,4 +1,4 @@
-import { isNumber, isBoolean } from 'util/index';
+import { isNumber, isBoolean } from 'utils/index';
 import { FLOAT } from 'graphics/constants';
 
 export enum VertexAttributeSemantic {

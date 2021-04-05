@@ -1,6 +1,6 @@
 import typescript from '@rollup/plugin-typescript';
 import serve from 'rollup-plugin-serve';
-import glsl from './config/plugin/glsl';
+import glsl from './configs/plugins/glsl';
 
 
 function generateConfig(name) {

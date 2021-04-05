@@ -1,4 +1,4 @@
-import { isNumber } from 'util/index';
+import { isNumber } from 'utils/index';
 import { TRIANGLES, FLOAT } from './constants';
 
 export interface PrimitiveOptions {

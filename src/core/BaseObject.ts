@@ -1,4 +1,4 @@
-import { isString, uuid } from 'util/index';
+import { isString, uuid } from 'utils/index';
 
 let nextId = 0;
 const DEFAULT_NODE_NAME = '';

@@ -1,6 +1,6 @@
 import { ARRAY_BUFFER } from 'graphics/constants';
 import { Device } from 'graphics/Device';
-import { Shader } from 'graphics/shader/Shader';
+import { Shader } from 'graphics/shaders/Shader';
 import { Buffer, BufferOptions } from './Buffer';
 import { VertexAttribute, VertexAttributeOptions, VertexAttributeSemantic } from './VertexAttribute';
 

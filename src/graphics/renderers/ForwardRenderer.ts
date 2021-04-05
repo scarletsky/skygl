@@ -1,5 +1,5 @@
 import { Device } from 'graphics/Device';
-import { Camera } from 'scene/camera/Camera';
+import { Camera } from 'scene/cameras/Camera';
 import { Scene } from 'scene/Scene';
 import { Renderer, RendererOptions } from './Renderer';
 

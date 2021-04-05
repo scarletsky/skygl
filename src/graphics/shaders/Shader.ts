@@ -4,7 +4,7 @@ import { Device } from '../Device';
 import { ShaderInput } from './ShaderInput';
 import { UniformInput } from './UniformInput';
 import { ShaderChunks } from './ShaderChunks';
-import { parseFragmentShader, parseVertexShader } from './util';
+import { parseFragmentShader, parseVertexShader } from './utils';
 
 export type ShaderSourceDefines = Dictionary<string>;
 

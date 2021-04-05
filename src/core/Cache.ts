@@ -1,5 +1,5 @@
 import { Dictionary } from 'types';
-import { isNumber } from 'util/index';
+import { isNumber } from 'utils/index';
 import { BaseObject } from './BaseObject';
 
 export class Cache<T extends BaseObject> {

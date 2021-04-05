@@ -1,11 +1,8 @@
 import { Nullable } from 'types';
-import { VertexBuffer, VertexBufferGroup } from './buffer/VertexBuffer';
-import { IndexBuffer } from './buffer/IndexBuffer';
+import { VertexBuffer, VertexBufferGroup, VertexAttributeSemantic, IndexBuffer } from './buffers';
 import { Primitive } from './Primitive';
-import { UniformScope } from './shader/UniformScope';
+import { Shader, UniformScope } from './shaders';
 import { Drawable } from './Drawable';
-import { Shader } from './shader/Shader';
-import { VertexAttributeSemantic } from './buffer';
 import { COLOR_BUFFER_BIT, DEPTH_BUFFER_BIT, STENCIL_BUFFER_BIT } from './constants';
 
 export interface DeviceOptions extends WebGLContextAttributes {

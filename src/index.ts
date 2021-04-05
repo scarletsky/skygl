@@ -1,4 +1,4 @@
-export * from './util';
+export * from './utils';
 export * from './math';
 export * from './scene';
 export * from './graphics';

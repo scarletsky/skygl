@@ -1,6 +1,6 @@
 import { Node } from 'scene/Node';
 import { Device, DeviceOptions } from './graphics/Device';
-import { Renderer, RendererOptions } from './graphics/renderer/Renderer';
+import { Renderer, RendererOptions } from './graphics/renderers/Renderer';
 
 export interface ApplicationOptions {
     device?: DeviceOptions;

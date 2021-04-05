@@ -1,9 +1,10 @@
 import { Nullable } from 'types';
 import { BaseObject } from 'core/BaseObject';
-import { VertexBuffer, VertexBufferGroup } from 'graphics/buffer/VertexBuffer';
-import { VertexAttributeSemantic } from 'graphics/buffer/VertexAttribute';
-import { IndexBuffer, IndexBufferOptions } from 'graphics/buffer/IndexBuffer';
 import { Primitive, PrimitiveOptions } from 'graphics/Primitive';
+import {
+    VertexBuffer, VertexBufferGroup, VertexAttributeSemantic,
+    IndexBuffer, IndexBufferOptions
+} from 'graphics/buffers';
 
 export interface GeometryOptions {
     vertices?: VertexBufferGroup;

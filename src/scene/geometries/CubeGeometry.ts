@@ -1,10 +1,10 @@
 import { Vec3 } from 'math/Vec3';
-import { VertexBuffer } from 'graphics/buffer/VertexBuffer';
-import { IndexBuffer } from 'graphics/buffer/IndexBuffer';
+import { VertexBuffer } from 'graphics/buffers/VertexBuffer';
+import { IndexBuffer } from 'graphics/buffers/IndexBuffer';
 import { Primitive } from 'graphics/Primitive';
 import { Geometry } from './Geometry';
 import { TRIANGLES, UNSIGNED_BYTE, UNSIGNED_INT, UNSIGNED_SHORT, VertexAttributeSemantic } from 'graphics';
-import { isNil } from 'util/index';
+import { isNil } from 'utils/index';
 
 export interface CubeGeometryOptions {
     width?: number;

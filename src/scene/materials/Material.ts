@@ -1,4 +1,4 @@
-import { Shader } from 'graphics/shader/Shader';
+import { Shader } from 'graphics/shaders/Shader';
 import { Nullable } from 'types';
 
 export interface MaterialOptions {
