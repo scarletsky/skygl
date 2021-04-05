@@ -1,3 +1,5 @@
+import { isString, uuid } from 'util/index';
+
 let nextId = 0;
 const DEFAULT_NODE_NAME = '';
 const DEFAULT_NODE_UID = '';
@@ -16,5 +18,22 @@ export class BaseObject {
         this.id = nextId++;
         this.name = DEFAULT_NODE_NAME;
         this.uid = DEFAULT_NODE_UID;
+    }
+
+    fromJSON(options: BaseObjectOptions) {
+        if (isString(options.name)) {
+            this.name = options.name;
+        }
+
+        if (isString(options.uid)) {
+            this.uid = options.uid;
+        }
+    }
+
+    toJSON(): BaseObjectOptions {
+        return {
+            name: this.name,
+            uid: this.uid
+        };
     }
 }

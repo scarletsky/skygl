@@ -101,6 +101,6 @@ export class Geometry extends BaseObject {
     }
 
     toJSON() {
-
+        return super.toJSON();
     }
 }
