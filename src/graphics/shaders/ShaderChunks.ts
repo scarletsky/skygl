@@ -5,31 +5,31 @@ import * as libs from './libs';
 export type ShaderChunksOptions = Dictionary<string>;
 
 export class ShaderChunks {
-    public chunks: ShaderChunksOptions;
+    public caches: ShaderChunksOptions;
 
     constructor(options: ShaderChunksOptions = {}) {
-        this.chunks = {};
+        this.caches = {};
         this.fromJSON(options);
     }
 
     add(name: string, chunk: string) {
-        if (this.chunks[name]) {
+        if (this.caches[name]) {
             console.error(`[ShaderChunks] ${name} existed.`);
             return this;
         }
 
-        this.chunks[name] = chunk;
+        this.caches[name] = chunk;
         return this;
     }
 
     remove(name: string) {
-        delete this.chunks[name];
+        delete this.caches[name];
 
         return this;
     }
 
     get(name: string) {
-        return this.chunks[name] || '';
+        return this.caches[name] || '';
     }
 
     fromJSON(options: ShaderChunksOptions) {
@@ -40,10 +40,10 @@ export class ShaderChunks {
 
     toJSON() {
         const result = {} as ShaderChunksOptions;
-        const chunks = this.chunks;
+        const caches = this.caches;
 
-        for (let name in chunks) {
-            result[name] = chunks[name];
+        for (let name in caches) {
+            result[name] = caches[name];
         }
 
         return result;

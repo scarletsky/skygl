@@ -2,6 +2,7 @@ import { Light } from './lights';
 import { Node, NodeOptions } from './Node';
 import { Dictionary } from 'types';
 import { Mesh } from './meshes';
+import { ShaderSourceDefine } from 'graphics';
 
 export type SceneMeshes = Dictionary<Mesh>;
 export type SceneLights = Dictionary<Light>;
@@ -18,5 +19,11 @@ export class Scene extends Node {
         super();
         this.meshes = {};
         this.lights = {};
+    }
+
+    getShaderSourceDefine(): ShaderSourceDefine {
+        return {
+
+        };
     }
 }

@@ -1,4 +1,4 @@
-import { Shader } from 'graphics/shaders/Shader';
+import { Shader, ShaderSourceDefine } from 'graphics/shaders/Shader';
 import { Nullable } from 'types';
 
 export interface MaterialOptions {
@@ -12,6 +12,12 @@ export class Material {
     constructor(options: MaterialOptions = {}) {
         this.name = options.name || '';
         this.shader = null;
+    }
+
+    getShaderSourceDefine(): ShaderSourceDefine {
+        return {
+
+        };
     }
 
     fromJSON(data: MaterialOptions) {

@@ -1,3 +1,5 @@
+import { Scene } from 'scene/Scene';
+import { Material } from 'scene/materials';
 import { Shader, ShaderSourceDefine } from './Shader';
 import { shaderChunks } from './ShaderChunks';
 
@@ -22,4 +24,11 @@ export function parseVertexShader(shader: Shader) {
 
 export function parseFragmentShader(shader: Shader) {
     return parseDefine(shader.fragmentDefine) + parseInclude(shader.fragmentSource, shader.chunks || shaderChunks);
+}
+
+export function getShaderSourceDefine(material: Material, scene: Scene) {
+    return Object.assign(
+        material.getShaderSourceDefine(),
+        scene.getShaderSourceDefine()
+    );
 }
