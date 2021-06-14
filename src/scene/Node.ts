@@ -1,9 +1,9 @@
-import { Nullable } from 'types';
+import { Nullable, TraverseCallback } from 'types';
+import { isFunction } from '../utils';
 import { Vec3 } from '../math/Vec3';
 import { Quat } from '../math/Quat';
 import { Mat4 } from '../math/Mat4';
 import { BaseObject, BaseObjectOptions } from '../core/BaseObject';
-import { Cache } from '../core/Cache';
 
 const vecA = new Vec3();
 const vecB = new Vec3();
@@ -35,7 +35,6 @@ export class Node extends BaseObject {
 
     constructor() {
         super();
-        this.cache = new Cache();
         this.localPosition = new Vec3();
         this.localRotation = new Quat();
         this.localScale = new Vec3(1, 1, 1);
@@ -54,13 +53,13 @@ export class Node extends BaseObject {
     addChild(node: Node) {
         if (node.parent) {
             console.error('[Node] Can not addChild');
-            return this;
+            return false;
         }
 
         this.children.push(node);
         node.parent = this;
 
-        return this;
+        return true;
     }
 
     removeChild(node: Node) {
@@ -253,12 +252,14 @@ export class Node extends BaseObject {
         return this;
     }
 
-    syncHierarchy() {
+    syncHierarchy(callback?: TraverseCallback<Node>) {
         if (!this.enabled) return;
 
         this._sync();
 
-        this.children.forEach(node => node.syncHierarchy());
+        if (isFunction(callback)) callback(this);
+
+        this.children.forEach(node => node.syncHierarchy(callback));
     }
 
     fromJSON(options: NodeOptions) {
@@ -277,6 +278,11 @@ export class Node extends BaseObject {
             rotation: this.getLocalRotation().toJSON(),
             scale: this.getLocalScale().toJSON(),
         };
+    }
+
+    traverse(callback: TraverseCallback<Node>) {
+        callback(this);
+        this.children.forEach(callback);
     }
 
     private _dirtifyLocal() {
