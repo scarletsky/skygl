@@ -42,6 +42,7 @@ export class Shader extends BaseObject {
         this.chunks = null;
         this._glProgramId = null;
         this._inited = false;
+        this._failed = false;
         this._destroying = false;
         this._destroyed = false;
     }
@@ -53,6 +54,7 @@ export class Shader extends BaseObject {
 
     onGLCreate(device: Device) {
         if (this._inited) return true;
+        if (this._failed) return false;
 
         const gl = device.gl as WebGLRenderingContext;
 
@@ -63,16 +65,19 @@ export class Shader extends BaseObject {
 
         if (!vertexShader) {
             console.error('[Shader] can not create vertex shader.');
+            this._failed = true;
             return false;
         }
 
         if (!fragmentShader) {
             console.error('[Shader] can not create fragment shader.');
+            this._failed = true;
             return false;
         }
 
         if (!program) {
             console.error('[Shader] can not create program.');
+            this._failed = true;
             return false;
         }
 
@@ -82,6 +87,7 @@ export class Shader extends BaseObject {
 
         if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
             info = gl.getShaderInfoLog(vertexShader);
+            this._failed = true;
             throw new Error("Could not compile vertex shader. \n\n" + info);
         }
 
@@ -91,6 +97,7 @@ export class Shader extends BaseObject {
 
         if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
             info = gl.getShaderInfoLog(fragmentShader);
+            this._failed = true;
             throw new Error("Could not compile fragment shader. \n\n" + info);
         }
 
@@ -100,6 +107,7 @@ export class Shader extends BaseObject {
 
         if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
             info = gl.getProgramInfoLog(program);
+            this._failed = true;
             throw new Error('Could not compile WebGL program. \n\n' + info);
         }
 
