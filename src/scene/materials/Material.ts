@@ -1,6 +1,7 @@
 import { Shader, ShaderSourceDefine } from 'graphics/shaders/Shader';
 import { isString, isBoolean } from 'utils';
 import { Nullable } from 'types';
+import { RenderState } from 'graphics/renderers/RenderState';
 
 export interface MaterialOptions {
     name?: string
@@ -8,14 +9,12 @@ export interface MaterialOptions {
 }
 
 export class Material {
-    public name: string;
-    public transparent: boolean;
-    public shader: Nullable<Shader>;
+    public name = '';
+    public transparent = false;
+    public shader = null as Nullable<Shader>;
 
     constructor(options: MaterialOptions = {}) {
-        this.name = isString(options.name) ? options.name : '';
-        this.transparent = isBoolean(options.transparent) ? options.transparent : false;
-        this.shader = null;
+        this.fromJSON(options);
     }
 
     getShaderSourceDefine(): ShaderSourceDefine {
@@ -24,11 +23,21 @@ export class Material {
         };
     }
 
-    fromJSON(data: MaterialOptions) {
-
+    fromJSON(options: MaterialOptions) {
+        this.name = isString(options.name) ? options.name : '';
+        this.transparent = isBoolean(options.transparent) ? options.transparent : false;
+        this.shader = null;
     }
 
     toJSON() {
+
+    }
+
+    onApplyShader(shader: Shader) {
+        this.shader = shader;
+    }
+
+    onApplyRenderState(renderState: RenderState) {
 
     }
 }
