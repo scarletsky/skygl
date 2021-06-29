@@ -7,3 +7,4 @@ export * from './Mat3';
 export * from './Mat4';
 export * from './Plane';
 export * from './Frustum';
+export * from './Color';
