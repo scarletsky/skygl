@@ -1,59 +1,72 @@
-import { Node, Scene, Camera, Mesh, Light, DirectionalLight, PointLight, SpotLight } from 'scene';
+import {
+    Node,
+    Scene,
+    Camera,
+    Mesh,
+    Light,
+    AmbientLight,
+    DirectionalLight,
+    PointLight,
+    SpotLight,
+    Material
+} from 'scene';
 import { isNil } from 'utils';
 
 export type OpaqueMeshes = Mesh[];
 export type TransparentMeshes = Mesh[];
-export type DirectionLights = DirectionalLight[];
-export type LayerMeshes = [OpaqueMeshes, TransparentMeshes]; // NOTE: [opaque meshes, transparent meshes]
-export enum LayerMeshesIndex {
-    OPAQUE = 0,
-    TRANSPARENT = 1
-}
-
-export type SortedMeshes = LayerMeshes[];
 export type SortedLights = Light[][];
 export enum SortedLightsIndex {
-    DIRECTIONAL = 0,
-    SPOT = 1,
-    POINT = 2
+    AMBIENT = 0,
+    DIRECTIONAL,
+    SPOT,
+    POINT
 }
 
 export class RenderState {
-    public meshes: SortedMeshes;
+    public opaqueMeshes: OpaqueMeshes;
+    public transparentMeshes: TransparentMeshes;
     public lights: SortedLights;
 
     constructor(scene: Scene, camera: Camera) {
-        this.meshes = [];
+        this.opaqueMeshes = [];
+        this.transparentMeshes = [];
         this.lights = [];
         this.prepare(scene, camera);
     }
 
     prepare(scene: Scene, camera: Camera) {
+        this.prepareCamera(camera);
+
         scene.traverse((node: Node) => {
+            if (!node.enabled) return;
+
             if (node instanceof Mesh) {
-                this.addMesh(node);
+                this.prepareMesh(node);
             } else if (node instanceof Light) {
-                this.addLight(node);
+                this.prepareLight(node);
             }
         });
+
     }
 
-    addMesh(mesh: Mesh) {
-        if (isNil(this.meshes[0])) {
-            this.meshes[0] = [[], []];
-        }
+    prepareCamera(camera: Camera) {
 
+    }
+
+    prepareMesh(mesh: Mesh) {
         if (mesh.material.transparent) {
-            this.meshes[0][LayerMeshesIndex.TRANSPARENT].push(mesh);
+            this.transparentMeshes.push(mesh);
         } else {
-            this.meshes[0][LayerMeshesIndex.OPAQUE].push(mesh);
+            this.opaqueMeshes.push(mesh);
         }
     }
 
-    addLight(light: Light) {
+    prepareLight(light: Light) {
         let idx = -1;
 
-        if (light instanceof DirectionalLight) {
+        if (light instanceof AmbientLight) {
+            idx = SortedLightsIndex.AMBIENT;
+        } else if (light instanceof DirectionalLight) {
             idx = SortedLightsIndex.DIRECTIONAL;
         } else if (light instanceof SpotLight) {
             idx = SortedLightsIndex.SPOT;
@@ -68,5 +81,13 @@ export class RenderState {
 
             this.lights[idx].push(light);
         }
+    }
+
+    prepareMaterial(material: Material) {
+
+    }
+
+    getShaderSourceDefine(scene: Scene, mesh: Mesh, material: Material) {
+
     }
 }
