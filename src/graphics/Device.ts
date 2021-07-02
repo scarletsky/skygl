@@ -3,37 +3,47 @@ import { VertexBuffer, VertexBufferGroup, VertexAttributeSemantic, IndexBuffer }
 import { Primitive } from './Primitive';
 import { Shader, UniformScope } from './shaders';
 import { Drawable } from './Drawable';
-import { COLOR_BUFFER_BIT, DEPTH_BUFFER_BIT, STENCIL_BUFFER_BIT } from './constants';
+import { COLOR_BUFFER_BIT, DEPTH_BUFFER_BIT, LESS, STENCIL_BUFFER_BIT } from './constants';
 
 export interface DeviceOptions extends WebGLContextAttributes {
-    preferredWebGL2?: boolean;
+    preferredWebGL2: boolean;
 }
 
 export interface ClearOptions {
-    color?: boolean;
-    depth?: boolean;
-    stencil?: boolean;
+    color: boolean;
+    depth: boolean;
+    stencil: boolean;
 }
 
 export class Device {
     public canvas: HTMLCanvasElement;
     public gl: Nullable<WebGLRenderingContext | WebGL2RenderingContext>;;
     public uniforms: Nullable<UniformScope>;
+    public vertices: Nullable<VertexBufferGroup>;
+    public indices: Nullable<IndexBuffer>;
     public shader: Nullable<Shader>;
+    public depthTest: boolean;
+    public depthWrite: boolean;
+    public depthFunc: number;
     public clearOptions: ClearOptions;
 
-    constructor(canvas: HTMLCanvasElement, options: DeviceOptions = {}) {
+    constructor(canvas: HTMLCanvasElement, options: Partial<DeviceOptions> = {}) {
         this.gl = null;
         this.uniforms = null;
+        this.vertices = null;
+        this.indices = null;
         this.shader = null;
+        this.depthTest = false;
+        this.depthWrite = false;
+        this.depthFunc = LESS
         this.canvas = canvas;
-        this.clearOptions = { color: true, depth: true };
+        this.clearOptions = { color: true, depth: true, stencil: false };
         this.initContext(options);
         this.initCapabilities();
         this.initExtensions();
     }
 
-    private initContext(options: DeviceOptions) {
+    private initContext(options: Partial<DeviceOptions>) {
         this.gl = this.canvas.getContext('webgl', options);
 
         if (!this.gl) {
@@ -87,6 +97,41 @@ export class Device {
             let value = deviceUniforms.resolve(uniform.name).getValue();
             uniform.setValue(gl, value);
         }
+    }
+
+    setDepthWrite(value: boolean) {
+        if (this.depthWrite === value) return false;
+
+        const gl = this.gl as WebGLRenderingContext;
+        gl.depthMask(value);
+        this.depthWrite = value;
+
+        return true;
+    }
+
+    setDepthTest(value: boolean) {
+        if (this.depthTest === value) return false;
+
+        const gl = this.gl as WebGLRenderingContext;
+
+        if (value) {
+            gl.enable(gl.DEPTH_TEST);
+        } else {
+            gl.disable(gl.DEPTH_TEST);
+        }
+        this.depthTest = value;
+
+        return true;
+    }
+
+    setDepthFunc(value: number) {
+        if (this.depthFunc === value) return false;
+
+        const gl = this.gl as WebGLRenderingContext;
+        gl.depthFunc(value);
+        this.depthFunc = value;
+
+        return true;
     }
 
     draw(drawable: Drawable) {

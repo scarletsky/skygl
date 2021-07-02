@@ -2,6 +2,7 @@ import { Shader, ShaderSourceDefine } from 'graphics/shaders/Shader';
 import { isString, isBoolean } from 'utils';
 import { Nullable } from 'types';
 import { RenderState } from 'graphics/renderers/RenderState';
+import { Device, LESS } from 'graphics';
 
 export interface MaterialOptions {
     name?: string
@@ -11,6 +12,9 @@ export interface MaterialOptions {
 export class Material {
     public name = '';
     public transparent = false;
+    public depthTest = true;
+    public depthWrite = true;
+    public depthFunc = LESS;
     public shader = null as Nullable<Shader>;
 
     constructor(options: MaterialOptions = {}) {
