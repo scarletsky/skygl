@@ -2,9 +2,10 @@ import { Node, NodeOptions } from 'scene/Node';
 import { Geometry } from 'scene/geometries/Geometry';
 import { Material } from 'scene/materials/Material';
 import { Drawable } from 'graphics/Drawable';
-import { Device } from 'graphics/Device';
 import { Primitive } from 'graphics/Primitive';
 import { Shader } from 'graphics/shaders/Shader';
+import { RenderState } from 'graphics/renderers/RenderState';
+import { VertexBufferGroup } from 'graphics/buffers';
 
 
 export interface MeshOptions extends NodeOptions {
@@ -24,7 +25,7 @@ export class Mesh extends Node {
 
     toDrawable(): Drawable {
         return {
-            vertices: this.geometry.vertices,
+            vertices: this.geometry.vertices as VertexBufferGroup,
             indices: this.geometry.indices,
             primitive: (this.geometry.primitive as Primitive),
             shader: (this.material.shader as Shader)

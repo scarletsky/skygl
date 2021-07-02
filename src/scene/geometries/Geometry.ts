@@ -7,30 +7,24 @@ import {
 } from 'graphics/buffers';
 
 export interface GeometryOptions {
-    vertices?: VertexBufferGroup;
-    indices?: IndexBufferOptions;
-    primitive?: PrimitiveOptions;
+    vertices: VertexBufferGroup;
+    indices: IndexBufferOptions;
+    primitive: PrimitiveOptions;
 }
 
 export class Geometry extends BaseObject {
-    public vertices: VertexBufferGroup;
+    public vertices: Nullable<VertexBufferGroup>;
     public indices: Nullable<IndexBuffer>;
     public primitive: Nullable<Primitive>;
 
-    constructor(options: GeometryOptions = {}) {
+    constructor(options: Partial<GeometryOptions> = {}) {
         super();
-        this.vertices = {};
+        this.vertices = null;
         this.indices = null;
         this.primitive = null;
 
         if (options.vertices) {
-            for (const semantic in options.vertices) {
-                const vertexBuffer = options.vertices[semantic as VertexAttributeSemantic];
-
-                if (vertexBuffer) {
-                    this.addVertices(vertexBuffer);
-                }
-            }
+            this.addVertices(options.vertices);
         }
 
         if (options.indices) {
@@ -42,27 +36,14 @@ export class Geometry extends BaseObject {
         }
     }
 
-    addVertices(vertexBuffer: VertexBuffer) {
-        const semantic = vertexBuffer.attribute.semantic;
-
-        if (this.vertices[semantic]) {
-            console.error(`[Geometry] vertices existed.`);
-            return this;
-        }
-
-        this.vertices[semantic] = vertexBuffer;
+    addVertices(vertices: VertexBufferGroup) {
+        this.vertices = vertices;
 
         return this;
     }
 
-    removeVertices(vertexBuffer: VertexBuffer) {
-        const semantic = vertexBuffer.attribute.semantic;
-
-        if (!this.vertices[semantic]) {
-            console.error('[Geometry] vertices do not exist.');
-        } else {
-            delete this.vertices[semantic];
-        }
+    removeVertices() {
+        this.vertices = null;
 
         return this;
     }

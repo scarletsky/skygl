@@ -55,10 +55,10 @@ export class VertexAttribute {
         const DEFAULT_VALUES_MAP = VertexAttribute.DEFAULT_VALUES_MAP;
 
         this.semantic = options.semantic || VertexAttributeSemantic.POSITION;
-        this.size = isNumber(options.size) ? (options.size as number) : DEFAULT_VALUES_MAP[this.semantic].size;
-        this.type = isNumber(options.type) ? (options.type as number) : DEFAULT_VALUES_MAP[this.semantic].type;
-        this.normalized = isBoolean(options.normalized) ? (options.normalized as boolean) : false;
-        this.stride = isNumber(options.stride) ? (options.stride as number) : 0;
-        this.offset = isNumber(options.offset) ? (options.offset as number) : 0;
+        this.size = isNumber(options.size) ? options.size : DEFAULT_VALUES_MAP[this.semantic].size;
+        this.type = isNumber(options.type) ? options.type : DEFAULT_VALUES_MAP[this.semantic].type;
+        this.normalized = isBoolean(options.normalized) ? options.normalized : false;
+        this.stride = isNumber(options.stride) ? options.stride : 0;
+        this.offset = isNumber(options.offset) ? options.offset : 0;
     }
 }

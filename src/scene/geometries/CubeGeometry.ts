@@ -1,5 +1,5 @@
 import { Vec3 } from 'math/Vec3';
-import { VertexBuffer } from 'graphics/buffers/VertexBuffer';
+import { VertexBuffer, VertexBufferGroup } from 'graphics/buffers';
 import { IndexBuffer } from 'graphics/buffers/IndexBuffer';
 import { Primitive } from 'graphics/Primitive';
 import { Geometry } from './Geometry';
@@ -34,7 +34,7 @@ export class CubeGeometry {
         const normals = [] as number[];
         const indices = [] as number[];
         const texCoords = [] as number[];
-        const vertices = [
+        const points = [
             new Vec3(-0.5,  0.5,  0.5), // 0
             new Vec3(-0.5, -0.5,  0.5), // 1
             new Vec3( 0.5, -0.5,  0.5), // 2
@@ -80,9 +80,9 @@ export class CubeGeometry {
 
             for (let i = 0; i <= uSegments; i++) {
                 for (let j = 0; j <= vSegments; j++) {
-                    vecA.lerp2(vertices[faceIndices[face][0]], vertices[faceIndices[face][1]], i / uSegments);
-                    vecB.lerp2(vertices[faceIndices[face][0]], vertices[faceIndices[face][2]], j / uSegments);
-                    vecC.sub2(vecB, vertices[faceIndices[face][0]]);
+                    vecA.lerp2(points[faceIndices[face][0]], points[faceIndices[face][1]], i / uSegments);
+                    vecB.lerp2(points[faceIndices[face][0]], points[faceIndices[face][2]], j / uSegments);
+                    vecC.sub2(vecB, points[faceIndices[face][0]]);
                     vecD.add2(vecA, vecC);
                     u = i / uSegments;
                     v = j / vSegments;
@@ -115,24 +115,27 @@ export class CubeGeometry {
         generateFace(faces.LEFT);
 
         const geometry = new Geometry();
-        geometry.addVertices(new VertexBuffer({
+        const vertices = new VertexBufferGroup();
+        vertices.add(new VertexBuffer({
             buffer: { srcData: new Float32Array(positions) },
             attribute: { semantic: VertexAttributeSemantic.POSITION }
-        }));
+        }))
 
         if (needsNormals) {
-            geometry.addVertices(new VertexBuffer({
+            vertices.add(new VertexBuffer({
                 buffer: { srcData: new Float32Array(normals) },
                 attribute: { semantic: VertexAttributeSemantic.NORMAL }
             }));
         }
 
         if (needsTexCoord0) {
-            geometry.addVertices(new VertexBuffer({
+            vertices.add(new VertexBuffer({
                 buffer: { srcData: new Float32Array(texCoords) },
                 attribute: { semantic: VertexAttributeSemantic.TEXCOORD_0 }
             }));
         }
+
+        geometry.addVertices(vertices);
 
         if (needsIndices) {
             let Ctor, type;

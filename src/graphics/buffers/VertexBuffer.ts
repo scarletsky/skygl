@@ -4,8 +4,6 @@ import { Shader } from 'graphics/shaders/Shader';
 import { Buffer, BufferOptions } from './Buffer';
 import { VertexAttribute, VertexAttributeOptions, VertexAttributeSemantic } from './VertexAttribute';
 
-export type VertexBufferGroup = { [semantic in VertexAttributeSemantic]?: VertexBuffer };
-
 export interface VertexBufferOptions {
     buffer?: Buffer | BufferOptions;
     attribute?: VertexAttributeOptions;
