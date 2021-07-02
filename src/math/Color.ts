@@ -1,11 +1,31 @@
-export class Color {
-    public r: number;
-    public g: number;
-    public b: number;
+export interface ColorOptions {
+    r: number;
+    g: number;
+    b: number;
+}
 
-    constructor(r = 0, g = 0, b = 0) {
+export class Color {
+    constructor(
+        public r = 0,
+        public g = 0,
+        public b = 0
+    ) {
         this.r = r;
         this.g = g;
         this.b = b;
+    }
+
+    fromJSON(options: ColorOptions) {
+        this.r = options.r;
+        this.g = options.g;
+        this.b = options.b;
+    }
+
+    toJSON() {
+        return {
+            r: this.r,
+            g: this.g,
+            b: this.b
+        };
     }
 }

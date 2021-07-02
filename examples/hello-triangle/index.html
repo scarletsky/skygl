@@ -38,6 +38,9 @@
           ])
         },
       });
+      const vertices = new skygl.VertexBufferGroup({
+        [skygl.VertexAttributeSemantic.POSITION]: positions
+      });
       const indices = new skygl.IndexBuffer({
         buffer: {
           srcData: new Uint8Array([0, 1, 2])
@@ -49,7 +52,7 @@
         type: skygl.UNSIGNED_BYTE
       });
       app.device.draw({
-        vertices: [positions],
+        vertices: vertices,
         indices: indices,
         primitive: primitive,
         shader: shader
