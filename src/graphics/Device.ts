@@ -61,29 +61,41 @@ export class Device {
 
     }
 
-    setShader(shader: Shader) {
+    setShader(shader: Shader | null) {
         if (this.shader === shader) return;
 
-        if (!shader._inited) {
-            shader.onGLCreate(this);
+        if (shader) {
+            if (!shader._inited) shader.onGLCreate(this);
+            shader.onGLBind(this);
+        } else {
+            if (this.shader) this.shader.onGLUnbind(this);
         }
 
-        shader.onGLBind(this);
         this.shader = shader;
     }
 
-    setVertices(vertices: VertexBufferGroup) {
-        for (let semantic in vertices) {
-            const vertexBuffer = vertices[semantic as VertexAttributeSemantic];
+    setVertices(vertices: VertexBufferGroup | null) {
+        if (this.vertices === vertices) return;
 
-            if (vertexBuffer) {
-                vertexBuffer.onGLBind(this);
-            }
+        if (vertices) {
+            vertices.onGLBind(this);
+        } else {
+            if (this.vertices) this.vertices.onGLUnbind(this);
         }
+
+        this.vertices = vertices;
     }
 
     setIndices(indices: IndexBuffer) {
-        indices.onGLBind(this);
+        if (this.indices === indices) return;
+
+        if (indices) {
+            indices.onGLBind(this);
+        } else {
+            if (this.indices) this.indices.onGLUnbind(this);
+        }
+
+        this.indices = indices;
     }
 
     setUniforms() {
@@ -157,7 +169,7 @@ export class Device {
         gl.drawElements(primitive.mode, primitive.count, primitive.type, primitive.offset);
     }
 
-    clear(options?: ClearOptions) {
+    clear(options?: Partial<ClearOptions>) {
         const gl = this.gl as WebGLRenderingContext;
 
         let bit = 0;
