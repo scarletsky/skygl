@@ -1,3 +1,5 @@
+// NOTE: from https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Constants
+
 // NOTE: Primitive
 export const POINTS = 0x0000;
 export const LINES = 0x0001;
@@ -43,3 +45,22 @@ export const STREAM_DRAW = 0x88e0;
 export const COLOR_BUFFER_BIT = 0x00004000;
 export const DEPTH_BUFFER_BIT = 0x00000100;
 export const STENCIL_BUFFER_BIT = 0x00000400;
+
+// NOTE: depth
+export const NEVER = 0x0200;
+export const LESS = 0x0201;
+export const EQUAL = 0x0202;
+export const LEQUAL = 0x0203;
+export const GREATER = 0x0204;
+export const NOTEQUAL = 0x0205;
+export const GEQUAL = 0x0206;
+export const ALWAYS = 0x0207;
+
+// NOTE: stencil
+export const KEEP = 0x1E00;
+export const REPLACE = 0x1E01;
+export const INCR = 0x1E02;
+export const DECR = 0x1E03;
+export const INVERT = 0x150A;
+export const INCR_WRAP = 0x8507;
+export const DECR_WRAP = 0x8508;
