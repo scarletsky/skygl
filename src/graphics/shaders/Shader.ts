@@ -27,6 +27,7 @@ export class Shader extends BaseObject {
     public chunks: Nullable<ShaderChunks>;
     public _glProgramId: Nullable<WebGLProgram>;
     public _inited: boolean;
+    public _failed: boolean;
     public _destroying: boolean;
     public _destroyed: boolean;
 
