@@ -3,8 +3,8 @@ import { Device, DeviceOptions } from './graphics/Device';
 import { Renderer, RendererOptions } from './graphics/renderers/Renderer';
 
 export interface ApplicationOptions {
-    device?: DeviceOptions;
-    renderer?: RendererOptions;
+    device: DeviceOptions;
+    renderer: RendererOptions;
 }
 
 export class Application {
@@ -12,8 +12,8 @@ export class Application {
     public renderer: Renderer;
     public root: Node;
 
-    constructor(canvas: HTMLCanvasElement, options: ApplicationOptions = {}) {
-        this.device = new Device(canvas, options.device);
+    constructor(options: Partial<ApplicationOptions> = {}) {
+        this.device = new Device(options.device);
         this.renderer = new Renderer(this.device, options.renderer);
         this.root = new Node();
     }

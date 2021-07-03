@@ -10,12 +10,8 @@
     <script src="../../dist/skygl.js"></script>
   </head>
   <body>
-    <canvas id="app"></canvas>
     <script type="text/javascript">
-      const canvas = document.getElementById('app');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      const app = new skygl.Application(canvas);
+      const app = new skygl.Application();
       const gl = app.device.gl;
       const vertexSource = `
         attribute vec3 POSITION;
@@ -57,6 +53,7 @@
         primitive: primitive,
         shader: shader
       });
+     document.body.appendChild(app.device.canvas);
     </script>
   </body>
 </html>

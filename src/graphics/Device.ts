@@ -28,7 +28,7 @@ export class Device {
     public depthFunc: number;
     public clearOptions: ClearOptions;
 
-    constructor(canvas: HTMLCanvasElement, options: Partial<DeviceOptions> = {}) {
+    constructor(options: Partial<DeviceOptions> = {}) {
         this.gl = null;
         this.uniforms = null;
         this.vertices = null;
@@ -38,8 +38,9 @@ export class Device {
         this.depthTest = false;
         this.depthWrite = false;
         this.depthFunc = LESS
-        this.canvas = canvas;
         this.clearOptions = { color: true, depth: true, stencil: false };
+        this.canvas = document.createElement('canvas');
+        this.setCanvasSize(window.innerWidth, window.innerHeight);
         this.initContext(options);
         this.initCapabilities();
         this.initExtensions();
@@ -61,6 +62,11 @@ export class Device {
 
     private initExtensions() {
 
+    }
+
+    setCanvasSize(width: number, height: number) {
+        this.canvas.width = width;
+        this.canvas.height = height;
     }
 
     setShader(shader: Shader | null) {
