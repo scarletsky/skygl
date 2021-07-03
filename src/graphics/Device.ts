@@ -153,6 +153,10 @@ export class Device {
         this.setVertices(drawable.vertices);
         this.setUniforms();
 
+        if (drawable.material) {
+            drawable.material.onGLBind(this);
+        }
+
         if (drawable.indices) {
             this.setIndices(drawable.indices);
             this.drawElements(drawable.primitive);

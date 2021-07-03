@@ -5,6 +5,7 @@ import {
     VertexBuffer, VertexBufferGroup, VertexAttributeSemantic,
     IndexBuffer, IndexBufferOptions
 } from 'graphics/buffers';
+import { ShaderSourceDefine } from 'graphics/shaders';
 
 export interface GeometryOptions {
     vertices: VertexBufferGroup;
@@ -84,5 +85,21 @@ export class Geometry extends BaseObject {
 
     toJSON() {
         return super.toJSON();
+    }
+
+    toShaderSourceDefine(): ShaderSourceDefine {
+        const define = {} as ShaderSourceDefine;
+
+        if (!this.vertices) return define;
+
+        for (const semantic in VertexAttributeSemantic) {
+            const vertexBuffer = this.vertices[semantic as VertexAttributeSemantic];
+
+            if (vertexBuffer) {
+                define[`HAS_VERTEX_${semantic}`] = 1;
+            }
+        }
+
+        return define;
     }
 }

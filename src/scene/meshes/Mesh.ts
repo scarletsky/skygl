@@ -28,7 +28,8 @@ export class Mesh extends Node {
             vertices: this.geometry.vertices as VertexBufferGroup,
             indices: this.geometry.indices,
             primitive: (this.geometry.primitive as Primitive),
-            shader: (this.material.shader as Shader)
+            shader: this.material.shader as Shader,
+            material: this.material,
         };
     }
 
@@ -38,6 +39,7 @@ export class Mesh extends Node {
 
     toJSON() {
         return Object.assign(super.toJSON(), {
+            geometry: this.geometry.toJSON(),
             material: this.material.toJSON()
         });
     }
