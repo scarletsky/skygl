@@ -1,3 +1,8 @@
 // NOTE: Do not use export * as xxx from '...', see `chunks/index.ts` for more detail.
-export { default as basicVert } from './basic.vert';
-export { default as basicFrag } from './basic.frag';
+import { default as lambertVert } from './lambert.vert';
+import { default as lambertFrag } from './lambert.frag';
+
+export const lambert = {
+    vertexSource: lambertVert,
+    fragmentSource: lambertFrag,
+};

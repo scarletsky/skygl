@@ -1,7 +1,7 @@
 import { Nullable } from 'types';
 import { VertexBuffer, VertexBufferGroup, VertexAttributeSemantic, IndexBuffer } from './buffers';
 import { Primitive } from './Primitive';
-import { Shader, UniformScope } from './shaders';
+import { Shader, ShaderRegistry, UniformScope } from './shaders';
 import { Drawable } from './Drawable';
 import { COLOR_BUFFER_BIT, DEPTH_BUFFER_BIT, LESS, STENCIL_BUFFER_BIT } from './constants';
 
@@ -22,6 +22,7 @@ export class Device {
     public vertices: Nullable<VertexBufferGroup>;
     public indices: Nullable<IndexBuffer>;
     public shader: Nullable<Shader>;
+    public shaders: ShaderRegistry;
     public depthTest: boolean;
     public depthWrite: boolean;
     public depthFunc: number;
@@ -33,6 +34,7 @@ export class Device {
         this.vertices = null;
         this.indices = null;
         this.shader = null;
+        this.shaders = new ShaderRegistry();
         this.depthTest = false;
         this.depthWrite = false;
         this.depthFunc = LESS

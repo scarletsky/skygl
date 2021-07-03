@@ -6,7 +6,7 @@ import { UniformInput } from './UniformInput';
 import { ShaderChunks } from './ShaderChunks';
 import { parseFragmentShader, parseVertexShader } from './utils';
 
-export type ShaderSourceDefine = Dictionary<string>;
+export type ShaderSourceDefine = Dictionary<string | boolean | number>;
 
 export interface ShaderOptions {
     precision?: string;
@@ -47,7 +47,6 @@ export class Shader extends BaseObject {
         this._destroying = false;
         this._destroyed = false;
     }
-
 
     destroy() {
         this._destroying = true;
@@ -146,6 +145,7 @@ export class Shader extends BaseObject {
 
         this._glProgramId = program;
         this._inited = true;
+        device.shaders.add(this);
 
         return true;
     }
@@ -167,6 +167,7 @@ export class Shader extends BaseObject {
             gl.deleteProgram(this._glProgramId);
             this._destroyed = true;
             this._destroying = false;
+            device.shaders.remove(this.id);
         }
     }
 }

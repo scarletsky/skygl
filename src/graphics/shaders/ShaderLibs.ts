@@ -1,9 +1,10 @@
-import { Shader, ShaderOptions } from './Shader';
+import { ShaderOptions } from './Shader';
 import { Dictionary } from 'types';
+import * as libs from './libs';
 
 export type ShaderLibOptions = Dictionary<ShaderOptions>;
 
-export class ShaderLib  {
+export class ShaderLibs  {
     public caches: ShaderLibOptions;
 
     constructor(options: ShaderLibOptions = {}) {
@@ -11,8 +12,14 @@ export class ShaderLib  {
         this.fromJSON(options);
     }
 
-    add(name: string) {
+    add(name: string, lib: ShaderOptions) {
+        if (this.caches[name]) {
+            console.error(`[ShaderLibs] ${name} existed.`);
+            return;
+        }
 
+        this.caches[name] = lib;
+        return this;
     }
 
     remove(name: string) {
@@ -26,7 +33,10 @@ export class ShaderLib  {
     }
 
     fromJSON(options: ShaderLibOptions) {
-
+        for (let name in options) {
+            console.log(name, options[name])
+            this.add(name, options[name]);
+        }
     }
 
     toJSON() {
@@ -41,4 +51,5 @@ export class ShaderLib  {
     }
 }
 
-export const shaderLib = new ShaderLib();
+export const shaderLibs = new ShaderLibs();
+shaderLibs.fromJSON(libs)
