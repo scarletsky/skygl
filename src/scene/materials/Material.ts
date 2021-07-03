@@ -15,16 +15,13 @@ export class Material {
     public depthTest = true;
     public depthWrite = true;
     public depthFunc = LESS;
+    public blend = false;
+    public blendFuncSrc = 0;
+    public blendFuncDst = 0;
     public shader = null as Nullable<Shader>;
 
     constructor(options: MaterialOptions = {}) {
         this.fromJSON(options);
-    }
-
-    getShaderSourceDefine(): ShaderSourceDefine {
-        return {
-
-        };
     }
 
     fromJSON(options: MaterialOptions) {
@@ -37,11 +34,27 @@ export class Material {
 
     }
 
+    toShaderLib() {
+        return '';
+    }
+
+    toShaderSourceDefine(): ShaderSourceDefine {
+        return {
+
+        };
+    }
+
     onApplyShader(shader: Shader) {
         this.shader = shader;
     }
 
-    onApplyRenderState(renderState: RenderState) {
+    onGLBind(device: Device) {
+        // NOTE: depthTest, blending, etc...
+        device.setDepthTest(this.depthTest);
+        device.setDepthWrite(this.depthWrite);
+    }
+
+    onGLUnbind(device: Device) {
 
     }
 }
