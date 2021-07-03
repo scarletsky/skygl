@@ -9,7 +9,7 @@ export interface TextureOptions extends BaseObjectOptions {
 export class Texture extends BaseObject {
     public _glTextureId: Nullable<WebGLTexture>;
 
-    constructor(options: TextureOptions = {}) {
+    constructor(options: Partial<TextureOptions> = {}) {
         super();
         this._glTextureId = null;
     }
@@ -36,5 +36,15 @@ export class Texture extends BaseObject {
 
     destroy() {
 
+    }
+
+    fromJSON(options: Partial<TextureOptions>) {
+
+    }
+
+    toJSON() {
+        return Object.assign(super.toJSON(), {
+
+        });
     }
 }

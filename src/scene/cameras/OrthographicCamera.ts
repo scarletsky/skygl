@@ -6,7 +6,7 @@ export interface OrthographicCameraOptions extends CameraOptions {
 
 export class OrthographicCamera extends Camera {
 
-    constructor(options: OrthographicCameraOptions = {}) {
+    constructor(options: Partial<OrthographicCameraOptions> = {}) {
         super();
     }
 

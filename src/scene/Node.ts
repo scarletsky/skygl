@@ -13,13 +13,12 @@ const matA = new Mat4();
 const matB = new Mat4();
 
 export interface NodeOptions extends BaseObjectOptions {
-    position?: [number, number, number];
-    rotation?: [number, number, number, number];
-    scale?: [number, number, number];
+    position: [number, number, number];
+    rotation: [number, number, number, number];
+    scale: [number, number, number];
 }
 
 export class Node extends BaseObject {
-    public cache: Cache<Node>;
     public localPosition: Vec3;
     public localRotation: Quat;
     public localScale: Vec3;
@@ -33,7 +32,7 @@ export class Node extends BaseObject {
     public _dirtyLocal: boolean;
     public _dirtyWorld: boolean;
 
-    constructor() {
+    constructor(options: Partial<NodeOptions> = {}) {
         super();
         this.localPosition = new Vec3();
         this.localRotation = new Quat();
@@ -48,6 +47,7 @@ export class Node extends BaseObject {
 
         this._dirtyLocal = true;
         this._dirtyWorld = true;
+        this.fromJSON(options);
     }
 
     addChild(node: Node) {
@@ -262,7 +262,7 @@ export class Node extends BaseObject {
         this.children.forEach(node => node.syncHierarchy(callback));
     }
 
-    fromJSON(options: NodeOptions) {
+    fromJSON(options: Partial<NodeOptions>) {
         if (options.name) this.name = options.name;
         if (options.uid) this.uid = options.uid;
         if (options.position) this.setLocalPosition(...options.position);

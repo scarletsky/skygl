@@ -5,8 +5,8 @@ const DEFAULT_NODE_NAME = '';
 const DEFAULT_NODE_UID = '';
 
 export interface BaseObjectOptions {
-    name?: string;
-    uid?: string;
+    name: string;
+    uid: string;
 }
 
 export class BaseObject {
@@ -20,7 +20,7 @@ export class BaseObject {
         this.uid = DEFAULT_NODE_UID;
     }
 
-    fromJSON(options: BaseObjectOptions) {
+    fromJSON(options: Partial<BaseObjectOptions>) {
         if (isString(options.name)) {
             this.name = options.name;
         }

@@ -1,10 +1,10 @@
 import { Camera, CameraOptions } from './Camera';
 
 export interface PerspectiveCameraOptions extends CameraOptions {
-    aspectRatio?: number;
-    fov?: number;
-    znear?: number;
-    zfar?: number;
+    aspectRatio: number;
+    fov: number;
+    znear: number;
+    zfar: number;
 }
 
 export class PerspectiveCamera extends Camera {
@@ -13,12 +13,12 @@ export class PerspectiveCamera extends Camera {
     public znear = 0.01;
     public zfar = 1000;
 
-    constructor(options: PerspectiveCameraOptions = {}) {
+    constructor(options: Partial<PerspectiveCameraOptions> = {}) {
         super();
         this.fromJSON(options);
     }
 
-    fromJSON(options: PerspectiveCameraOptions) {
+    fromJSON(options: Partial<PerspectiveCameraOptions>) {
         if (options.aspectRatio) {
             this.aspectRatio = options.aspectRatio;
         }

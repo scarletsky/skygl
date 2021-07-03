@@ -8,13 +8,8 @@ export interface SceneOptions extends NodeOptions {
 
 export class Scene extends Node {
 
-    constructor(options: SceneOptions = {}) {
-        super();
+    constructor(options: Partial<SceneOptions> = {}) {
+        super(options);
     }
 
-    getShaderSourceDefine(): ShaderSourceDefine {
-        return {
-
-        };
-    }
 }
