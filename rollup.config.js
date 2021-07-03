@@ -13,7 +13,7 @@ function generateConfig(name) {
         },
         plugins: [
             typescript(),
-            glsl(),
+            glsl({ compress: false }),
         ]
     };
 

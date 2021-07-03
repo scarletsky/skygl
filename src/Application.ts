@@ -1,6 +1,6 @@
 import { Node } from 'scene/Node';
 import { Device, DeviceOptions } from './graphics/Device';
-import { Renderer, RendererOptions } from './graphics/renderers/Renderer';
+import { ForwardRenderer, RendererOptions } from './graphics/renderers';
 
 export interface ApplicationOptions {
     device: DeviceOptions;
@@ -9,12 +9,12 @@ export interface ApplicationOptions {
 
 export class Application {
     public device: Device;
-    public renderer: Renderer;
+    public renderer: ForwardRenderer;
     public root: Node;
 
     constructor(options: Partial<ApplicationOptions> = {}) {
         this.device = new Device(options.device);
-        this.renderer = new Renderer(this.device, options.renderer);
+        this.renderer = new ForwardRenderer(this.device);
         this.root = new Node();
     }
 }
