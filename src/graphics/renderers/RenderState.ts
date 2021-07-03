@@ -1,15 +1,15 @@
+import { Device } from 'graphics';
+import { Node } from 'scene/Node';
+import { Scene } from 'scene/Scene';
+import { Camera } from 'scene/cameras';
+import { Mesh } from 'scene/meshes';
 import {
-    Node,
-    Scene,
-    Camera,
-    Mesh,
     Light,
     AmbientLight,
     DirectionalLight,
     PointLight,
     SpotLight,
-    Material
-} from 'scene';
+} from 'scene/lights';
 import { isNil } from 'utils';
 
 export type OpaqueMeshes = Mesh[];
@@ -21,16 +21,30 @@ export enum SortedLightsIndex {
     SPOT,
     POINT
 }
+export type RenderStateEnvironment = {
+    NUM_AMBIENT_LIGHT: number;
+    NUM_DIRECTIONAL_LIGHT: number;
+    NUM_SPOT_LIGHT: number;
+    NUM_POINT_LIGHT: number;
+}
 
 export class RenderState {
     public opaqueMeshes: OpaqueMeshes;
     public transparentMeshes: TransparentMeshes;
     public lights: SortedLights;
+    public environment: RenderStateEnvironment;
+
 
     constructor(scene: Scene, camera: Camera) {
         this.opaqueMeshes = [];
         this.transparentMeshes = [];
         this.lights = [];
+        this.environment = {
+            NUM_AMBIENT_LIGHT: 0,
+            NUM_DIRECTIONAL_LIGHT: 0,
+            NUM_SPOT_LIGHT: 0,
+            NUM_POINT_LIGHT: 0,
+        };
         this.prepare(scene, camera);
     }
 
@@ -63,15 +77,20 @@ export class RenderState {
 
     prepareLight(light: Light) {
         let idx = -1;
+        const { environment } = this;
 
         if (light instanceof AmbientLight) {
             idx = SortedLightsIndex.AMBIENT;
+            environment.NUM_AMBIENT_LIGHT++;
         } else if (light instanceof DirectionalLight) {
             idx = SortedLightsIndex.DIRECTIONAL;
+            environment.NUM_DIRECTIONAL_LIGHT++;
         } else if (light instanceof SpotLight) {
             idx = SortedLightsIndex.SPOT;
+            environment.NUM_SPOT_LIGHT++;
         } else if (light instanceof PointLight) {
             idx = SortedLightsIndex.POINT;
+            environment.NUM_POINT_LIGHT++;
         }
 
         if (idx >= 0) {
@@ -83,11 +102,14 @@ export class RenderState {
         }
     }
 
-    prepareMaterial(material: Material) {
-
-    }
-
-    getShaderSourceDefine(scene: Scene, mesh: Mesh, material: Material) {
-
+    prepareShader(device: Device, mesh: Mesh) {
+        const define = Object.assign(
+            {},
+            this.environment,
+            mesh.geometry.toShaderSourceDefine(),
+            mesh.material.toShaderSourceDefine()
+        );
+        const shader = device.shaders.getPreferredShader(mesh.material.toShaderLib(), define);
+        mesh.material.onApplyShader(shader);
     }
 }

@@ -18,7 +18,13 @@ export class ForwardRenderer extends Renderer {
         const { device } = this;
         const renderState = new RenderState(scene, camera);
 
-        renderState.opaqueMeshes.forEach(mesh => device.draw(mesh.toDrawable()));
-        renderState.transparentMeshes.forEach(mesh => device.draw(mesh.toDrawable()));
+        renderState.opaqueMeshes.forEach(mesh => {
+            renderState.prepareShader(device, mesh);
+            device.draw(mesh.toDrawable());
+        });
+        renderState.transparentMeshes.forEach(mesh => {
+            renderState.prepareShader(device, mesh);
+            device.draw(mesh.toDrawable());
+        });
     }
 }
