@@ -1,4 +1,4 @@
-import { Shader, ShaderSourceDefine } from './Shader';
+import { Shader, ShaderSourceDefine, ShaderSourcePrecision } from './Shader';
 import { shaderChunks } from './ShaderChunks';
 
 export function parseDefine(define: ShaderSourceDefine) {
@@ -20,10 +20,28 @@ export function parseInclude(src: string, chunks = shaderChunks) {
     return src.replace(/\#include\ \<(.*?)\>/g, (_match, p1) => chunks.get(p1));
 }
 
+export function parsePrecision(precision: ShaderSourcePrecision) {
+    return `precision ${precision} float;\n`;
+}
+
 export function parseVertexShader(shader: Shader) {
-    return parseDefine(shader.vertexDefine) + parseInclude(shader.vertexSource, shader.chunks || shaderChunks);
+    return parseDefine(shader.vertexDefine) +
+        parsePrecision(shader.precision) +
+        parseInclude(shader.vertexSource, shader.chunks || shaderChunks);
 }
 
 export function parseFragmentShader(shader: Shader) {
-    return parseDefine(shader.fragmentDefine) + parseInclude(shader.fragmentSource, shader.chunks || shaderChunks);
+    return parseDefine(shader.fragmentDefine) +
+        parsePrecision(shader.precision) +
+        parseInclude(shader.fragmentSource, shader.chunks || shaderChunks);
+}
+
+export function addLineNumber(src: string) {
+    const lines = src.split('\n');
+
+    for (let i = 0; i < lines.length; i++) {
+        lines[i] = `${i + 1} ${lines[i]}`;
+    }
+
+    return lines.join('\n');
 }

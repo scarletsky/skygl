@@ -1,15 +1,17 @@
 import { Dictionary, Nullable } from 'types';
 import { BaseObject } from 'core/BaseObject';
 import { Device } from '../Device';
-import { ShaderInput } from './ShaderInput';
-import { UniformInput } from './UniformInput';
+import { AttributeInput } from './AttributeInput';
+import { UniformScope } from './UniformScope';
 import { ShaderChunks } from './ShaderChunks';
-import { parseFragmentShader, parseVertexShader } from './utils';
+import { addLineNumber, parseFragmentShader, parseVertexShader } from './utils';
 
 export type ShaderSourceDefine = Dictionary<string | boolean | number>;
 
+export type ShaderSourcePrecision = 'highp' | 'mediump' | 'lowp';
+
 export interface ShaderOptions {
-    precision?: string;
+    precision?: ShaderSourcePrecision;
     vertexDefine?: ShaderSourceDefine;
     fragmentDefine?: ShaderSourceDefine;
     vertexSource: string;
@@ -17,13 +19,13 @@ export interface ShaderOptions {
 }
 
 export class Shader extends BaseObject {
-    public precision: string;
+    public precision: ShaderSourcePrecision;
     public vertexDefine: ShaderSourceDefine;
     public vertexSource: string;
     public fragmentDefine: ShaderSourceDefine;
     public fragmentSource: string;
-    public attributes: Dictionary<ShaderInput>
-    public uniforms: Dictionary<UniformInput>;
+    public attributes: Dictionary<AttributeInput>
+    public uniforms: UniformScope;
     public chunks: Nullable<ShaderChunks>;
     public _glProgramId: Nullable<WebGLProgram>;
     public _inited: boolean;
