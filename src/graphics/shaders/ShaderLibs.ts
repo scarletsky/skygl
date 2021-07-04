@@ -34,7 +34,6 @@ export class ShaderLibs  {
 
     fromJSON(options: ShaderLibOptions) {
         for (let name in options) {
-            console.log(name, options[name])
             this.add(name, options[name]);
         }
     }

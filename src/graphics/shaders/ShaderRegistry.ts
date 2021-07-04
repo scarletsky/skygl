@@ -44,7 +44,6 @@ export class ShaderRegistry {
         shaderOptions.vertexDefine = shaderOptions.fragmentDefine = define;
 
         shader = new Shader(shaderOptions);
-        this.add(shader);
         this.hashes[hash] = shader.id;
 
         return shader;
