@@ -116,7 +116,7 @@ export class Shader extends BaseObject {
             let info = gl.getActiveAttrib(program, i);
 
             if (info) {
-                const shaderInput = new ShaderInput({
+                const shaderInput = new AttributeInput({
                     name: info.name,
                     type: info.type,
                     location: gl.getAttribLocation(program, info.name)
