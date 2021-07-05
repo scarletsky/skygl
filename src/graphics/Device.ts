@@ -94,7 +94,7 @@ export class Device {
         this.vertices = vertices;
     }
 
-    setIndices(indices: IndexBuffer) {
+    setIndices(indices: IndexBuffer | null) {
         if (this.indices === indices) return;
 
         if (indices) {
