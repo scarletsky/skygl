@@ -90,6 +90,7 @@ export class Shader extends BaseObject {
         if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
             info = gl.getShaderInfoLog(vertexShader);
             this._failed = true;
+            console.error(addLineNumber(vertexSource));
             throw new Error("Could not compile vertex shader. \n\n" + info);
         }
 
@@ -100,6 +101,7 @@ export class Shader extends BaseObject {
         if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
             info = gl.getShaderInfoLog(fragmentShader);
             this._failed = true;
+            console.error(addLineNumber(fragmentSource));
             throw new Error("Could not compile fragment shader. \n\n" + info);
         }
 
