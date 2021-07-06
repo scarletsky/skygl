@@ -41,7 +41,7 @@ export class Shader extends BaseObject {
         this.vertexDefine = options.vertexDefine || {};
         this.fragmentDefine = options.fragmentDefine || {};
         this.attributes = {};
-        this.uniforms = {};
+        this.uniforms = new UniformScope();
         this.chunks = null;
         this._glProgramId = null;
         this._inited = false;
@@ -130,17 +130,14 @@ export class Shader extends BaseObject {
         }
 
         const numUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+
         for (let i = 0; i < numUniforms; ++i) {
             let info = gl.getActiveUniform(program, i);
 
             if (info) {
-                const uniformInput = new UniformInput({
-                    name: info.name,
-                    type: info.type,
-                    location: gl.getUniformLocation(program, info.name) as WebGLUniformLocation
-                });
-
-                this.uniforms[uniformInput.name] = uniformInput;
+                const uniformInput = this.uniforms.resolve(info.name);
+                uniformInput.setType(info.type);
+                uniformInput.setLocation(gl.getUniformLocation(program, info.name));
             }
         }
 
