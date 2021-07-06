@@ -5,4 +5,3 @@ export * from './ShaderLibs';
 export * from './ShaderRegistry';
 export * from './UniformInput';
 export * from './UniformScope';
-export * from './UniformScopeInput';
