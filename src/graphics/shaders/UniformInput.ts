@@ -10,7 +10,6 @@ export type UniformInputValue = Nullable<number | boolean | Vec2 | Vec3 | Vec4 |
 export interface UniformInputOptions {
     name: string;
     value?: any;
-    useGlobal?: boolean;
 }
 
 export class UniformInput {

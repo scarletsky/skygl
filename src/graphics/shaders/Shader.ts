@@ -2,7 +2,7 @@ import { Dictionary, Nullable } from 'types';
 import { BaseObject } from 'core/BaseObject';
 import { Device } from '../Device';
 import { AttributeInput } from './AttributeInput';
-import { UniformScope } from './UniformScope';
+import { UniformScope, UniformScopeOptions } from './UniformScope';
 import { ShaderChunks } from './ShaderChunks';
 import { addLineNumber, parseFragmentShader, parseVertexShader } from './utils';
 
@@ -14,6 +14,7 @@ export interface ShaderOptions {
     precision?: ShaderSourcePrecision;
     vertexDefine?: ShaderSourceDefine;
     fragmentDefine?: ShaderSourceDefine;
+    uniforms?: UniformScopeOptions;
     vertexSource: string;
     fragmentSource: string;
 }
@@ -41,7 +42,7 @@ export class Shader extends BaseObject {
         this.vertexDefine = options.vertexDefine || {};
         this.fragmentDefine = options.fragmentDefine || {};
         this.attributes = {};
-        this.uniforms = new UniformScope();
+        this.uniforms = new UniformScope(options.uniforms);
         this.chunks = null;
         this._glProgramId = null;
         this._inited = false;
