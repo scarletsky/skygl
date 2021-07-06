@@ -1,5 +1,5 @@
 import { Nullable } from 'types';
-import { VertexBuffer, VertexBufferGroup, VertexAttributeSemantic, IndexBuffer } from './buffers';
+import { VertexBufferGroup, IndexBuffer } from './buffers';
 import { Primitive } from './Primitive';
 import { Shader, ShaderRegistry, UniformScope } from './shaders';
 import { Drawable } from './Drawable';
@@ -18,11 +18,11 @@ export interface ClearOptions {
 export class Device {
     public canvas: HTMLCanvasElement;
     public gl: Nullable<WebGLRenderingContext | WebGL2RenderingContext>;;
-    public uniforms: Nullable<UniformScope>;
     public vertices: Nullable<VertexBufferGroup>;
     public indices: Nullable<IndexBuffer>;
     public shader: Nullable<Shader>;
     public shaders: ShaderRegistry;
+    public uniforms: UniformScope;
     public depthTest: boolean;
     public depthWrite: boolean;
     public depthFunc: number;
@@ -30,11 +30,11 @@ export class Device {
 
     constructor(options: Partial<DeviceOptions> = {}) {
         this.gl = null;
-        this.uniforms = null;
         this.vertices = null;
         this.indices = null;
         this.shader = null;
         this.shaders = new ShaderRegistry();
+        this.uniforms = new UniformScope();
         this.depthTest = false;
         this.depthWrite = false;
         this.depthFunc = LESS
@@ -53,7 +53,6 @@ export class Device {
             throw new Error('[Device] WebGL not supported');
         }
 
-        this.uniforms = new UniformScope();
     }
 
     private initCapabilities() {
@@ -83,7 +82,7 @@ export class Device {
     }
 
     setVertices(vertices: VertexBufferGroup | null) {
-        if (this.vertices === vertices) return;
+        if (this.vertices === vertices) return false;
 
         if (vertices) {
             vertices.onGLBind(this);
@@ -92,10 +91,12 @@ export class Device {
         }
 
         this.vertices = vertices;
+
+        return true;
     }
 
     setIndices(indices: IndexBuffer | null) {
-        if (this.indices === indices) return;
+        if (this.indices === indices) return false;
 
         if (indices) {
             indices.onGLBind(this);
@@ -104,19 +105,21 @@ export class Device {
         }
 
         this.indices = indices;
+
+        return true;
     }
 
-    setUniforms() {
-        const shader = this.shader as Shader;
-        const gl = this.gl as WebGLRenderingContext;
-        const deviceUniforms = this.uniforms as UniformScope;
+    setUniforms(shader: Shader | null) {
+        if (!shader) return false;
+
         const shaderUniforms = shader.uniforms;
 
-        for (let uniformName in shaderUniforms) {
-            let uniform = shaderUniforms[uniformName];
-            let value = deviceUniforms.resolve(uniform.name).getValue();
-            uniform.setValue(gl, value);
+        for (const uniformName in shaderUniforms) {
+            const uniformInput = shader.uniforms.resolve(uniformName);
+            uniformInput.onGLBind(this);
         }
+
+        return true;
     }
 
     setDepthWrite(value: boolean) {
@@ -156,8 +159,8 @@ export class Device {
 
     draw(drawable: Drawable) {
         this.setShader(drawable.shader);
+        this.setUniforms(drawable.shader);
         this.setVertices(drawable.vertices);
-        this.setUniforms();
 
         if (drawable.material) {
             drawable.material.onGLBind(this);
