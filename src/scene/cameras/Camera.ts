@@ -14,7 +14,7 @@ export class Camera extends Node {
     public frustum: Frustum;
 
     constructor(options: Partial<CameraOptions> = {}) {
-        super();
+        super(options);
         this.viewMatrix = new Mat4();
         this.projectionMatrix = new Mat4();
         this.frustum = new Frustum();

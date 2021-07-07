@@ -14,11 +14,13 @@ export class PerspectiveCamera extends Camera {
     public zfar = 1000;
 
     constructor(options: Partial<PerspectiveCameraOptions> = {}) {
-        super();
+        super(options);
         this.fromJSON(options);
     }
 
     fromJSON(options: Partial<PerspectiveCameraOptions>) {
+        super.fromJSON(options);
+
         if (options.aspectRatio) {
             this.aspectRatio = options.aspectRatio;
         }
