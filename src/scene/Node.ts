@@ -1,4 +1,4 @@
-import { Nullable, TraverseCallback } from 'types';
+import { Array3, Array4, Nullable, TraverseCallback } from 'types';
 import { isFunction } from '../utils';
 import { Vec3 } from '../math/Vec3';
 import { Quat } from '../math/Quat';
@@ -13,9 +13,9 @@ const matA = new Mat4();
 const matB = new Mat4();
 
 export interface NodeOptions extends BaseObjectOptions {
-    position: [number, number, number];
-    rotation: [number, number, number, number];
-    scale: [number, number, number];
+    position: Array3<number>;
+    rotation: Array4<number>;
+    scale: Array3<number>;
 }
 
 export class Node extends BaseObject {

@@ -30,3 +30,7 @@ export function isString(value: any): value is string {
 export function isFunction(value: any): value is Function {
     return typeof value === 'function';
 }
+
+export function isArray(value: any): value is Array<any> {
+    return Array.isArray(value);
+}
