@@ -18,6 +18,10 @@ export class Vec3 {
         return new Vec3();
     }
 
+    static isVec3(value: any): value is Vec3 {
+        return value instanceof Vec3;
+    }
+
     constructor(x = 0, y = 0, z = 0) {
         this.x = x;
         this.y = y;

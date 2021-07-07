@@ -13,6 +13,10 @@ export class Vec4 {
         return new Vec4();
     }
 
+    static isVec4(value: any): value is Vec4 {
+        return value instanceof Vec4;
+    }
+
     constructor(x = 0, y = 0, z = 0, w = 1) {
         this.x = x;
         this.y = y;
