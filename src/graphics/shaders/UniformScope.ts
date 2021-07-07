@@ -5,19 +5,23 @@ export interface UniformScopeOptions {
     [name: string]: Partial<UniformInputOptions>;
 }
 
+export interface UniformScopeValues {
+    [name: string]: UniformInput;
+}
+
 export class UniformScope {
-    [name: string]: any;
+    public values = {} as UniformScopeValues;
 
     constructor(options: Partial<UniformScopeOptions> = {}) {
         this.fromJSON(options);
     }
 
     resolve(name: string): UniformInput {
-        if (!this[name]) {
-            this[name] = new UniformInput({ name });
+        if (!this.values[name]) {
+            this.values[name] = new UniformInput({ name });
         }
 
-        return this[name];
+        return this.values[name];
     }
 
     fromJSON(options: Partial<UniformScopeOptions>) {

@@ -112,7 +112,7 @@ export class Device {
     setUniforms(shader: Shader | null) {
         if (!shader) return false;
 
-        const shaderUniforms = shader.uniforms;
+        const shaderUniforms = shader.uniforms.values;
 
         for (const uniformName in shaderUniforms) {
             const uniformInput = shader.uniforms.resolve(uniformName);

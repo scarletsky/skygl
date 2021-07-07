@@ -4,8 +4,8 @@ import { Material } from 'scene/materials/Material';
 import { Drawable } from 'graphics/Drawable';
 import { Primitive } from 'graphics/Primitive';
 import { Shader } from 'graphics/shaders/Shader';
-import { RenderState } from 'graphics/renderers/RenderState';
 import { VertexBufferGroup } from 'graphics/buffers';
+import { Device } from 'graphics/Device';
 
 
 export interface MeshOptions extends NodeOptions {
@@ -18,7 +18,7 @@ export class Mesh extends Node {
     public material: Material;
 
     constructor(options: MeshOptions) {
-        super();
+        super(options);
         this.geometry = options.geometry;
         this.material = options.material;
     }
@@ -42,5 +42,15 @@ export class Mesh extends Node {
             geometry: this.geometry.toJSON(),
             material: this.material.toJSON()
         });
+    }
+
+    onGLBind(_device: Device) {
+        const shader = this.material.shader as Shader;
+        const uniforms = shader.uniforms;;
+        uniforms.resolve('sky_ModelMatrix').setValue(this.localMatrix);
+    }
+
+    onGLUnbind(device: Device) {
+
     }
 }
