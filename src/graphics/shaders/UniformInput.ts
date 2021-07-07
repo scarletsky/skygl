@@ -1,11 +1,11 @@
 import { Device } from 'graphics/Device';
 import { BOOL, BOOL_VEC2, BOOL_VEC3, BOOL_VEC4, FLOAT, FLOAT_MAT3, FLOAT_MAT4, FLOAT_VEC2, FLOAT_VEC3, FLOAT_VEC4, INT, INT_VEC2, INT_VEC3, INT_VEC4, SAMPLER_2D, SAMPLER_CUBE } from 'graphics/constants';
-import { Mat3, Mat4, Vec2, Vec3, Vec4 } from 'math';
+import { EPSILON, Color, Mat3, Mat4, Vec2, Vec3, Vec4 } from 'math';
 import { Nullable } from 'types';
 import { isNil } from 'utils';
 import { Texture } from 'graphics/textures';
 
-export type UniformInputValue = Nullable<number | boolean | Vec2 | Vec3 | Vec4 | Mat3 | Mat4 | Texture>;
+export type UniformInputValue = Nullable<number | boolean | Vec2 | Vec3 | Vec4 | Mat3 | Mat4 | Color | Texture>;
 
 export interface UniformInputOptions {
     name: string;
@@ -109,6 +109,10 @@ export class UniformInput {
         let value = this.value;
 
         if (isNil(value)) value = device.uniforms.resolve(this.name).getValue();
+        if (isNil(value)) {
+            console.error(`[UniformInput] No value found for ${this.name}`);
+            return;
+        }
 
         this.setGLUniform(gl, value);
     }
@@ -173,23 +177,54 @@ export class UniformInput {
         }
     }
 
-    private setGLUniformFloatVec3(gl: WebGLRenderingContext, value: Vec3) {
+    private setGLUniformFloatVec3(gl: WebGLRenderingContext, value: Vec3 | Color) {
         const uniform = this.uniform as Vec3;
 
-        if (!uniform.equals(value)) {
-            uniform.copy(value);
+        let changed = false;
 
-            if (this.location) gl.uniform3f(this.location, uniform.x, uniform.y, uniform.z);
+        if (Vec3.isVec3(value)) {
+            if (!uniform.equals(value)) {
+                uniform.copy(value);
+                changed = true;
+            }
+        } else {
+            if (uniform.x !== value.r ||
+                uniform.y !== value.g ||
+                uniform.z !== value.b
+               ) {
+                uniform.set(value.r, value.g, value.b);
+                changed = true;
+            }
+        }
+
+        if (changed && this.location) {
+            gl.uniform3f(this.location, uniform.x, uniform.y, uniform.z);
         }
     }
 
-    private setGLUniformFloatVec4(gl: WebGLRenderingContext, value: Vec4) {
+    private setGLUniformFloatVec4(gl: WebGLRenderingContext, value: Vec4 | Color) {
         const uniform = this.uniform as Vec4;
 
-        if (!uniform.equals(value)) {
-            uniform.copy(value);
+        let changed = false;
 
-            if (this.location) gl.uniform4f(this.location, uniform.x, uniform.y, uniform.z, uniform.w);
+        if (Vec4.isVec4(value)) {
+            if (!uniform.equals(value)) {
+                uniform.copy(value);
+                changed = true;
+            }
+        } else {
+            if (uniform.x !== value.r ||
+                uniform.y !== value.g ||
+                uniform.z !== value.b ||
+                uniform.w !== value.a
+               ) {
+                uniform.set(value.r, value.g, value.b, value.a);
+                changed = true;
+            }
+        }
+
+        if (changed && this.location) {
+            gl.uniform3f(this.location, uniform.x, uniform.y, uniform.z);
         }
     }
 
