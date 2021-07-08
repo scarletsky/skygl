@@ -11,8 +11,8 @@
   </head>
   <body>
     <script type="text/javascript">
-      const app = new skygl.Application();
-      const gl = app.device.gl;
+      const device = new skygl.Device();
+      const gl = device.gl;
       const vertexSource = `
         attribute vec3 POSITION;
         void main() {
@@ -47,13 +47,13 @@
         count: 3,
         type: skygl.UNSIGNED_BYTE
       });
-      app.device.draw({
+      device.draw({
         vertices: vertices,
         indices: indices,
         primitive: primitive,
         shader: shader
       });
-     document.body.appendChild(app.device.canvas);
+     document.body.appendChild(device.canvas);
     </script>
   </body>
 </html>
