@@ -1,4 +1,4 @@
-import { Shader, ShaderSourceDefine, ShaderSourcePrecision } from './Shader';
+import { Shader, ShaderSourceDefine, ShaderSourcePrecision, ShaderType } from './Shader';
 import { shaderChunks } from './ShaderChunks';
 
 export function parseDefine(define: ShaderSourceDefine) {
@@ -24,13 +24,21 @@ export function parsePrecision(precision: ShaderSourcePrecision) {
     return `precision ${precision} float;\n`;
 }
 
-export function parseVertexShader(shader: Shader) {
+export function parseShaderSource(shader: Shader, type: ShaderType) {
+    switch (type) {
+        case ShaderType.VERTEX_SHADER: return parseVertexShaderSource(shader);
+        case ShaderType.FRAGMENT_SHADER: return parseFragmentShaderSource(shader);
+        default: return null;
+    }
+}
+
+export function parseVertexShaderSource(shader: Shader) {
     return parseDefine(shader.vertexDefine) +
         parsePrecision(shader.precision) +
         parseInclude(shader.vertexSource, shader.chunks || shaderChunks);
 }
 
-export function parseFragmentShader(shader: Shader) {
+export function parseFragmentShaderSource(shader: Shader) {
     return parseDefine(shader.fragmentDefine) +
         parsePrecision(shader.precision) +
         parseInclude(shader.fragmentSource, shader.chunks || shaderChunks);

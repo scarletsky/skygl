@@ -1,3 +1,4 @@
+export * as shaderUtils from './utils';
 export * from './Shader';
 export * from './ShaderInput';
 export * from './ShaderChunks';

@@ -4,7 +4,12 @@ import { Device } from '../Device';
 import { AttributeInput } from './AttributeInput';
 import { UniformScope, UniformScopeOptions } from './UniformScope';
 import { ShaderChunks } from './ShaderChunks';
-import { addLineNumber, parseFragmentShader, parseVertexShader } from './utils';
+import { addLineNumber, parseFragmentShaderSource, parseVertexShaderSource } from './utils';
+
+export enum ShaderType {
+    VERTEX_SHADER = 0,
+    FRAGMENT_SHADER = 1
+}
 
 export type ShaderSourceDefine = Dictionary<string | boolean | number>;
 
@@ -84,7 +89,7 @@ export class Shader extends BaseObject {
             return false;
         }
 
-        const vertexSource = parseVertexShader(this);
+        const vertexSource = parseVertexShaderSource(this);
         gl.shaderSource(vertexShader, vertexSource);
         gl.compileShader(vertexShader);
 
@@ -95,7 +100,7 @@ export class Shader extends BaseObject {
             throw new Error("Could not compile vertex shader. \n\n" + info);
         }
 
-        const fragmentSource = parseFragmentShader(this);
+        const fragmentSource = parseFragmentShaderSource(this);
         gl.shaderSource(fragmentShader, fragmentSource);
         gl.compileShader(fragmentShader);
 
