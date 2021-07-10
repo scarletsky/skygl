@@ -224,7 +224,7 @@ export class UniformInput {
         }
 
         if (changed && this.location) {
-            gl.uniform3f(this.location, uniform.x, uniform.y, uniform.z);
+            gl.uniform4f(this.location, uniform.x, uniform.y, uniform.z, uniform.w);
         }
     }
 
