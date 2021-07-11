@@ -21,7 +21,7 @@ export class Camera extends Node {
     }
 
     updateViewMatrix() {
-
+        this.viewMatrix.copy(this.getWorldMatrix()).invert();
     }
 
     updateProjectionMatrix() {

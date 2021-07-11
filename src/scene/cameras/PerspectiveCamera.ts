@@ -15,7 +15,10 @@ export class PerspectiveCamera extends Camera {
 
     constructor(options: Partial<PerspectiveCameraOptions> = {}) {
         super(options);
-        this.fromJSON(options);
+    }
+
+    updateProjectionMatrix() {
+        this.projectionMatrix.setPerspective(this.fov, this.aspectRatio, this.znear, this.zfar);
     }
 
     fromJSON(options: Partial<PerspectiveCameraOptions>) {
