@@ -1,30 +1,35 @@
 import { Device } from 'graphics/Device';
-import { Camera } from 'scene/cameras/Camera';
 import { Scene } from 'scene/Scene';
+import { Camera } from 'scene/cameras';
+import { Mesh } from 'scene/meshes';
 import { Renderer, RendererOptions } from './Renderer';
 import { RenderState } from './RenderState';
+import { Nullable } from 'types';
 
 export interface ForwardRendererOptions extends RendererOptions {
 
 }
 
 export class ForwardRenderer extends Renderer {
+    public renderState: Nullable<RenderState>;
 
     constructor(device: Device) {
         super(device);
+        this.renderState = null;
     }
 
-    render(scene: Scene, camera: Camera) {
+    renderMesh(camera: Camera, mesh: Mesh) {
         const { device } = this;
-        const renderState = new RenderState(scene, camera);
+        const renderState = this.renderState as RenderState;
+        renderState.prepareShader(device, mesh);
+        camera.onGLBind(device);
+        mesh.onGLBind(device);
+        device.draw(mesh.toDrawable());
+    }
 
-        renderState.opaqueMeshes.forEach(mesh => {
-            renderState.prepareShader(device, mesh);
-            device.draw(mesh.toDrawable());
-        });
-        renderState.transparentMeshes.forEach(mesh => {
-            renderState.prepareShader(device, mesh);
-            device.draw(mesh.toDrawable());
-        });
+    render(camera: Camera, scene: Scene) {
+        const renderState = this.renderState = new RenderState(camera, scene);
+        renderState.opaqueMeshes.forEach(mesh => this.renderMesh(camera, mesh));
+        renderState.transparentMeshes.forEach(mesh => this.renderMesh(camera, mesh));
     }
 }

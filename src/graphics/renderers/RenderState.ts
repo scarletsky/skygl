@@ -11,6 +11,7 @@ import {
     SpotLight,
 } from 'scene/lights';
 import { isNil } from 'utils';
+import { ShaderRegistry } from 'graphics/shaders';
 
 export type OpaqueMeshes = Mesh[];
 export type TransparentMeshes = Mesh[];
@@ -35,7 +36,7 @@ export class RenderState {
     public environment: RenderStateEnvironment;
 
 
-    constructor(scene: Scene, camera: Camera) {
+    constructor(camera: Camera, scene: Scene) {
         this.opaqueMeshes = [];
         this.transparentMeshes = [];
         this.lights = [];
@@ -45,10 +46,10 @@ export class RenderState {
             NUM_SPOT_LIGHT: 0,
             NUM_POINT_LIGHT: 0,
         };
-        this.prepare(scene, camera);
+        this.prepare(camera, scene);
     }
 
-    prepare(scene: Scene, camera: Camera) {
+    prepare(camera: Camera, scene: Scene) {
         this.prepareCamera(camera);
 
         scene.traverse((node: Node) => {
@@ -60,11 +61,11 @@ export class RenderState {
                 this.prepareLight(node);
             }
         });
-
     }
 
     prepareCamera(camera: Camera) {
-
+        camera.updateViewMatrix();
+        camera.updateProjectionMatrix();
     }
 
     prepareMesh(mesh: Mesh) {
@@ -109,7 +110,8 @@ export class RenderState {
             mesh.geometry.toShaderSourceDefine(),
             mesh.material.toShaderSourceDefine()
         );
-        const shader = device.shaders.getPreferredShader(mesh.material.toShaderLib(), define);
+        const shaders = device.shaders as ShaderRegistry;
+        const shader = shaders.getPreferredShader(mesh.material.toShaderLib(), define);
         mesh.material.onApplyShader(shader);
     }
 }
