@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Hello Mesh</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../styles.css" type="text/css" media="screen" />
+    <script src="../../dist/skygl.js"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+     const app = new skygl.Application();
+     const camera = new skygl.PerspectiveCamera({
+       position: [0, 0, 5]
+     });
+     const geometry = new skygl.CubeGeometry();
+     const material = new skygl.LambertMaterial();
+     const mesh = new skygl.Mesh({ geometry, material });
+     app.root.addChild(mesh);
+     app.root.addChild(camera);
+     app.renderer.render(camera, app.root);
+     document.body.appendChild(app.device.canvas);
+    </script>
+  </body>
+</html>
