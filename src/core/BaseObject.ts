@@ -1,8 +1,8 @@
 import { isString, uuid } from 'utils/index';
 
 let nextId = 0;
-const DEFAULT_NODE_NAME = '';
-const DEFAULT_NODE_UID = '';
+const DEFAULT_NAME = '';
+const DEFAULT_UID = '';
 
 export interface BaseObjectOptions {
     name: string;
@@ -10,14 +10,12 @@ export interface BaseObjectOptions {
 }
 
 export class BaseObject {
-    public id: number;
-    public name: string;
-    public uid: string;
+    public id = nextId++;
+    public name = DEFAULT_NAME;
+    public uid = DEFAULT_UID;
 
-    constructor() {
-        this.id = nextId++;
-        this.name = DEFAULT_NODE_NAME;
-        this.uid = DEFAULT_NODE_UID;
+    constructor(options: Partial<BaseObjectOptions> = {}) {
+        this.fromJSON(options);
     }
 
     fromJSON(options: Partial<BaseObjectOptions>) {
