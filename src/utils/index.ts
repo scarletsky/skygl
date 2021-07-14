@@ -34,3 +34,7 @@ export function isFunction(value: any): value is Function {
 export function isArray(value: any): value is Array<any> {
     return Array.isArray(value);
 }
+
+export function isPowerOfTwo(value: number) {
+    return value && ((value & (value - 1)) === 0);
+}
