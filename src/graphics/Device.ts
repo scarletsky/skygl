@@ -1,9 +1,12 @@
-import { Nullable } from 'types';
+import { Dictionary, Nullable } from 'types';
 import { VertexBufferGroup, IndexBuffer } from './buffers';
 import { Primitive } from './Primitive';
 import { Shader, ShaderRegistry, UniformScope } from './shaders';
 import { Drawable } from './Drawable';
-import { COLOR_BUFFER_BIT, DEPTH_BUFFER_BIT, LESS, STENCIL_BUFFER_BIT } from './constants';
+import { COLOR_BUFFER_BIT, DEPTH_BUFFER_BIT, LESS, MAX_CUBE_MAP_TEXTURE_SIZE, SAMPLER_2D, SAMPLER_CUBE, STENCIL_BUFFER_BIT, TEXTURE0, TEXTURE_2D, TEXTURE_CUBE_MAP } from './constants';
+import { Texture } from './textures';
+import { isNil } from 'utils';
+import { TextureRegistry } from './textures/TextureRegistry';
 
 export interface DeviceOptions extends WebGLContextAttributes {
     preferredWebGL2: boolean;
@@ -15,6 +18,15 @@ export interface ClearOptions {
     stencil: boolean;
 }
 
+export type DeviceCapabilities = Dictionary<any>;
+
+export type DeviceExtensions = Dictionary<any>;
+
+export type TextureUnit = {
+    [TEXTURE_2D]: Nullable<Texture>,
+    [TEXTURE_CUBE_MAP]: Nullable<Texture>
+}
+
 export class Device {
     public canvas: HTMLCanvasElement;
     public gl: Nullable<WebGLRenderingContext | WebGL2RenderingContext>;;
@@ -23,6 +35,11 @@ export class Device {
     public shader: Nullable<Shader>;
     public shaders: ShaderRegistry;
     public uniforms: UniformScope;
+    public activeTexture: number;
+    public textureUnits: TextureUnit[];
+    public textures: TextureRegistry;
+    public capabilities: DeviceCapabilities;
+    public extensions: DeviceExtensions;
     public depthTest: boolean;
     public depthWrite: boolean;
     public depthFunc: number;
@@ -35,6 +52,11 @@ export class Device {
         this.shader = null;
         this.shaders = new ShaderRegistry();
         this.uniforms = new UniformScope();
+        this.textures = new TextureRegistry();
+        this.activeTexture = 0;
+        this.textureUnits = [];
+        this.capabilities = {};
+        this.extensions = {};
         this.depthTest = false;
         this.depthWrite = false;
         this.depthFunc = LESS
@@ -56,7 +78,9 @@ export class Device {
     }
 
     private initCapabilities() {
+        const gl = this.gl as WebGLRenderingContext;
 
+        this.capabilities[MAX_CUBE_MAP_TEXTURE_SIZE] = gl.getParameter(MAX_CUBE_MAP_TEXTURE_SIZE);
     }
 
     private initExtensions() {
@@ -112,6 +136,8 @@ export class Device {
     setUniforms(shader: Shader | null) {
         if (!shader) return false;
 
+        // NOTE: reset activeTexture
+        this.activeTexture = 0;
         const shaderUniforms = shader.uniforms.values;
 
         for (const uniformName in shaderUniforms) {
@@ -120,6 +146,29 @@ export class Device {
         }
 
         return true;
+    }
+
+    setActiveTexture(value: number) {
+        if (this.activeTexture === value) return false;
+        if (isNil(this.textureUnits[value])) {
+            this.textureUnits[value] = {
+                [TEXTURE_2D]: null,
+                [TEXTURE_CUBE_MAP]: null
+            };
+        }
+
+        const gl = this.gl as WebGLRenderingContext;
+        gl.activeTexture(TEXTURE0 + value);
+        this.activeTexture = value;
+
+        return true;
+    }
+
+    // NOTE: Call by UniformInput#onGLBind
+    setTexture(texture: Texture | null) {
+        if (texture) {
+            texture.onGLBind(this);
+        }
     }
 
     setDepthWrite(value: boolean) {
