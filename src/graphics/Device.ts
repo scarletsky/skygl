@@ -210,12 +210,13 @@ export class Device {
 
     draw(drawable: Drawable) {
         this.setShader(drawable.shader);
-        this.setUniforms(drawable.shader);
-        this.setVertices(drawable.vertices);
 
         if (drawable.material) {
             drawable.material.onGLBind(this);
         }
+
+        this.setUniforms(drawable.shader);
+        this.setVertices(drawable.vertices);
 
         if (drawable.indices) {
             this.setIndices(drawable.indices);
