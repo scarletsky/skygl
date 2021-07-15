@@ -87,6 +87,7 @@ export const TEXTURE_CUBE_MAP_POSITIVE_Y = 0x8517;
 export const TEXTURE_CUBE_MAP_NEGATIVE_Y = 0x8518;
 export const TEXTURE_CUBE_MAP_POSITIVE_Z = 0x8519;
 export const TEXTURE_CUBE_MAP_NEGATIVE_Z = 0x851A;
+export const MAX_TEXTURE_SIZE = 0x0D33;
 export const MAX_CUBE_MAP_TEXTURE_SIZE = 0x851C;
 export const TEXTURE0 = 0x84C0;
 export const ACTIVE_TEXTURE = 0x84E0;

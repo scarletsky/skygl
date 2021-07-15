@@ -3,7 +3,7 @@ import { VertexBufferGroup, IndexBuffer } from './buffers';
 import { Primitive } from './Primitive';
 import { Shader, ShaderRegistry, UniformScope } from './shaders';
 import { Drawable } from './Drawable';
-import { COLOR_BUFFER_BIT, DEPTH_BUFFER_BIT, LESS, MAX_CUBE_MAP_TEXTURE_SIZE, SAMPLER_2D, SAMPLER_CUBE, STENCIL_BUFFER_BIT, TEXTURE0, TEXTURE_2D, TEXTURE_CUBE_MAP } from './constants';
+import { COLOR_BUFFER_BIT, DEPTH_BUFFER_BIT, LESS, MAX_CUBE_MAP_TEXTURE_SIZE, MAX_TEXTURE_SIZE, SAMPLER_2D, SAMPLER_CUBE, STENCIL_BUFFER_BIT, TEXTURE0, TEXTURE_2D, TEXTURE_CUBE_MAP } from './constants';
 import { Texture } from './textures';
 import { isNil } from 'utils';
 import { TextureRegistry } from './textures/TextureRegistry';
@@ -79,8 +79,10 @@ export class Device {
 
     private initCapabilities() {
         const gl = this.gl as WebGLRenderingContext;
+        const { capabilities } = this;
 
-        this.capabilities[MAX_CUBE_MAP_TEXTURE_SIZE] = gl.getParameter(MAX_CUBE_MAP_TEXTURE_SIZE);
+        capabilities.MAX_TEXTURE_SIZE = gl.getParameter(MAX_TEXTURE_SIZE);
+        capabilities.MAX_CUBE_MAP_TEXTURE_SIZE = gl.getParameter(MAX_CUBE_MAP_TEXTURE_SIZE);
     }
 
     private initExtensions() {
