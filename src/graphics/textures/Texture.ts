@@ -44,6 +44,7 @@ export enum TextureType {
 export interface TextureOptions extends BaseObjectOptions {
     format: number;
     internalFormat: number;
+    type: number;
     wrapS: number;
     wrapT: number;
     minFilter: number;
@@ -159,6 +160,9 @@ export class Texture extends BaseObject {
 
     fromJSON(options: Partial<TextureOptions>) {
         super.fromJSON(options);
+        if (isNumber(options.format)) this.format = options.format;
+        if (isNumber(options.internalFormat)) this.internalFormat = options.internalFormat;
+        if (isNumber(options.type)) this.type = options.type;
         if (isNumber(options.wrapS)) this.wrapS = options.wrapS;
         if (isNumber(options.wrapT)) this.wrapT = options.wrapT;
         if (isNumber(options.minFilter)) this.minFilter = options.minFilter;
