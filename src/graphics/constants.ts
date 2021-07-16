@@ -94,3 +94,20 @@ export const ACTIVE_TEXTURE = 0x84E0;
 export const REPEAT = 0x2901;
 export const CLAMP_TO_EDGE = 0x812F;
 export const MIRRORED_REPEAT = 0x8370;
+
+// NOTE: pixel formats
+export const DEPTH_COMPONENT = 0x1902;
+export const ALPHA = 0x1906;
+export const RGB = 0x1907;
+export const RGBA = 0x1908;
+export const LUMINANCE = 0x1909;
+export const LUMINANCE_ALPHA = 0x190A;
+// export const UNSIGNED_BYTE = 0x1401; // NOTE: duplicated
+export const UNSIGNED_SHORT_4_4_4_4 = 0x8033;
+export const UNSIGNED_SHORT_5_5_5_1 = 0x8034;
+export const UNSIGNED_SHORT_5_6_5 = 0x8363
+
+// NOTE: pixel storage modes
+export const UNPACK_FLIP_Y_WEBGL = 0x9240;
+export const UNPACK_PREMULTIPLY_ALPHA_WEBGL = 0x9241;
+export const UNPACK_COLORSPACE_CONVERSION_WEBGL = 0x9243;

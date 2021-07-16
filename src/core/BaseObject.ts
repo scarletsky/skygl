@@ -19,13 +19,8 @@ export class BaseObject {
     }
 
     fromJSON(options: Partial<BaseObjectOptions>) {
-        if (isString(options.name)) {
-            this.name = options.name;
-        }
-
-        if (isString(options.uid)) {
-            this.uid = options.uid;
-        }
+        if (isString(options.name)) this.name = options.name;
+        if (isString(options.uid)) this.uid = options.uid;
     }
 
     toJSON(): BaseObjectOptions {
