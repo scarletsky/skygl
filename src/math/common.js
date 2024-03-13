@@ -14,6 +14,12 @@ export function toDegrees(rad) {
   return rad * RAD_TO_DEG;
 }
 
+// NOTE: Symmetric round
+export function round(value) {
+  if (value >= 0) return Math.round(value)
+  return -Math.round(-value);
+}
+
 export function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }

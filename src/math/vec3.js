@@ -1,4 +1,4 @@
-import { config, lerp } from './common.js';
+import { config, lerp, round } from './common.js';
 
 export class Vec3 {
   static create(x, y, z) {
@@ -137,9 +137,9 @@ export class Vec3 {
   }
 
   round() {
-    this[0] = Math.round(this[0]);
-    this[1] = Math.round(this[1]);
-    this[2] = Math.round(this[2]);
+    this[0] = round(this[0]);
+    this[1] = round(this[1]);
+    this[2] = round(this[2]);
     return this;
   }
 
