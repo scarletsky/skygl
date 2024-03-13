@@ -1,3 +1,5 @@
+import { config, lerp } from './common.js';
+
 export class Vec3 {
   static create(x, y, z) {
     return new Vec3(x, y, z);
@@ -28,18 +30,12 @@ export class Vec3 {
     return this;
   }
 
-  clone(res = new Vec3()) {
-    res[0] = this[0];
-    res[1] = this[1];
-    res[2] = this[2];
-    return res;
+  clone(out = new Vec3()) {
+    return out.copy(this);
   }
 
   copy(b) {
-    this[0] = b[0];
-    this[1] = b[1];
-    this[2] = b[2];
-    return this;
+    return this.set(b[0], b[1], b[2]);
   }
 
   add(b) {
@@ -121,8 +117,8 @@ export class Vec3 {
 
   divideScalar(k) {
     this[0] /= k;
-    this[0] /= k;
-    this[0] /= k;
+    this[1] /= k;
+    this[2] /= k;
     return this;
   }
 
@@ -197,7 +193,7 @@ export class Vec3 {
   }
 
   length() {
-    return Math.sqrt(this.length());
+    return Math.sqrt(this.lengthSq());
   }
 
   lengthSq() {
@@ -259,9 +255,9 @@ export class Vec3 {
     const ax = this[0];
     const ay = this[1];
     const az = this[2];
-    this[0] = ax + t * (b[0] - ax);
-    this[1] = ay + t * (b[1] - ay);
-    this[2] = az + t * (b[2] - az);
+    this[0] = lerp(ax, b[0], t);
+    this[1] = lerp(ay, b[1], t);
+    this[2] = lerp(az, b[2], t);
     return this;
   }
 
@@ -297,7 +293,7 @@ export class Vec3 {
     return Math.acos(Math.min(Math.max(cosine, -1), 1));
   }
 
-  equals(b, epsilon = 1e-6) {
+  equals(b, epsilon = config.EPSILON) {
     let a0 = this[0],
         a1 = this[1],
         a2 = this[2];
@@ -309,6 +305,10 @@ export class Vec3 {
         Math.abs(a1 - b1) <= epsilon * Math.max(1.0, Math.abs(a1), Math.abs(b1)) &&
         Math.abs(a2 - b2) <= epsilon * Math.max(1.0, Math.abs(a2), Math.abs(b2))
     );
+  }
+
+  exactEquals(b) {
+    return this[0] === b[0] && this[1] === b[1] && this[2] === b[2];
   }
 
   hermite(a, b, c, d, t) {
@@ -339,7 +339,7 @@ export class Vec3 {
     return this;
   }
 
-  transformMat4(m) {
+  transformByMat4(m) {
     let x = this[0],
         y = this[1],
         z = this[2];
@@ -350,7 +350,7 @@ export class Vec3 {
     this[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w;
   }
 
-  transformMat3(m) {
+  transformByMat3(m) {
     let x = a[0],
         y = a[1],
         z = a[2];
@@ -360,7 +360,7 @@ export class Vec3 {
     return this;
   }
 
-  transformQuat(q) {
+  transformByQuat(q) {
     // benchmarks: https://jsperf.com/quaternion-transform-vec3-implementations-fixed
     let qx = q[0],
         qy = q[1],
@@ -404,3 +404,12 @@ export class Vec3 {
 }
 
 Vec3.prototype.isVec3 = true;
+Vec3.prototype.sub = Vec3.prototype.subtract;
+Vec3.prototype.sub2 = Vec3.prototype.subtract2;
+Vec3.prototype.subScalar = Vec3.prototype.subtractScalar;
+Vec3.prototype.mul = Vec3.prototype.multiply;
+Vec3.prototype.mul2 = Vec3.prototype.multiply2;
+Vec3.prototype.mulScalar = Vec3.prototype.multiplyScalar;
+Vec3.prototype.div = Vec3.prototype.divide;
+Vec3.prototype.div2 = Vec3.prototype.divide2;
+Vec3.prototype.divScalar = Vec3.prototype.divideScalar;

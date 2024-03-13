@@ -22,24 +22,24 @@ export class Mat4 {
     this[15] = v33;
   }
 
-  clone(res = new Mat4()) {
-    res[0] = this[0];
-    res[1] = this[1];
-    res[2] = this[2];
-    res[3] = this[3];
-    res[4] = this[4];
-    res[5] = this[5];
-    res[6] = this[6];
-    res[7] = this[7];
-    res[8] = this[8];
-    res[9] = this[9];
-    res[10] = this[10];
-    res[11] = this[11];
-    res[12] = this[12];
-    res[13] = this[13];
-    res[14] = this[14];
-    res[15] = this[15];
-    return res;
+  clone(out = new Mat4()) {
+    out[0] = this[0];
+    out[1] = this[1];
+    out[2] = this[2];
+    out[3] = this[3];
+    out[4] = this[4];
+    out[5] = this[5];
+    out[6] = this[6];
+    out[7] = this[7];
+    out[8] = this[8];
+    out[9] = this[9];
+    out[10] = this[10];
+    out[11] = this[11];
+    out[12] = this[12];
+    out[13] = this[13];
+    out[14] = this[14];
+    out[15] = this[15];
+    return out;
   }
 
   copy(b) {
@@ -138,7 +138,7 @@ export class Mat4 {
     return a13 * b6 - a03 * b7 + a33 * b8 - a23 * b9;
   }
 
-  invert(res) {
+  invert(out) {
     let a00 = this[0],
         a01 = this[1],
         a02 = this[2],
@@ -178,29 +178,29 @@ export class Mat4 {
     }
     det = 1.0 / det;
 
-    if (!res) res = this;
+    if (!out) out = this;
 
-    res[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
-    res[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
-    res[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
-    res[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
-    res[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
-    res[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
-    res[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
-    res[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
-    res[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
-    res[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
-    res[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
-    res[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
-    res[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
-    res[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
-    res[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
-    res[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
+    out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
+    out[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
+    out[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
+    out[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
+    out[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
+    out[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
+    out[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
+    out[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
+    out[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
+    out[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
+    out[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
+    out[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
+    out[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
+    out[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
+    out[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
+    out[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
 
-    return res;
+    return out;
   }
 
-  adjoint(res) {
+  adjoint(out) {
     let a00 = this[0],
         a01 = this[1],
         a02 = this[2],
@@ -231,33 +231,33 @@ export class Mat4 {
     let b10 = a21 * a33 - a23 * a31;
     let b11 = a22 * a33 - a23 * a32;
 
-    if (!res) {
-      res = this;
+    if (!out) {
+      out = this;
     }
 
-    res[0] = a11 * b11 - a12 * b10 + a13 * b09;
-    res[1] = a02 * b10 - a01 * b11 - a03 * b09;
-    res[2] = a31 * b05 - a32 * b04 + a33 * b03;
-    res[3] = a22 * b04 - a21 * b05 - a23 * b03;
-    res[4] = a12 * b08 - a10 * b11 - a13 * b07;
-    res[5] = a00 * b11 - a02 * b08 + a03 * b07;
-    res[6] = a32 * b02 - a30 * b05 - a33 * b01;
-    res[7] = a20 * b05 - a22 * b02 + a23 * b01;
-    res[8] = a10 * b10 - a11 * b08 + a13 * b06;
-    res[9] = a01 * b08 - a00 * b10 - a03 * b06;
-    res[10] = a30 * b04 - a31 * b02 + a33 * b00;
-    res[11] = a21 * b02 - a20 * b04 - a23 * b00;
-    res[12] = a11 * b07 - a10 * b09 - a12 * b06;
-    res[13] = a00 * b09 - a01 * b07 + a02 * b06;
-    res[14] = a31 * b01 - a30 * b03 - a32 * b00;
-    res[15] = a20 * b03 - a21 * b01 + a22 * b00;
+    out[0] = a11 * b11 - a12 * b10 + a13 * b09;
+    out[1] = a02 * b10 - a01 * b11 - a03 * b09;
+    out[2] = a31 * b05 - a32 * b04 + a33 * b03;
+    out[3] = a22 * b04 - a21 * b05 - a23 * b03;
+    out[4] = a12 * b08 - a10 * b11 - a13 * b07;
+    out[5] = a00 * b11 - a02 * b08 + a03 * b07;
+    out[6] = a32 * b02 - a30 * b05 - a33 * b01;
+    out[7] = a20 * b05 - a22 * b02 + a23 * b01;
+    out[8] = a10 * b10 - a11 * b08 + a13 * b06;
+    out[9] = a01 * b08 - a00 * b10 - a03 * b06;
+    out[10] = a30 * b04 - a31 * b02 + a33 * b00;
+    out[11] = a21 * b02 - a20 * b04 - a23 * b00;
+    out[12] = a11 * b07 - a10 * b09 - a12 * b06;
+    out[13] = a00 * b09 - a01 * b07 + a02 * b06;
+    out[14] = a31 * b01 - a30 * b03 - a32 * b00;
+    out[15] = a20 * b03 - a21 * b01 + a22 * b00;
 
-    return res;
+    return out;
   }
 
-  transpose(res) {
-    if (!res) {
-      res = this;
+  transpose(out) {
+    if (!out) {
+      out = this;
       let a01 = this[1],
           a02 = this[2],
           a03 = this[3];
@@ -265,38 +265,38 @@ export class Mat4 {
           a13 = this[7];
       let a23 = this[11];
 
-      res[1] = this[4];
-      res[2] = this[8];
-      res[3] = this[12];
-      res[4] = a01;
-      res[6] = this[9];
-      res[7] = this[13];
-      res[8] = a02;
-      res[9] = a12;
-      res[11] = this[14];
-      res[12] = a03;
-      res[13] = a13;
-      res[14] = a23;
+      out[1] = this[4];
+      out[2] = this[8];
+      out[3] = this[12];
+      out[4] = a01;
+      out[6] = this[9];
+      out[7] = this[13];
+      out[8] = a02;
+      out[9] = a12;
+      out[11] = this[14];
+      out[12] = a03;
+      out[13] = a13;
+      out[14] = a23;
     } else {
-      res[0] = this[0];
-      res[1] = this[4];
-      res[2] = this[8];
-      res[3] = this[12];
-      res[4] = this[1];
-      res[5] = this[5];
-      res[6] = this[9];
-      res[7] = this[13];
-      res[8] = this[2];
-      res[9] = this[6];
-      res[10] = this[10];
-      res[11] = this[14];
-      res[12] = this[3];
-      res[13] = this[7];
-      res[14] = this[11];
-      res[15] = this[15];
+      out[0] = this[0];
+      out[1] = this[4];
+      out[2] = this[8];
+      out[3] = this[12];
+      out[4] = this[1];
+      out[5] = this[5];
+      out[6] = this[9];
+      out[7] = this[13];
+      out[8] = this[2];
+      out[9] = this[6];
+      out[10] = this[10];
+      out[11] = this[14];
+      out[12] = this[3];
+      out[13] = this[7];
+      out[14] = this[11];
+      out[15] = this[15];
     }
 
-    return res;
+    return out;
   }
 
   multiply(b) {
@@ -360,7 +360,7 @@ export class Mat4 {
     return this.copy(a).multiply(b);
   }
 
-  translate(v, res) {
+  translate(v, out) {
     let x = v[0],
         y = v[1],
         z = v[2];
@@ -368,12 +368,12 @@ export class Mat4 {
     let a10, a11, a12, a13;
     let a20, a21, a22, a23;
 
-    if (!res) {
-      res = this;
-      res[12] = a[0] * x + a[4] * y + a[8] * z + a[12];
-      res[13] = a[1] * x + a[5] * y + a[9] * z + a[13];
-      res[14] = a[2] * x + a[6] * y + a[10] * z + a[14];
-      res[15] = a[3] * x + a[7] * y + a[11] * z + a[15];
+    if (!out) {
+      out = this;
+      out[12] = a[0] * x + a[4] * y + a[8] * z + a[12];
+      out[13] = a[1] * x + a[5] * y + a[9] * z + a[13];
+      out[14] = a[2] * x + a[6] * y + a[10] * z + a[14];
+      out[15] = a[3] * x + a[7] * y + a[11] * z + a[15];
     } else {
       a00 = a[0];
       a01 = a[1];
@@ -388,52 +388,52 @@ export class Mat4 {
       a22 = a[10];
       a23 = a[11];
 
-      res[0] = a00;
-      res[1] = a01;
-      res[2] = a02;
-      res[3] = a03;
-      res[4] = a10;
-      res[5] = a11;
-      res[6] = a12;
-      res[7] = a13;
-      res[8] = a20;
-      res[9] = a21;
-      res[10] = a22;
-      res[11] = a23;
+      out[0] = a00;
+      out[1] = a01;
+      out[2] = a02;
+      out[3] = a03;
+      out[4] = a10;
+      out[5] = a11;
+      out[6] = a12;
+      out[7] = a13;
+      out[8] = a20;
+      out[9] = a21;
+      out[10] = a22;
+      out[11] = a23;
 
-      res[12] = a00 * x + a10 * y + a20 * z + a[12];
-      res[13] = a01 * x + a11 * y + a21 * z + a[13];
-      res[14] = a02 * x + a12 * y + a22 * z + a[14];
-      res[15] = a03 * x + a13 * y + a23 * z + a[15];
+      out[12] = a00 * x + a10 * y + a20 * z + a[12];
+      out[13] = a01 * x + a11 * y + a21 * z + a[13];
+      out[14] = a02 * x + a12 * y + a22 * z + a[14];
+      out[15] = a03 * x + a13 * y + a23 * z + a[15];
     }
 
-    return res;
+    return out;
   }
 
-  scale(v, res) {
-    if (!res) res = this;
+  scale(v, out) {
+    if (!out) out = this;
 
     let x = v[0],
         y = v[1],
         z = v[2];
 
-    res[0] = a[0] * x;
-    res[1] = a[1] * x;
-    res[2] = a[2] * x;
-    res[3] = a[3] * x;
-    res[4] = a[4] * y;
-    res[5] = a[5] * y;
-    res[6] = a[6] * y;
-    res[7] = a[7] * y;
-    res[8] = a[8] * z;
-    res[9] = a[9] * z;
-    res[10] = a[10] * z;
-    res[11] = a[11] * z;
-    res[12] = a[12];
-    res[13] = a[13];
-    res[14] = a[14];
-    res[15] = a[15];
-    return res;
+    out[0] = a[0] * x;
+    out[1] = a[1] * x;
+    out[2] = a[2] * x;
+    out[3] = a[3] * x;
+    out[4] = a[4] * y;
+    out[5] = a[5] * y;
+    out[6] = a[6] * y;
+    out[7] = a[7] * y;
+    out[8] = a[8] * z;
+    out[9] = a[9] * z;
+    out[10] = a[10] * z;
+    out[11] = a[11] * z;
+    out[12] = a[12];
+    out[13] = a[13];
+    out[14] = a[14];
+    out[15] = a[15];
+    return out;
   }
 
   frob() {
