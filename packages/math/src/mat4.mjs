@@ -1,4 +1,4 @@
-import { config } from './common.js';
+import { config } from './common.mjs';
 
 export class Mat4 {
   constructor(

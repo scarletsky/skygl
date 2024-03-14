@@ -1,5 +1,5 @@
 import test from 'tape';
-import { Vec3 } from '../src/vec3.js';
+import { Vec3 } from '../src/vec3.mjs';
 
 test('Vec3#constructor', (t) => {
 

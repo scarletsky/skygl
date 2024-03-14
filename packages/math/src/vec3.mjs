@@ -1,4 +1,4 @@
-import { config, lerp, round } from './common.js';
+import { config, lerp, round } from './common.mjs';
 
 export class Vec3 {
   static create(x, y, z) {

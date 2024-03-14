@@ -1,6 +1,6 @@
-import { Vec3 } from './vec3.js';
-import { Vec4 } from './vec4.js';
-import { config } from './common.js';
+import { Vec3 } from './vec3.mjs';
+import { Vec4 } from './vec4.mjs';
+import { config } from './common.mjs';
 
 export class Quat {
   constructor(x, y, z, w) {

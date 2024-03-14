@@ -1,4 +1,4 @@
-import { config, lerp, round } from './common.js';
+import { config, lerp, round } from './common.mjs';
 
 export class Vec4 {
   constructor(x = 0, y = 0, z = 0, w = 0) {
