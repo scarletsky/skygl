@@ -1,0 +1,19 @@
+{
+  "name": "@skygl/math",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape 'test/**.test.js' | tap-spec",
+    "test:watch": "nodemon --exec pnpm test:math"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.0",
+    "tap-spec": "^5.0.0",
+    "tape": "^5.7.5"
+  }
+}

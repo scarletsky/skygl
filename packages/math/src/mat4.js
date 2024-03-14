@@ -1,3 +1,5 @@
+import { config } from './common.js';
+
 export class Mat4 {
   constructor(
     v00 = 1, v01 = 0, v02 = 0, v03 = 0,
@@ -102,6 +104,114 @@ export class Mat4 {
     this[12] = 0;
     this[13] = 0;
     this[14] = 0;
+    this[15] = 1;
+    return this;
+  }
+
+  /**
+   * NO (Negative to One)
+   * Z range is [-1, 1], which matches WebGL/OpenGL's clip volume.
+   */
+  perspectiveNO(fovy, aspect, near, far) {
+    const f = 1.0 / Math.tan(fovy / 2);
+    this[0] = f / aspect;
+    this[1] = 0;
+    this[2] = 0;
+    this[3] = 0;
+    this[4] = 0;
+    this[5] = f;
+    this[6] = 0;
+    this[7] = 0;
+    this[8] = 0;
+    this[9] = 0;
+    this[11] = -1;
+    this[12] = 0;
+    this[13] = 0;
+    this[15] = 0;
+    if (far != null && far !== Infinity) {
+      const nf = 1 / (near - far);
+      this[10] = (far + near) * nf;
+      this[14] = 2 * far * near * nf;
+    } else {
+      this[10] = -1;
+      this[14] = -2 * near;
+    }
+    return this;
+  }
+
+  /**
+   * ZO (Zero to One)
+   * Z range is [0, 1], which matches WebGPU/Vulkan/DirectX/Metal's clip volume.
+   */
+  perspectiveZO(fovy, aspect, near, far) {
+    const f = 1.0 / Math.tan(fovy / 2);
+    this[0] = f / aspect;
+    this[1] = 0;
+    this[2] = 0;
+    this[3] = 0;
+    this[4] = 0;
+    this[5] = f;
+    this[6] = 0;
+    this[7] = 0;
+    this[8] = 0;
+    this[9] = 0;
+    this[11] = -1;
+    this[12] = 0;
+    this[13] = 0;
+    this[15] = 0;
+    if (far != null && far !== Infinity) {
+      const nf = 1 / (near - far);
+      this[10] = far * nf;
+      this[14] = far * near * nf;
+    } else {
+      this[10] = -1;
+      this[14] = -near;
+    }
+    return this;
+  }
+
+  orthographicNO(left, right, bottom, top, near, far) {
+    const lr = 1 / (left - right);
+    const bt = 1 / (bottom - top);
+    const nf = 1 / (near - far);
+    this[0] = -2 * lr;
+    this[1] = 0;
+    this[2] = 0;
+    this[3] = 0;
+    this[4] = 0;
+    this[5] = -2 * bt;
+    this[6] = 0;
+    this[7] = 0;
+    this[8] = 0;
+    this[9] = 0;
+    this[10] = 2 * nf;
+    this[11] = 0;
+    this[12] = (left + right) * lr;
+    this[13] = (top + bottom) * bt;
+    this[14] = (far + near) * nf;
+    this[15] = 1;
+    return this;
+  }
+
+  orthographicZO(left, right, bottom, top, near, fat) {
+    const lr = 1 / (left - right);
+    const bt = 1 / (bottom - top);
+    const nf = 1 / (near - far);
+    this[0] = -2 * lr;
+    this[1] = 0;
+    this[2] = 0;
+    this[3] = 0;
+    this[4] = 0;
+    this[5] = -2 * bt;
+    this[6] = 0;
+    this[7] = 0;
+    this[8] = 0;
+    this[9] = 0;
+    this[10] = nf;
+    this[11] = 0;
+    this[12] = (left + right) * lr;
+    this[13] = (top + bottom) * bt;
+    this[14] = near * nf;
     this[15] = 1;
     return this;
   }
@@ -474,6 +584,246 @@ export class Mat4 {
     );
   }
 
+  fromTranslation(v) {
+    this[0] = 1;
+    this[1] = 0;
+    this[2] = 0;
+    this[3] = 0;
+    this[4] = 0;
+    this[5] = 1;
+    this[6] = 0;
+    this[7] = 0;
+    this[8] = 0;
+    this[9] = 0;
+    this[10] = 1;
+    this[11] = 0;
+    this[12] = v[0];
+    this[13] = v[1];
+    this[14] = v[2];
+    this[15] = 1;
+    return this;
+  }
+
+  fromScale(v) {
+    this[0] = v[0];
+    this[1] = 0;
+    this[2] = 0;
+    this[3] = 0;
+    this[4] = 0;
+    this[5] = v[1];
+    this[6] = 0;
+    this[7] = 0;
+    this[8] = 0;
+    this[9] = 0;
+    this[10] = v[2];
+    this[11] = 0;
+    this[12] = 0;
+    this[13] = 0;
+    this[14] = 0;
+    this[15] = 1;
+    return this;
+  }
+
+  fromRotation(axis, rad) {
+    let x = axis[0],
+      y = axis[1],
+      z = axis[2];
+    let len = Math.sqrt(x * x + y * y + z * z);
+    let s, c, t;
+
+    if (len < config.EPSILON) {
+      return null;
+    }
+
+    len = 1 / len;
+    x *= len;
+    y *= len;
+    z *= len;
+
+    s = Math.sin(rad);
+    c = Math.cos(rad);
+    t = 1 - c;
+
+    // Perform rotation-specific matrix multiplication
+    this[0] = x * x * t + c;
+    this[1] = y * x * t + z * s;
+    this[2] = z * x * t - y * s;
+    this[3] = 0;
+    this[4] = x * y * t - z * s;
+    this[5] = y * y * t + c;
+    this[6] = z * y * t + x * s;
+    this[7] = 0;
+    this[8] = x * z * t + y * s;
+    this[9] = y * z * t - x * s;
+    this[10] = z * z * t + c;
+    this[11] = 0;
+    this[12] = 0;
+    this[13] = 0;
+    this[14] = 0;
+    this[15] = 1;
+    return this;
+  }
+
+  fromXRotation(rad) {
+    let s = Math.sin(rad);
+    let c = Math.cos(rad);
+
+    // Perform axis-specific matrix multiplication
+    this[0] = 1;
+    this[1] = 0;
+    this[2] = 0;
+    this[3] = 0;
+    this[4] = 0;
+    this[5] = c;
+    this[6] = s;
+    this[7] = 0;
+    this[8] = 0;
+    this[9] = -s;
+    this[10] = c;
+    this[11] = 0;
+    this[12] = 0;
+    this[13] = 0;
+    this[14] = 0;
+    this[15] = 1;
+    return this;
+  }
+
+  fromYRotation(rad) {
+    let s = Math.sin(rad);
+    let c = Math.cos(rad);
+
+    // Perform axis-specific matrix multiplication
+    this[0] = c;
+    this[1] = 0;
+    this[2] = -s;
+    this[3] = 0;
+    this[4] = 0;
+    this[5] = 1;
+    this[6] = 0;
+    this[7] = 0;
+    this[8] = s;
+    this[9] = 0;
+    this[10] = c;
+    this[11] = 0;
+    this[12] = 0;
+    this[13] = 0;
+    this[14] = 0;
+    this[15] = 1;
+    return this;
+  }
+
+  fromZRotation(rad) {
+    let s = Math.sin(rad);
+    let c = Math.cos(rad);
+
+    // Perform axis-specific matrix multiplication
+    this[0] = c;
+    this[1] = s;
+    this[2] = 0;
+    this[3] = 0;
+    this[4] = -s;
+    this[5] = c;
+    this[6] = 0;
+    this[7] = 0;
+    this[8] = 0;
+    this[9] = 0;
+    this[10] = 1;
+    this[11] = 0;
+    this[12] = 0;
+    this[13] = 0;
+    this[14] = 0;
+    this[15] = 1;
+    return this;
+  }
+
+  /**
+   * Equals:
+   *   m.identity();
+   *   m.multiply(new Mat4().fromQuat(q));
+   *   m.translate(v);
+   */
+  fromRotationTraslation(q, v) {
+    // Quaternion math
+    let x = q[0],
+      y = q[1],
+      z = q[2],
+      w = q[3];
+    let x2 = x + x;
+    let y2 = y + y;
+    let z2 = z + z;
+
+    let xx = x * x2;
+    let xy = x * y2;
+    let xz = x * z2;
+    let yy = y * y2;
+    let yz = y * z2;
+    let zz = z * z2;
+    let wx = w * x2;
+    let wy = w * y2;
+    let wz = w * z2;
+
+    this[0] = 1 - (yy + zz);
+    this[1] = xy + wz;
+    this[2] = xz - wy;
+    this[3] = 0;
+    this[4] = xy - wz;
+    this[5] = 1 - (xx + zz);
+    this[6] = yz + wx;
+    this[7] = 0;
+    this[8] = xz + wy;
+    this[9] = yz - wx;
+    this[10] = 1 - (xx + yy);
+    this[11] = 0;
+    this[12] = v[0];
+    this[13] = v[1];
+    this[14] = v[2];
+    this[15] = 1;
+
+    return this;
+  }
+
+  fromQuat(q) {
+    let x = q[0],
+      y = q[1],
+      z = q[2],
+      w = q[3];
+    let x2 = x + x;
+    let y2 = y + y;
+    let z2 = z + z;
+
+    let xx = x * x2;
+    let yx = y * x2;
+    let yy = y * y2;
+    let zx = z * x2;
+    let zy = z * y2;
+    let zz = z * z2;
+    let wx = w * x2;
+    let wy = w * y2;
+    let wz = w * z2;
+
+    this[0] = 1 - yy - zz;
+    this[1] = yx + wz;
+    this[2] = zx - wy;
+    this[3] = 0;
+
+    this[4] = yx - wz;
+    this[5] = 1 - xx - zz;
+    this[6] = zy + wx;
+    this[7] = 0;
+
+    this[8] = zx + wy;
+    this[9] = zy - wx;
+    this[10] = 1 - xx - yy;
+    this[11] = 0;
+
+    this[12] = 0;
+    this[13] = 0;
+    this[14] = 0;
+    this[15] = 1;
+
+    return this;
+  }
+
   fromJSON(d) {
     return this.set(
       d[0],  d[1],  d[2],  d[3],
@@ -494,3 +844,6 @@ export class Mat4 {
 }
 
 Mat4.prototype.isMat4 = true;
+Mat4.prototype.perspective = Mat4.prototype.perspectiveNO;
+Mat4.prototype.orthographic = Mat4.prototype.orthographicNO;
+Mat4.prototype.ortho = Mat4.prototype.orthographic;

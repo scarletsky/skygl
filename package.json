@@ -5,9 +5,17 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tape 'packages/**/*.test.js' | tap-spec",
+    "test:watch": "nodemon --exec pnpm test",
+    "test:math": "tape 'packages/math/test/**.test.js' | tap-spec",
+    "test:math:watch": "nodemon --exec pnpm test:math"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.0",
+    "tap-spec": "^5.0.0",
+    "tape": "^5.7.5"
+  }
 }
