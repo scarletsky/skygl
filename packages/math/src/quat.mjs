@@ -55,6 +55,30 @@ export class Quat {
     return this;
   }
 
+  inverse(out = this) {
+    let a0 = a[0],
+      a1 = a[1],
+      a2 = a[2],
+      a3 = a[3];
+    let dot = a0 * a0 + a1 * a1 + a2 * a2 + a3 * a3;
+
+    // NOTE: Would be faster to return [0,0,0,0] immediately if dot == 0
+    if (dot) {
+      let invDot = 1.0 / dot;
+      out[0] = -a0 * invDot;
+      out[1] = -a1 * invDot;
+      out[2] = -a2 * invDot;
+      out[3] = a3 * invDot;
+    } else {
+      out[0] = 0;
+      out[1] = 0;
+      out[2] = 0;
+      out[3] = 0;
+    }
+
+    return out;
+  }
+
   setAxisAngle(axis, rad) {
     rad = rad * 0.5;
     let s = Math.sin(rad);
@@ -62,7 +86,7 @@ export class Quat {
     this[1] = s * axis[1];
     this[2] = s * axis[2];
     this[3] = Math.cos(rad);
-    return;
+    return this;
   }
 
   getAxisAngle(out = new Vec3()) {

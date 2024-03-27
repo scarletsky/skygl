@@ -248,7 +248,7 @@ export class Mat4 {
     return a13 * b6 - a03 * b7 + a33 * b8 - a23 * b9;
   }
 
-  invert(out) {
+  inverse(out = this) {
     let a00 = this[0],
         a01 = this[1],
         a02 = this[2],
@@ -288,8 +288,6 @@ export class Mat4 {
     }
     det = 1.0 / det;
 
-    if (!out) out = this;
-
     out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
     out[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
     out[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
@@ -310,7 +308,7 @@ export class Mat4 {
     return out;
   }
 
-  adjoint(out) {
+  adjoint(out = this) {
     let a00 = this[0],
         a01 = this[1],
         a02 = this[2],
@@ -340,10 +338,6 @@ export class Mat4 {
     let b09 = a21 * a32 - a22 * a31;
     let b10 = a21 * a33 - a23 * a31;
     let b11 = a22 * a33 - a23 * a32;
-
-    if (!out) {
-      out = this;
-    }
 
     out[0] = a11 * b11 - a12 * b10 + a13 * b09;
     out[1] = a02 * b10 - a01 * b11 - a03 * b09;
@@ -520,9 +514,7 @@ export class Mat4 {
     return out;
   }
 
-  scale(v, out) {
-    if (!out) out = this;
-
+  scale(v, out = this) {
     let x = v[0],
         y = v[1],
         z = v[2];
@@ -584,47 +576,47 @@ export class Mat4 {
     );
   }
 
-  fromTranslation(v) {
-    this[0] = 1;
-    this[1] = 0;
-    this[2] = 0;
-    this[3] = 0;
-    this[4] = 0;
-    this[5] = 1;
-    this[6] = 0;
-    this[7] = 0;
-    this[8] = 0;
-    this[9] = 0;
-    this[10] = 1;
-    this[11] = 0;
-    this[12] = v[0];
-    this[13] = v[1];
-    this[14] = v[2];
-    this[15] = 1;
-    return this;
+  fromTranslation(v, out = this) {
+    out[0] = 1;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = 1;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = 1;
+    out[11] = 0;
+    out[12] = v[0];
+    out[13] = v[1];
+    out[14] = v[2];
+    out[15] = 1;
+    return out;
   }
 
-  fromScale(v) {
-    this[0] = v[0];
-    this[1] = 0;
-    this[2] = 0;
-    this[3] = 0;
-    this[4] = 0;
-    this[5] = v[1];
-    this[6] = 0;
-    this[7] = 0;
-    this[8] = 0;
-    this[9] = 0;
-    this[10] = v[2];
-    this[11] = 0;
-    this[12] = 0;
-    this[13] = 0;
-    this[14] = 0;
-    this[15] = 1;
-    return this;
+  fromScale(v, out = this) {
+    out[0] = v[0];
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = v[1];
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = v[2];
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+    return out;
   }
 
-  fromRotation(axis, rad) {
+  fromRotation(axis, rad, out = this) {
     let x = axis[0],
       y = axis[1],
       z = axis[2];
@@ -645,95 +637,95 @@ export class Mat4 {
     t = 1 - c;
 
     // Perform rotation-specific matrix multiplication
-    this[0] = x * x * t + c;
-    this[1] = y * x * t + z * s;
-    this[2] = z * x * t - y * s;
-    this[3] = 0;
-    this[4] = x * y * t - z * s;
-    this[5] = y * y * t + c;
-    this[6] = z * y * t + x * s;
-    this[7] = 0;
-    this[8] = x * z * t + y * s;
-    this[9] = y * z * t - x * s;
-    this[10] = z * z * t + c;
-    this[11] = 0;
-    this[12] = 0;
-    this[13] = 0;
-    this[14] = 0;
-    this[15] = 1;
-    return this;
+    out[0] = x * x * t + c;
+    out[1] = y * x * t + z * s;
+    out[2] = z * x * t - y * s;
+    out[3] = 0;
+    out[4] = x * y * t - z * s;
+    out[5] = y * y * t + c;
+    out[6] = z * y * t + x * s;
+    out[7] = 0;
+    out[8] = x * z * t + y * s;
+    out[9] = y * z * t - x * s;
+    out[10] = z * z * t + c;
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+    return out;
   }
 
-  fromXRotation(rad) {
+  fromXRotation(rad, out = this) {
     let s = Math.sin(rad);
     let c = Math.cos(rad);
 
     // Perform axis-specific matrix multiplication
-    this[0] = 1;
-    this[1] = 0;
-    this[2] = 0;
-    this[3] = 0;
-    this[4] = 0;
-    this[5] = c;
-    this[6] = s;
-    this[7] = 0;
-    this[8] = 0;
-    this[9] = -s;
-    this[10] = c;
-    this[11] = 0;
-    this[12] = 0;
-    this[13] = 0;
-    this[14] = 0;
-    this[15] = 1;
-    return this;
+    out[0] = 1;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = c;
+    out[6] = s;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = -s;
+    out[10] = c;
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+    return out;
   }
 
-  fromYRotation(rad) {
+  fromYRotation(rad, out = this) {
     let s = Math.sin(rad);
     let c = Math.cos(rad);
 
     // Perform axis-specific matrix multiplication
-    this[0] = c;
-    this[1] = 0;
-    this[2] = -s;
-    this[3] = 0;
-    this[4] = 0;
-    this[5] = 1;
-    this[6] = 0;
-    this[7] = 0;
-    this[8] = s;
-    this[9] = 0;
-    this[10] = c;
-    this[11] = 0;
-    this[12] = 0;
-    this[13] = 0;
-    this[14] = 0;
-    this[15] = 1;
-    return this;
+    out[0] = c;
+    out[1] = 0;
+    out[2] = -s;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = 1;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = s;
+    out[9] = 0;
+    out[10] = c;
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+    return out;
   }
 
-  fromZRotation(rad) {
+  fromZRotation(rad, out = this) {
     let s = Math.sin(rad);
     let c = Math.cos(rad);
 
     // Perform axis-specific matrix multiplication
-    this[0] = c;
-    this[1] = s;
-    this[2] = 0;
-    this[3] = 0;
-    this[4] = -s;
-    this[5] = c;
-    this[6] = 0;
-    this[7] = 0;
-    this[8] = 0;
-    this[9] = 0;
-    this[10] = 1;
-    this[11] = 0;
-    this[12] = 0;
-    this[13] = 0;
-    this[14] = 0;
-    this[15] = 1;
-    return this;
+    out[0] = c;
+    out[1] = s;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = -s;
+    out[5] = c;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = 1;
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+    return out;
   }
 
   /**
@@ -742,7 +734,7 @@ export class Mat4 {
    *   m.multiply(new Mat4().fromQuat(q));
    *   m.translate(v);
    */
-  fromRotationTraslation(q, v) {
+  fromRotationTraslation(q, v, out = this) {
     // Quaternion math
     let x = q[0],
       y = q[1],
@@ -762,27 +754,27 @@ export class Mat4 {
     let wy = w * y2;
     let wz = w * z2;
 
-    this[0] = 1 - (yy + zz);
-    this[1] = xy + wz;
-    this[2] = xz - wy;
-    this[3] = 0;
-    this[4] = xy - wz;
-    this[5] = 1 - (xx + zz);
-    this[6] = yz + wx;
-    this[7] = 0;
-    this[8] = xz + wy;
-    this[9] = yz - wx;
-    this[10] = 1 - (xx + yy);
-    this[11] = 0;
-    this[12] = v[0];
-    this[13] = v[1];
-    this[14] = v[2];
-    this[15] = 1;
+    out[0] = 1 - (yy + zz);
+    out[1] = xy + wz;
+    out[2] = xz - wy;
+    out[3] = 0;
+    out[4] = xy - wz;
+    out[5] = 1 - (xx + zz);
+    out[6] = yz + wx;
+    out[7] = 0;
+    out[8] = xz + wy;
+    out[9] = yz - wx;
+    out[10] = 1 - (xx + yy);
+    out[11] = 0;
+    out[12] = v[0];
+    out[13] = v[1];
+    out[14] = v[2];
+    out[15] = 1;
 
-    return this;
+    return out;
   }
 
-  fromQuat(q) {
+  fromQuat(q, out = this) {
     let x = q[0],
       y = q[1],
       z = q[2],
@@ -801,27 +793,27 @@ export class Mat4 {
     let wy = w * y2;
     let wz = w * z2;
 
-    this[0] = 1 - yy - zz;
-    this[1] = yx + wz;
-    this[2] = zx - wy;
-    this[3] = 0;
+    out[0] = 1 - yy - zz;
+    out[1] = yx + wz;
+    out[2] = zx - wy;
+    out[3] = 0;
 
-    this[4] = yx - wz;
-    this[5] = 1 - xx - zz;
-    this[6] = zy + wx;
-    this[7] = 0;
+    out[4] = yx - wz;
+    out[5] = 1 - xx - zz;
+    out[6] = zy + wx;
+    out[7] = 0;
 
-    this[8] = zx + wy;
-    this[9] = zy - wx;
-    this[10] = 1 - xx - yy;
-    this[11] = 0;
+    out[8] = zx + wy;
+    out[9] = zy - wx;
+    out[10] = 1 - xx - yy;
+    out[11] = 0;
 
-    this[12] = 0;
-    this[13] = 0;
-    this[14] = 0;
-    this[15] = 1;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
 
-    return this;
+    return out;
   }
 
   fromJSON(d) {
