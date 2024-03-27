@@ -15,12 +15,24 @@ export class Vec3 {
     return this[0];
   }
 
+  set x(v) {
+    this[0] = v;
+  }
+
   get y() {
     return this[1];
   }
 
+  set y(v) {
+    this[1] = v;
+  }
+
   get z() {
     return this[2];
+  }
+
+  set z(v) {
+    this[2] = v;
   }
 
   set(x, y, z) {
@@ -339,28 +351,29 @@ export class Vec3 {
     return this;
   }
 
-  transformByMat4(m) {
+  transformByMat4(m, out = this) {
     let x = this[0],
         y = this[1],
         z = this[2];
     let w = m[3] * x + m[7] * y + m[11] * z + m[15];
     w = w || 1.0;
-    this[0] = (m[0] * x + m[4] * y + m[8] * z + m[12]) / w;
-    this[1] = (m[1] * x + m[5] * y + m[9] * z + m[13]) / w;
-    this[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w;
+    out[0] = (m[0] * x + m[4] * y + m[8] * z + m[12]) / w;
+    out[1] = (m[1] * x + m[5] * y + m[9] * z + m[13]) / w;
+    out[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w;
+    return out;
   }
 
-  transformByMat3(m) {
+  transformByMat3(m, out = this) {
     let x = a[0],
         y = a[1],
         z = a[2];
-    this[0] = x * m[0] + y * m[3] + z * m[6];
-    this[1] = x * m[1] + y * m[4] + z * m[7];
-    this[2] = x * m[2] + y * m[5] + z * m[8];
-    return this;
+    out[0] = x * m[0] + y * m[3] + z * m[6];
+    out[1] = x * m[1] + y * m[4] + z * m[7];
+    out[2] = x * m[2] + y * m[5] + z * m[8];
+    return out;
   }
 
-  transformByQuat(q) {
+  transformByQuat(q, out = this) {
     // benchmarks: https://jsperf.com/quaternion-transform-vec3-implementations-fixed
     let qx = q[0],
         qy = q[1],
@@ -388,10 +401,10 @@ export class Vec3 {
     uuvy *= 2;
     uuvz *= 2;
     // return vec3.add(out, a, vec3.add(out, uv, uuv));
-    this[0] = x + uvx + uuvx;
-    this[1] = y + uvy + uuvy;
-    this[2] = z + uvz + uuvz;
-    return this;
+    out[0] = x + uvx + uuvx;
+    out[1] = y + uvy + uuvy;
+    out[2] = z + uvz + uuvz;
+    return out;
   }
 
   fromJSON(d) {
@@ -413,3 +426,5 @@ Vec3.prototype.mulScalar = Vec3.prototype.multiplyScalar;
 Vec3.prototype.div = Vec3.prototype.divide;
 Vec3.prototype.div2 = Vec3.prototype.divide2;
 Vec3.prototype.divScalar = Vec3.prototype.divideScalar;
+Vec3.prototype.len = Vec3.prototype.length;
+Vec3.prototype.dist = Vec3.prototype.distance;
