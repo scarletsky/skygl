@@ -6,11 +6,16 @@ export const config = {
   DEBUG: false,
 };
 
-export function toRadians(deg) {
+export function configure(options = {}) {
+  Object.assign(config, options);
+  return config;
+}
+
+export function toRad(deg) {
   return deg * DEG_TO_RAD;
 }
 
-export function toDegrees(rad) {
+export function toDeg(rad) {
   return rad * RAD_TO_DEG;
 }
 
@@ -28,7 +33,10 @@ export function lerp(a, b, t) {
   return a + (b - a) * t;
 }
 
-export function configure(options = {}) {
-  Object.assign(config, options);
-  return config;
+export function equals(a, b, epsilon = config.EPSILON) {
+  return Math.abs(a - b) <= epsilon * Math.max(1.0, Math.abs(a), Math.abs(b));
+}
+
+export function exactEquals(a, b) {
+  return a === b;
 }
