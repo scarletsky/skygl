@@ -116,15 +116,15 @@ export class Mat3 {
   }
 
   inverse(out = this) {
-    let a00 = a[0],
-        a01 = a[1],
-        a02 = a[2];
-    let a10 = a[3],
-        a11 = a[4],
-        a12 = a[5];
-    let a20 = a[6],
-        a21 = a[7],
-        a22 = a[8];
+    let a00 = this[0],
+        a01 = this[1],
+        a02 = this[2];
+    let a10 = this[3],
+        a11 = this[4],
+        a12 = this[5];
+    let a20 = this[6],
+        a21 = this[7],
+        a22 = this[8];
 
     let b01 = a22 * a11 - a12 * a21;
     let b11 = -a22 * a10 + a12 * a20;
@@ -152,15 +152,15 @@ export class Mat3 {
   }
 
   ajoint(out = this) {
-    let a00 = a[0],
-        a01 = a[1],
-        a02 = a[2];
-    let a10 = a[3],
-        a11 = a[4],
-        a12 = a[5];
-    let a20 = a[6],
-        a21 = a[7],
-        a22 = a[8];
+    let a00 = this[0],
+        a01 = this[1],
+        a02 = this[2];
+    let a10 = this[3],
+        a11 = this[4],
+        a12 = this[5];
+    let a20 = this[6],
+        a21 = this[7],
+        a22 = this[8];
 
     out[0] = a11 * a22 - a12 * a21;
     out[1] = a02 * a21 - a01 * a22;
@@ -188,17 +188,61 @@ export class Mat3 {
   }
 
   frob(a) {
+    let a00 = this[0],
+        a01 = this[1],
+        a02 = this[2];
+    let a10 = this[3],
+        a11 = this[4],
+        a12 = this[5];
+    let a20 = this[6],
+        a21 = this[7],
+        a22 = this[8];
+
     return Math.sqrt(
-      a[0] * a[0] +
-      a[1] * a[1] +
-      a[2] * a[2] +
-      a[3] * a[3] +
-      a[4] * a[4] +
-      a[5] * a[5] +
-      a[6] * a[6] +
-      a[7] * a[7] +
-      a[8] * a[8]
+      a00 * a00 +
+      a01 * a01 +
+      a02 * a02 +
+      a10 * a10 +
+      a11 * a11 +
+      a12 * a12 +
+      a20 * a20 +
+      a21 * a21 +
+      a22 * a22
     );
+  }
+
+  add(b, out = this) {
+    out[0] = this[0] + b[0];
+    out[1] = this[1] + b[1];
+    out[2] = this[2] + b[2];
+    out[3] = this[3] + b[3];
+    out[4] = this[4] + b[4];
+    out[5] = this[5] + b[5];
+    out[6] = this[6] + b[6];
+    out[7] = this[7] + b[7];
+    out[8] = this[8] + b[8];
+    return out;
+  }
+
+  add2(a, b, out = this) {
+    return this.copy(a).add(b, out);
+  }
+
+  subtract(b, out = this) {
+    out[0] = this[0] - b[0];
+    out[1] = this[1] - b[1];
+    out[2] = this[2] - b[2];
+    out[3] = this[3] - b[3];
+    out[4] = this[4] - b[4];
+    out[5] = this[5] - b[5];
+    out[6] = this[6] - b[6];
+    out[7] = this[7] - b[7];
+    out[8] = this[8] - b[8];
+    return out;
+  }
+
+  subtract2(a, b, out = this) {
+    return this.copy(a).subtract(b, out);
   }
 
   multiply(b, out = this) {
@@ -238,6 +282,19 @@ export class Mat3 {
 
   multiply2(a, b, out = this) {
     return this.copy(a).multiply2(b, out);
+  }
+
+  multiplyScalar(b, out = this) {
+    out[0] = this[0] * b;
+    out[1] = this[1] * b;
+    out[2] = this[2] * b;
+    out[3] = this[3] * b;
+    out[4] = this[4] * b;
+    out[5] = this[5] * b;
+    out[6] = this[6] * b;
+    out[7] = this[7] * b;
+    out[8] = this[8] * b;
+    return out;
   }
 
   translate(v, out = this) {
@@ -479,3 +536,5 @@ export class Mat3 {
 }
 
 Mat3.prototype.isMat3 = true;
+Mat3.prototype.sub = Mat3.prototype.subtract;
+Mat3.prototype.mul = Mat3.prototype.multiply;

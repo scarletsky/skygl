@@ -427,6 +427,54 @@ export class Mat4 {
     return out;
   }
 
+  add(b, out = this) {
+    out[0] = this[0] + b[0];
+    out[1] = this[1] + b[1];
+    out[2] = this[2] + b[2];
+    out[3] = this[3] + b[3];
+    out[4] = this[4] + b[4];
+    out[5] = this[5] + b[5];
+    out[6] = this[6] + b[6];
+    out[7] = this[7] + b[7];
+    out[8] = this[8] + b[8];
+    out[9] = this[9] + b[9];
+    out[10] = this[10] + b[10];
+    out[11] = this[11] + b[11];
+    out[12] = this[12] + b[12];
+    out[13] = this[13] + b[13];
+    out[14] = this[14] + b[14];
+    out[15] = this[15] + b[15];
+    return out;
+  }
+
+  add2(a, b, out = this) {
+    return this.copy(a).add(b, out);
+  }
+
+  subtract(b, out = this) {
+    out[0] = this[0] - b[0];
+    out[1] = this[1] - b[1];
+    out[2] = this[2] - b[2];
+    out[3] = this[3] - b[3];
+    out[4] = this[4] - b[4];
+    out[5] = this[5] - b[5];
+    out[6] = this[6] - b[6];
+    out[7] = this[7] - b[7];
+    out[8] = this[8] - b[8];
+    out[9] = this[9] - b[9];
+    out[10] = this[10] - b[10];
+    out[11] = this[11] - b[11];
+    out[12] = this[12] - b[12];
+    out[13] = this[13] - b[13];
+    out[14] = this[14] - b[14];
+    out[15] = this[15] - b[15];
+    return out;
+  }
+
+  subtract2(a, b, out = this) {
+    return this.copy(a).subtract(b, out);
+  }
+
   multiply(b, out = this) {
     let a00 = this[0],
         a01 = this[1],
@@ -1096,4 +1144,5 @@ Mat4.prototype.isMat4 = true;
 Mat4.prototype.perspective = Mat4.prototype.perspectiveNO;
 Mat4.prototype.orthographic = Mat4.prototype.orthographicNO;
 Mat4.prototype.ortho = Mat4.prototype.orthographic;
+Mat4.prototype.sub = Mat4.prototype.subtract;
 Mat4.prototype.mul = Mat4.prototype.multiply;
