@@ -1,27 +1,28 @@
 import { config } from './common.mjs';
+import { Mat3 } from './mat3.mjs';
 
 export class Mat4 {
   constructor(
-    v00 = 1, v01 = 0, v02 = 0, v03 = 0,
-    v10 = 0, v11 = 1, v12 = 0, v13 = 0,
-    v20 = 0, v21 = 0, v22 = 1, v23 = 0,
-    v30 = 0, v31 = 0, v32 = 0, v33 = 1) {
-    this[0] = v00;
-    this[1] = v01;
-    this[2] = v02;
-    this[3] = v03;
-    this[4] = v10;
-    this[5] = v11;
-    this[6] = v12;
-    this[7] = v13;
-    this[8] = v20;
-    this[9] = v21;
-    this[10] = v22;
-    this[11] = v23;
-    this[12] = v30;
-    this[13] = v31;
-    this[14] = v32;
-    this[15] = v33;
+    m00 = 1, m01 = 0, m02 = 0, m03 = 0,
+    m10 = 0, m11 = 1, m12 = 0, m13 = 0,
+    m20 = 0, m21 = 0, m22 = 1, m23 = 0,
+    m30 = 0, m31 = 0, m32 = 0, m33 = 1) {
+    this[0] = m00;
+    this[1] = m01;
+    this[2] = m02;
+    this[3] = m03;
+    this[4] = m10;
+    this[5] = m11;
+    this[6] = m12;
+    this[7] = m13;
+    this[8] = m20;
+    this[9] = m21;
+    this[10] = m22;
+    this[11] = m23;
+    this[12] = m30;
+    this[13] = m31;
+    this[14] = m32;
+    this[15] = m33;
   }
 
   clone(out = new Mat4()) {
@@ -65,26 +66,26 @@ export class Mat4 {
   }
 
   set(
-    v00, v01, v02, v03,
-    v10, v11, v12, v13,
-    v20, v21, v22, v23,
-    v30, v31, v32, v33) {
-    this[0] = v00;
-    this[1] = v01;
-    this[2] = v02;
-    this[3] = v03;
-    this[4] = v10;
-    this[5] = v11;
-    this[6] = v12;
-    this[7] = v13;
-    this[8] = v20;
-    this[9] = v21;
-    this[10] = v22;
-    this[11] = v23;
-    this[12] = v30;
-    this[13] = v31;
-    this[14] = v32;
-    this[15] = v33;
+    m00, m01, m02, m03,
+    m10, m11, m12, m13,
+    m20, m21, m22, m23,
+    m30, m31, m32, m33) {
+    this[0] = m00;
+    this[1] = m01;
+    this[2] = m02;
+    this[3] = m03;
+    this[4] = m10;
+    this[5] = m11;
+    this[6] = m12;
+    this[7] = m13;
+    this[8] = m20;
+    this[9] = m21;
+    this[10] = m22;
+    this[11] = m23;
+    this[12] = m30;
+    this[13] = m31;
+    this[14] = m32;
+    this[15] = m33;
     return this;
   }
 
@@ -105,6 +106,29 @@ export class Mat4 {
     this[13] = 0;
     this[14] = 0;
     this[15] = 1;
+    return this;
+  }
+
+  frustum(left, right, bottom, top, near, far) {
+    let rl = 1 / (right - left);
+    let tb = 1 / (top - bottom);
+    let nf = 1 / (near - far);
+    this[0] = near * 2 * rl;
+    this[1] = 0;
+    this[2] = 0;
+    this[3] = 0;
+    this[4] = 0;
+    this[5] = near * 2 * tb;
+    this[6] = 0;
+    this[7] = 0;
+    this[8] = (right + left) * rl;
+    this[9] = (top + bottom) * tb;
+    this[10] = (far + near) * nf;
+    this[11] = -1;
+    this[12] = 0;
+    this[13] = 0;
+    this[14] = far * near * 2 * nf;
+    this[15] = 0;
     return this;
   }
 
@@ -403,7 +427,7 @@ export class Mat4 {
     return out;
   }
 
-  multiply(b) {
+  multiply(b, out = this) {
     let a00 = this[0],
         a01 = this[1],
         a02 = this[2],
@@ -426,72 +450,63 @@ export class Mat4 {
         b1 = b[1],
         b2 = b[2],
         b3 = b[3];
-    this[0] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
-    this[1] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
-    this[2] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
-    this[3] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+    out[0] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+    out[1] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+    out[2] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+    out[3] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
 
     b0 = b[4];
     b1 = b[5];
     b2 = b[6];
     b3 = b[7];
-    this[4] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
-    this[5] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
-    this[6] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
-    this[7] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+    out[4] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+    out[5] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+    out[6] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+    out[7] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
 
     b0 = b[8];
     b1 = b[9];
     b2 = b[10];
     b3 = b[11];
-    this[8] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
-    this[9] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
-    this[10] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
-    this[11] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+    out[8] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+    out[9] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+    out[10] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+    out[11] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
 
     b0 = b[12];
     b1 = b[13];
     b2 = b[14];
     b3 = b[15];
-    this[12] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
-    this[13] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
-    this[14] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
-    this[15] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
-    return this;
+    out[12] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+    out[13] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+    out[14] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+    out[15] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+    return out;
   }
 
-  multiply2(a, b) {
-    return this.copy(a).multiply(b);
+  multiply2(a, b, out = this) {
+    return this.copy(a).multiply(b, out);
   }
 
-  translate(v, out) {
+  translate(v, out = this) {
+    let a00 = this[0],
+      a01 = this[1],
+      a02 = this[2],
+      a03 = this[3],
+      a10 = this[4],
+      a11 = this[5],
+      a12 = this[6],
+      a13 = this[7],
+      a20 = this[8],
+      a21 = this[9],
+      a22 = this[10],
+      a23 = this[11];
+
     let x = v[0],
         y = v[1],
         z = v[2];
-    let a00, a01, a02, a03;
-    let a10, a11, a12, a13;
-    let a20, a21, a22, a23;
 
-    if (!out) {
-      out = this;
-      out[12] = a[0] * x + a[4] * y + a[8] * z + a[12];
-      out[13] = a[1] * x + a[5] * y + a[9] * z + a[13];
-      out[14] = a[2] * x + a[6] * y + a[10] * z + a[14];
-      out[15] = a[3] * x + a[7] * y + a[11] * z + a[15];
-    } else {
-      a00 = a[0];
-      a01 = a[1];
-      a02 = a[2];
-      a03 = a[3];
-      a10 = a[4];
-      a11 = a[5];
-      a12 = a[6];
-      a13 = a[7];
-      a20 = a[8];
-      a21 = a[9];
-      a22 = a[10];
-      a23 = a[11];
-
+    if (out !== this) {
       out[0] = a00;
       out[1] = a01;
       out[2] = a02;
@@ -504,12 +519,12 @@ export class Mat4 {
       out[9] = a21;
       out[10] = a22;
       out[11] = a23;
-
-      out[12] = a00 * x + a10 * y + a20 * z + a[12];
-      out[13] = a01 * x + a11 * y + a21 * z + a[13];
-      out[14] = a02 * x + a12 * y + a22 * z + a[14];
-      out[15] = a03 * x + a13 * y + a23 * z + a[15];
     }
+
+    out[12] = a00 * x + a10 * y + a20 * z + this[12];
+    out[13] = a01 * x + a11 * y + a21 * z + this[13];
+    out[14] = a02 * x + a12 * y + a22 * z + this[14];
+    out[15] = a03 * x + a13 * y + a23 * z + this[15];
 
     return out;
   }
@@ -519,22 +534,209 @@ export class Mat4 {
         y = v[1],
         z = v[2];
 
-    out[0] = a[0] * x;
-    out[1] = a[1] * x;
-    out[2] = a[2] * x;
-    out[3] = a[3] * x;
-    out[4] = a[4] * y;
-    out[5] = a[5] * y;
-    out[6] = a[6] * y;
-    out[7] = a[7] * y;
-    out[8] = a[8] * z;
-    out[9] = a[9] * z;
-    out[10] = a[10] * z;
-    out[11] = a[11] * z;
-    out[12] = a[12];
-    out[13] = a[13];
-    out[14] = a[14];
-    out[15] = a[15];
+    out[0] = this[0] * x;
+    out[1] = this[1] * x;
+    out[2] = this[2] * x;
+    out[3] = this[3] * x;
+    out[4] = this[4] * y;
+    out[5] = this[5] * y;
+    out[6] = this[6] * y;
+    out[7] = this[7] * y;
+    out[8] = this[8] * z;
+    out[9] = this[9] * z;
+    out[10] = this[10] * z;
+    out[11] = this[11] * z;
+
+    if (out !== this) {
+      out[12] = this[12];
+      out[13] = this[13];
+      out[14] = this[14];
+      out[15] = this[15];
+    }
+
+    return out;
+  }
+
+  rotate(axis, rad, out = this) {
+    let x = axis[0],
+      y = axis[1],
+      z = axis[2];
+    let len = Math.sqrt(x * x + y * y + z * z);
+    let s, c, t;
+    let a00, a01, a02, a03;
+    let a10, a11, a12, a13;
+    let a20, a21, a22, a23;
+    let b00, b01, b02;
+    let b10, b11, b12;
+    let b20, b21, b22;
+
+    if (len < config.EPSILON) {
+      return null;
+    }
+
+    len = 1 / len;
+    x *= len;
+    y *= len;
+    z *= len;
+
+    s = Math.sin(rad);
+    c = Math.cos(rad);
+    t = 1 - c;
+
+    a00 = this[0];
+    a01 = this[1];
+    a02 = this[2];
+    a03 = this[3];
+    a10 = this[4];
+    a11 = this[5];
+    a12 = this[6];
+    a13 = this[7];
+    a20 = this[8];
+    a21 = this[9];
+    a22 = this[10];
+    a23 = this[11];
+
+    // Construct the elements of the rotation matrix
+    b00 = x * x * t + c;
+    b01 = y * x * t + z * s;
+    b02 = z * x * t - y * s;
+    b10 = x * y * t - z * s;
+    b11 = y * y * t + c;
+    b12 = z * y * t + x * s;
+    b20 = x * z * t + y * s;
+    b21 = y * z * t - x * s;
+    b22 = z * z * t + c;
+
+    // Perform rotation-specific matrix multiplication
+    out[0] = a00 * b00 + a10 * b01 + a20 * b02;
+    out[1] = a01 * b00 + a11 * b01 + a21 * b02;
+    out[2] = a02 * b00 + a12 * b01 + a22 * b02;
+    out[3] = a03 * b00 + a13 * b01 + a23 * b02;
+    out[4] = a00 * b10 + a10 * b11 + a20 * b12;
+    out[5] = a01 * b10 + a11 * b11 + a21 * b12;
+    out[6] = a02 * b10 + a12 * b11 + a22 * b12;
+    out[7] = a03 * b10 + a13 * b11 + a23 * b12;
+    out[8] = a00 * b20 + a10 * b21 + a20 * b22;
+    out[9] = a01 * b20 + a11 * b21 + a21 * b22;
+    out[10] = a02 * b20 + a12 * b21 + a22 * b22;
+    out[11] = a03 * b20 + a13 * b21 + a23 * b22;
+
+    if (out !== this) {
+      // If the source and destination differ, copy the unchanged last row
+      out[12] = this[12];
+      out[13] = this[13];
+      out[14] = this[14];
+      out[15] = this[15];
+    }
+
+    return out;
+  }
+
+  rotateX(rad, out = this) {
+    let s = Math.sin(rad);
+    let c = Math.cos(rad);
+    let a10 = this[4];
+    let a11 = this[5];
+    let a12 = this[6];
+    let a13 = this[7];
+    let a20 = this[8];
+    let a21 = this[9];
+    let a22 = this[10];
+    let a23 = this[11];
+
+    if (out !== this) {
+      // If the source and destination differ, copy the unchanged rows
+      out[0] = this[0];
+      out[1] = this[1];
+      out[2] = this[2];
+      out[3] = this[3];
+      out[12] = this[12];
+      out[13] = this[13];
+      out[14] = this[14];
+      out[15] = this[15];
+    }
+
+    // Perform axis-specific matrix multiplication
+    out[4] = a10 * c + a20 * s;
+    out[5] = a11 * c + a21 * s;
+    out[6] = a12 * c + a22 * s;
+    out[7] = a13 * c + a23 * s;
+    out[8] = a20 * c - a10 * s;
+    out[9] = a21 * c - a11 * s;
+    out[10] = a22 * c - a12 * s;
+    out[11] = a23 * c - a13 * s;
+    return out;
+  }
+
+  rotateY(rad, out = this) {
+    let s = Math.sin(rad);
+    let c = Math.cos(rad);
+    let a00 = this[0];
+    let a01 = this[1];
+    let a02 = this[2];
+    let a03 = this[3];
+    let a20 = this[8];
+    let a21 = this[9];
+    let a22 = this[10];
+    let a23 = this[11];
+
+    if (out !== this) {
+      // If the source and destination differ, copy the unchanged rows
+      out[4] = this[4];
+      out[5] = this[5];
+      out[6] = this[6];
+      out[7] = this[7];
+      out[12] = this[12];
+      out[13] = this[13];
+      out[14] = this[14];
+      out[15] = this[15];
+    }
+
+    // Perform axis-specific matrix multiplication
+    out[0] = a00 * c - a20 * s;
+    out[1] = a01 * c - a21 * s;
+    out[2] = a02 * c - a22 * s;
+    out[3] = a03 * c - a23 * s;
+    out[8] = a00 * s + a20 * c;
+    out[9] = a01 * s + a21 * c;
+    out[10] = a02 * s + a22 * c;
+    out[11] = a03 * s + a23 * c;
+    return out;
+  }
+
+  rotateZ(rad, out = this) {
+    let s = Math.sin(rad);
+    let c = Math.cos(rad);
+    let a00 = this[0];
+    let a01 = this[1];
+    let a02 = this[2];
+    let a03 = this[3];
+    let a10 = this[4];
+    let a11 = this[5];
+    let a12 = this[6];
+    let a13 = this[7];
+
+    if (out !== this) {
+      // If the source and destination differ, copy the unchanged last row
+      out[8] = this[8];
+      out[9] = this[9];
+      out[10] = this[10];
+      out[11] = this[11];
+      out[12] = this[12];
+      out[13] = this[13];
+      out[14] = this[14];
+      out[15] = this[15];
+    }
+
+    // Perform axis-specific matrix multiplication
+    out[0] = a00 * c + a10 * s;
+    out[1] = a01 * c + a11 * s;
+    out[2] = a02 * c + a12 * s;
+    out[3] = a03 * c + a13 * s;
+    out[4] = a10 * c - a00 * s;
+    out[5] = a11 * c - a01 * s;
+    out[6] = a12 * c - a02 * s;
+    out[7] = a13 * c - a03 * s;
     return out;
   }
 
@@ -833,9 +1035,65 @@ export class Mat4 {
       this[12], this[13], this[14], this[15],
     ];
   }
+
+  toNormalMat3(out = new Mat3()) {
+    let a00 = this[0],
+      a01 = this[1],
+      a02 = this[2],
+      a03 = this[3];
+    let a10 = this[4],
+      a11 = this[5],
+      a12 = this[6],
+      a13 = this[7];
+    let a20 = this[8],
+      a21 = this[9],
+      a22 = this[10],
+      a23 = this[11];
+    let a30 = this[12],
+      a31 = this[13],
+      a32 = this[14],
+      a33 = this[15];
+
+    let b00 = a00 * a11 - a01 * a10;
+    let b01 = a00 * a12 - a02 * a10;
+    let b02 = a00 * a13 - a03 * a10;
+    let b03 = a01 * a12 - a02 * a11;
+    let b04 = a01 * a13 - a03 * a11;
+    let b05 = a02 * a13 - a03 * a12;
+    let b06 = a20 * a31 - a21 * a30;
+    let b07 = a20 * a32 - a22 * a30;
+    let b08 = a20 * a33 - a23 * a30;
+    let b09 = a21 * a32 - a22 * a31;
+    let b10 = a21 * a33 - a23 * a31;
+    let b11 = a22 * a33 - a23 * a32;
+
+    // Calculate the determinant
+    let det =
+      b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+
+    if (!det) {
+      return null;
+    }
+    det = 1.0 / det;
+
+    out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
+    out[1] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
+    out[2] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
+
+    out[3] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
+    out[4] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
+    out[5] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
+
+    out[6] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
+    out[7] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
+    out[8] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
+
+    return out;
+  }
 }
 
 Mat4.prototype.isMat4 = true;
 Mat4.prototype.perspective = Mat4.prototype.perspectiveNO;
 Mat4.prototype.orthographic = Mat4.prototype.orthographicNO;
 Mat4.prototype.ortho = Mat4.prototype.orthographic;
+Mat4.prototype.mul = Mat4.prototype.multiply;
