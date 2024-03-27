@@ -246,51 +246,51 @@ export class Vec3 {
     return this[0] * b[0] + this[1] * b[1] + this[2] * b[2];
   }
 
-  cross(b) {
+  cross(b, out = this) {
     const ax = this[0];
     const ay = this[1];
     const az = this[2];
     const bx = b[0];
     const by = b[1];
     const bz = b[2];
-    this[0] = ay * bz - az * by;
-    this[1] = az * bx - ax * bz;
-    this[2] = ax * by - ay * bx;
-    return this;
+    out[0] = ay * bz - az * by;
+    out[1] = az * bx - ax * bz;
+    out[2] = ax * by - ay * bx;
+    return out;
   }
 
-  cross2(a, b) {
-    return this.copy(a).cross(b);
+  cross2(a, b, out = this) {
+    return this.copy(a).cross(b, out);
   }
 
-  lerp(b, t) {
+  lerp(b, t, out = this) {
     const ax = this[0];
     const ay = this[1];
     const az = this[2];
-    this[0] = lerp(ax, b[0], t);
-    this[1] = lerp(ay, b[1], t);
-    this[2] = lerp(az, b[2], t);
-    return this;
+    out[0] = lerp(ax, b[0], t);
+    out[1] = lerp(ay, b[1], t);
+    out[2] = lerp(az, b[2], t);
+    return out;
   }
 
-  lerp2(a, b, t) {
-    return this.copy(a).lerp(b, t);
+  lerp2(a, b, t, out = this) {
+    return this.copy(a).lerp(b, t, out);
   }
 
-  slerp(b, t) {
+  slerp(b, t, out = this) {
     let angle = Math.acos(Math.min(Math.max(this.dot(b), -1), 1));
     let sinTotal = Math.sin(angle);
 
     let ratioA = Math.sin((1 - t) * angle) / sinTotal;
     let ratioB = Math.sin(t * angle) / sinTotal;
-    this[0] = ratioA * this[0] + ratioB * b[0];
-    this[1] = ratioA * this[1] + ratioB * b[1];
-    this[2] = ratioA * this[2] + ratioB * b[2];
-    return this;
+    out[0] = ratioA * this[0] + ratioB * b[0];
+    out[1] = ratioA * this[1] + ratioB * b[1];
+    out[2] = ratioA * this[2] + ratioB * b[2];
+    return out;
   }
 
-  slerp2(a, b, t) {
-    return this.copy(a).slerp(b, t);
+  slerp2(a, b, t, out = this) {
+    return this.copy(a).slerp(b, t, out);
   }
 
   angle(b) {
@@ -323,20 +323,20 @@ export class Vec3 {
     return this[0] === b[0] && this[1] === b[1] && this[2] === b[2];
   }
 
-  hermite(a, b, c, d, t) {
+  hermite(a, b, c, d, t, out = this) {
     let factorTimes2 = t * t;
     let factor1 = factorTimes2 * (2 * t - 3) + 1;
     let factor2 = factorTimes2 * (t - 2) + t;
     let factor3 = factorTimes2 * (t - 1);
     let factor4 = factorTimes2 * (3 - 2 * t);
 
-    this[0] = a[0] * factor1 + b[0] * factor2 + c[0] * factor3 + d[0] * factor4;
-    this[1] = a[1] * factor1 + b[1] * factor2 + c[1] * factor3 + d[1] * factor4;
-    this[2] = a[2] * factor1 + b[2] * factor2 + c[2] * factor3 + d[2] * factor4;
-    return this;
+    out[0] = a[0] * factor1 + b[0] * factor2 + c[0] * factor3 + d[0] * factor4;
+    out[1] = a[1] * factor1 + b[1] * factor2 + c[1] * factor3 + d[1] * factor4;
+    out[2] = a[2] * factor1 + b[2] * factor2 + c[2] * factor3 + d[2] * factor4;
+    return out;
   }
 
-  bezier(a, b, c, d, t) {
+  bezier(a, b, c, d, t, out = this) {
     let inverseFactor = 1 - t;
     let inverseFactorTimesTwo = inverseFactor * inverseFactor;
     let factorTimes2 = t * t;
@@ -345,10 +345,10 @@ export class Vec3 {
     let factor3 = 3 * factorTimes2 * inverseFactor;
     let factor4 = factorTimes2 * t;
 
-    this[0] = a[0] * factor1 + b[0] * factor2 + c[0] * factor3 + d[0] * factor4;
-    this[1] = a[1] * factor1 + b[1] * factor2 + c[1] * factor3 + d[1] * factor4;
-    this[2] = a[2] * factor1 + b[2] * factor2 + c[2] * factor3 + d[2] * factor4;
-    return this;
+    out[0] = a[0] * factor1 + b[0] * factor2 + c[0] * factor3 + d[0] * factor4;
+    out[1] = a[1] * factor1 + b[1] * factor2 + c[1] * factor3 + d[1] * factor4;
+    out[2] = a[2] * factor1 + b[2] * factor2 + c[2] * factor3 + d[2] * factor4;
+    return out;
   }
 
   transformByMat4(m, out = this) {

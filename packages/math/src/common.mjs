@@ -4,6 +4,7 @@ export const DEG_TO_RAD = Math.PI / 180;
 export const config = {
   EPSILON,
   DEBUG: false,
+  EULER_ORDER: 'zyx',
 };
 
 export function configure(options = {}) {
