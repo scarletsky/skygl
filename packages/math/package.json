@@ -6,7 +6,7 @@
   "main": "src/index.mjs",
   "scripts": {
     "test": "tape 'test/**.test.mjs' | tap-spec",
-    "test:watch": "nodemon --exec pnpm test:math"
+    "test:watch": "nodemon --exec pnpm test"
   },
   "keywords": [],
   "author": "",

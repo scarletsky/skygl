@@ -226,15 +226,15 @@ export class Vec3 {
     return x * x + y * y + z * z;
   }
 
-  random(scale = 1) {
+  random(scale = 1, out = this) {
     const r = Math.random() * 2.0 * Math.PI;
     const z = Math.random() * 2.0 - 1.0;
     const zScale = Math.sqrt(1.0 - z * z) * scale;
 
-    this[0] = Math.cos(r) * zScale;
-    this[1] = Math.sin(r) * zScale;
-    this[2] = z * scale;
-    return this;
+    out[0] = Math.cos(r) * zScale;
+    out[1] = Math.sin(r) * zScale;
+    out[2] = z * scale;
+    return out;
   }
 
   normalize() {

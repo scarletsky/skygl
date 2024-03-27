@@ -27,6 +27,12 @@ export function round(value) {
 }
 
 export function clamp(value, min, max) {
+  if (min > max) {
+    let t = max;
+    max = min;
+    min = t;
+  }
+
   return Math.max(min, Math.min(max, value));
 }
 
