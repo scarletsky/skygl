@@ -448,7 +448,7 @@ export class Mat4 {
   }
 
   add2(a, b, out = this) {
-    return this.copy(a).add(b, out);
+    return out.copy(a).add(b, out);
   }
 
   subtract(b, out = this) {
@@ -472,7 +472,7 @@ export class Mat4 {
   }
 
   subtract2(a, b, out = this) {
-    return this.copy(a).subtract(b, out);
+    return out.copy(a).subtract(b, out);
   }
 
   multiply(b, out = this) {
@@ -533,7 +533,7 @@ export class Mat4 {
   }
 
   multiply2(a, b, out = this) {
-    return this.copy(a).multiply(b, out);
+    return out.copy(a).multiply(b, out);
   }
 
   translate(v, out = this) {

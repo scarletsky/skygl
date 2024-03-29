@@ -301,7 +301,7 @@ export class Vec4 {
     return this[0] * b[0] + this[1] * b[1] + this[2] * b[2] + this[3] * b[3];
   }
 
-  cross(v, w) {
+  cross(v, w, out = this) {
     let A = v[0] * w[1] - v[1] * w[0],
         B = v[0] * w[2] - v[2] * w[0],
         C = v[0] * w[3] - v[3] * w[0],
@@ -313,32 +313,32 @@ export class Vec4 {
     let I = this[2];
     let J = this[3];
 
-    this[0] = H * F - I * E + J * D;
-    this[1] = -(G * F) + I * C - J * B;
-    this[2] = G * E - H * C + J * A;
-    this[3] = -(G * D) + H * B - I * A;
+    out[0] = H * F - I * E + J * D;
+    out[1] = -(G * F) + I * C - J * B;
+    out[2] = G * E - H * C + J * A;
+    out[3] = -(G * D) + H * B - I * A;
 
-    return this;
+    return out;
   }
 
-  cross2(u, v, w) {
-    return this.copy(u).cross(v, w);
+  cross2(u, v, w, out = this) {
+    return out.copy(u).cross(v, w);
   }
 
-  lerp(b, t) {
+  lerp(b, t, out = this) {
     let ax = this[0];
     let ay = this[1];
     let az = this[2];
     let aw = this[3];
-    this[0] = lerp(ax, b[0], t);
-    this[1] = lerp(ay, b[1], t);
-    this[2] = lerp(az, b[2], t);
-    this[3] = lerp(aw, b[3], t);
-    return this;
+    out[0] = lerp(ax, b[0], t);
+    out[1] = lerp(ay, b[1], t);
+    out[2] = lerp(az, b[2], t);
+    out[3] = lerp(aw, b[3], t);
+    return out;
   }
 
-  lerp2(a, b, t) {
-    return this.copy(a).lerp(b, t);
+  lerp2(a, b, t, out = this) {
+    return out.copy(a).lerp(b, t);
   }
 
   equals(b, epsilon = config.EPSILON) {

@@ -388,9 +388,9 @@ test('Vec3#cross2', (t) => {
   v3.zero();
   v3.cross2(v1, v2, out);
 
-  t.equal(v3.x, v1.x);
-  t.equal(v3.y, v1.y);
-  t.equal(v3.z, v1.z);
+  t.equal(v3.x, 0);
+  t.equal(v3.y, 0);
+  t.equal(v3.z, 0);
 
   t.equal(out.x, -1);
   t.equal(out.y, 0);

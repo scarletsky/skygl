@@ -226,16 +226,16 @@ export class Vec2 {
     return this.copy(a).cross(b, out);
   }
 
-  lerp(b, t) {
+  lerp(b, t, out = this) {
     const ax = this[0];
     const ay = this[1];
-    this[0] = lerp(ax, b[0], t);
-    this[1] = lerp(ay, b[1], t);
-    return this;
+    out[0] = lerp(ax, b[0], t);
+    out[1] = lerp(ay, b[1], t);
+    return out;
   }
 
-  lerp2(a, b, t) {
-    return this.copy(a).lerp(b, t);
+  lerp2(a, b, t, out = this) {
+    return out.copy(a).lerp(b, t);
   }
 
   transformByMat2(m, out = this) {

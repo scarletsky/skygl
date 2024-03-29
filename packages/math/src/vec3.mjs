@@ -260,7 +260,7 @@ export class Vec3 {
   }
 
   cross2(a, b, out = this) {
-    return this.copy(a).cross(b, out);
+    return out.copy(a).cross(b, out);
   }
 
   lerp(b, t, out = this) {
@@ -274,7 +274,7 @@ export class Vec3 {
   }
 
   lerp2(a, b, t, out = this) {
-    return this.copy(a).lerp(b, t, out);
+    return out.copy(a).lerp(b, t, out);
   }
 
   slerp(b, t, out = this) {
@@ -290,7 +290,7 @@ export class Vec3 {
   }
 
   slerp2(a, b, t, out = this) {
-    return this.copy(a).slerp(b, t, out);
+    return out.copy(a).slerp(b, t, out);
   }
 
   angle(b) {

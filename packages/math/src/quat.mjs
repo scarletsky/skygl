@@ -281,7 +281,7 @@ export class Quat {
   }
 
   slerp2(a, b, t, out = this) {
-    return this.copy(a).slerp(b, t, out);
+    return out.copy(a).slerp(b, t, out);
   }
 
   equals(b, epsilon = config.EPSILON) {
