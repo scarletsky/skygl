@@ -6,6 +6,10 @@ export class ShaderChunks {
     this.system = system;
     this.custom = custom
   }
+
+  get(chunkName) {
+    return this.custom[chunkName] || this.system[chunkName] || '';
+  }
 }
 
 export const shaderChunks = new ShaderChunks(SYSTEM, CUSTOM);

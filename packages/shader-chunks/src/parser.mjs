@@ -2,10 +2,6 @@ import { shaderChunks } from './shader-chunks.mjs';
 
 const includePattern = /#include <(.+)>/g;
 
-export function resolveInclude(name, chunks = shaderChunks) {
-  return chunks.custom[name] || chunks.system[name] || '';
-}
-
 export function parseLine(code = '', chunks = shaderChunks, includedSet = new Set()) {
   return code.replace(includePattern, function (match, chunkName) {
     // NOTE: replace the duplicated `#include`
@@ -13,7 +9,7 @@ export function parseLine(code = '', chunks = shaderChunks, includedSet = new Se
 
     includedSet.add(chunkName);
 
-    return parseGLSL(resolveInclude(chunkName, chunks), chunks, includedSet);
+    return parseGLSL(chunks.get(chunkName), chunks, includedSet);
   });
 }
 
