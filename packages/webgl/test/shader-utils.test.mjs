@@ -1,5 +1,5 @@
 import test from 'tape';
-import { parseGLSL } from '../src/parser.mjs';
+import { parseGLSL } from '../src/shader-utils.mjs';
 import { ShaderChunks } from '../src/shader-chunks.mjs';
 
 test('parseGLSL with undefined', (t) => {
