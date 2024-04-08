@@ -1,5 +1,5 @@
 import test from 'tape';
-import { parseGLSL } from '../src/shader-utils.mjs';
+import { parseGLSL, addLineNumbers } from '../src/shader-utils.mjs';
 import { ShaderChunks } from '../src/shader-chunks.mjs';
 
 test('parseGLSL with undefined', (t) => {
@@ -71,5 +71,25 @@ test('parseGLSL with nested and duplicated `#include`', (t) => {
   t.equal(lines.filter(line => line.includes('vec3 yyy = vec3(1.0)')).length, 1);
   t.equal(lines.filter(line => line.includes('vec3 foo = vec3(1.0)')).length, 1);
   t.equal(lines.filter(line => line.includes('vec3 bar = vec3(1.0)')).length, 1);
+  t.end();
+});
+
+
+test('addLineNumbers should starts with 1', (t) => {
+  const lines = [
+    'attribute vec3 POSITION;',
+    'attribute vec3 NORMAL;',
+    '',
+    'void main() {',
+    '  gl_Position = POSITION * 2.0 - 1.0;',
+    '}'
+  ];
+
+  const result = addLineNumbers(lines.join('\n'));
+  const resultLines = result.split('\n');
+
+  t.equal(lines.length, resultLines.length);
+  t.equal(resultLines[0], `1: ${lines[0]}`);
+  t.equal(resultLines[3], `4: ${lines[3]}`);
   t.end();
 });
