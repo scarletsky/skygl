@@ -5,6 +5,8 @@ import {
   compileFragmentShader,
   addLineNumbers,
   createProgram,
+  getProgramAttributes,
+  getProgramUniforms,
 } from './shader-utils.mjs';
 
 export class Shader {
@@ -13,7 +15,7 @@ export class Shader {
     this.precision = 'highp';
     this.defines = {};
     this.extensions = {};
-    this.attributes = {};
+    this.attributes = [];
     this.uniforms = {};
     this.vertexShader = vertexShader;
     this.fragmentShader = fragmentShader;
@@ -37,7 +39,14 @@ export class Shader {
 
     this._glVertexShader = compileVertexShader(gl, vertexShaderSource);
     this._glFragmentShader = compileFragmentShader(gl, fragmentShaderSource);
+  }
+
+  link(gl) {
+    if (this._glProgram) return this;
+
     this._glProgram = createProgram(gl, this._glVertexShader, this._glFragmentShader);
+
+    return this;
   }
 
   postLink(gl) {
@@ -59,6 +68,9 @@ export class Shader {
       console.error("Failed to link shader program. Error: " + gl.getProgramInfoLog(_glProgram));
       return false;
     }
+
+    this.attributes = getProgramAttributes(gl, _glProgram);
+    this.uniforms = getProgramUniforms(gl, _glProgram);
 
     this.ready = true;
     return this;

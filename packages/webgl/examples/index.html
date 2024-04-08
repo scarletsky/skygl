@@ -23,9 +23,27 @@
 <body>
   <canvas id="app"></canvas>
   <script>
+  const { getContext, Shader } = skygl;
   const canvas = document.getElementById('app');
-  const { getContext } = skygl;
   const gl = getContext(canvas);
+  const vertexSource = `
+    attribute vec3 POSITION;
+    void main() {
+      gl_Position = vec4(POSITION, 1.0);
+    }
+  `;
+  const fragmentSource = `
+    precision highp float;
+
+    uniform vec3 uColor;
+    void main() {
+      gl_FragColor = vec4(uColor, 1.0);
+    }
+  `;
+  const shader = new Shader(vertexSource, fragmentSource);
+  shader.compile(gl);
+  shader.link(gl);
+  shader.postLink(gl);
   </script>
 </body>
 </html>

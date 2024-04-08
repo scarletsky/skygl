@@ -1,4 +1,5 @@
-export * from './context.mjs';
-export * from './shader.mjs';
+export * from './context-utils.mjs';
+export * from './canvas-utils.mjs';
 export * from './shader-utils.mjs';
 export * from './shader-chunks.mjs';
+export * from './shader.mjs';
