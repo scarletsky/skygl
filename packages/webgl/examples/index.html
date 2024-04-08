@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="renderer" content="webkit" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+  <title>Hello</title>
+  <style type="text/css" media="screen">
+  html, body {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+  body {
+    overflow: hidden;
+    background: black;
+  }
+  </style>
+  <script type="text/javascript" src="./bundle.iife.js"></script>
+</head>
+<body>
+  <canvas id="app"></canvas>
+  <script>
+  const canvas = document.getElementById('app');
+  const { getContext } = skygl;
+  const gl = getContext(canvas);
+  </script>
+</body>
+</html>
