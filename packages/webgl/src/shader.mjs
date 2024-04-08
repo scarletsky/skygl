@@ -1,4 +1,4 @@
-import { shaderChunks } from './shader-utils.mjs';
+import { shaderChunks } from './shader-chunks.mjs';
 import {
   parseGLSL,
   compileVertexShader,

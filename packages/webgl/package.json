@@ -5,6 +5,8 @@
   "type": "module",
   "main": "src/index.mjs",
   "scripts": {
+    "dev": "rollup --config rollup.config.js --watch --environment NODE_ENV:development",
+    "build": "rollup --config rollup.config.js --environment NODE_ENV:production",
     "test": "tape 'test/**.test.mjs' | tap-spec",
     "test:watch": "nodemon --exec pnpm test"
   },
