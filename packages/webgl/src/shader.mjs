@@ -20,9 +20,9 @@ export class Shader {
     this.vertexShader = vertexShader;
     this.fragmentShader = fragmentShader;
     this.ready = false;
-    this._glVertexShader = null;
-    this._glFragmentShader = null;
-    this._glProgram = null;
+    this.glVertexShader = null;
+    this.glFragmentShader = null;
+    this.glProgram = null;
   }
 
   getVertexShaderSource() {
@@ -37,14 +37,14 @@ export class Shader {
     const vertexShaderSource = this.getVertexShaderSource();
     const fragmentShaderSource = this.getFragmentShaderSource();
 
-    this._glVertexShader = compileVertexShader(gl, vertexShaderSource);
-    this._glFragmentShader = compileFragmentShader(gl, fragmentShaderSource);
+    this.glVertexShader = compileVertexShader(gl, vertexShaderSource);
+    this.glFragmentShader = compileFragmentShader(gl, fragmentShaderSource);
   }
 
   link(gl) {
-    if (this._glProgram) return this;
+    if (this.glProgram) return this;
 
-    this._glProgram = createProgram(gl, this._glVertexShader, this._glFragmentShader);
+    this.glProgram = createProgram(gl, this.glVertexShader, this.glFragmentShader);
 
     return this;
   }
@@ -52,27 +52,28 @@ export class Shader {
   postLink(gl) {
     if (this.ready) return this;
 
-    const { _glVertexShader, _glFragmentShader, _glProgram } = this;
+    const { glVertexShader, glFragmentShader, glProgram } = this;
 
-    if (!gl.getShaderParameter(_glVertexShader, gl.COMPILE_STATUS)) {
-      console.error("Failed to compile vertex shader:\n\n" + addLineNumbers(this.getVertexShaderSource()) + "\n\n" + gl.getShaderInfoLog(_glVertexShader));
+    if (!gl.getShaderParameter(glVertexShader, gl.COMPILE_STATUS)) {
+      console.error("Failed to compile vertex shader:\n\n" + addLineNumbers(this.getVertexShaderSource()) + "\n\n" + gl.getShaderInfoLog(glVertexShader));
       return false;
     }
 
-    if (!gl.getShaderParameter(_glFragmentShader, gl.COMPILE_STATUS)) {
-      console.error("Failed to compile fragment shader:\n\n" + addLineNumbers(this.getFragmentShaderSource()) + "\n\n" + gl.getShaderInfoLog(_glFragmentShader));
+    if (!gl.getShaderParameter(glFragmentShader, gl.COMPILE_STATUS)) {
+      console.error("Failed to compile fragment shader:\n\n" + addLineNumbers(this.getFragmentShaderSource()) + "\n\n" + gl.getShaderInfoLog(glFragmentShader));
       return false;
     }
 
-    if (!gl.getProgramParameter(_glProgram, gl.LINK_STATUS)) {
-      console.error("Failed to link shader program. Error: " + gl.getProgramInfoLog(_glProgram));
+    if (!gl.getProgramParameter(glProgram, gl.LINK_STATUS)) {
+      console.error("Failed to link shader program. Error: " + gl.getProgramInfoLog(glProgram));
       return false;
     }
 
-    this.attributes = getProgramAttributes(gl, _glProgram);
-    this.uniforms = getProgramUniforms(gl, _glProgram);
+    this.attributes = getProgramAttributes(gl, glProgram);
+    this.uniforms = getProgramUniforms(gl, glProgram);
 
     this.ready = true;
+
     return this;
   }
 }
