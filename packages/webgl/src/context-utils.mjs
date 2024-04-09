@@ -1,3 +1,5 @@
+import { getExtensions } from './extension-utils.mjs';
+
 export const glState = {
   // NOTE: WebGL1 state
   clearColor: [0, 0, 0, 1],
@@ -32,10 +34,6 @@ export const glState = {
   // NOTE: caps
 };
 
-export const glExtensions = {
-
-};
-
 export function getContext(canvas, tryWebGL2 = true, options = {}) {
   if (!(canvas instanceof HTMLCanvasElement)) {
     throw new Error('Invalid HTMLCanvasElement.');
@@ -51,19 +49,17 @@ export function getContext(canvas, tryWebGL2 = true, options = {}) {
     gl.isWebGL2 = false;
   }
 
+  getExtensions(gl);
+
   return gl;
 }
 
-export function getWebGLVersion(gl) {
+export function isWebGL2(gl) {
+  if (gl.isWebGL2) return true;
   if (gl.isWebGL2 === undefined) {
     gl.isWebGL2 = !!gl.texStorage2D;
   }
-
-  return gl.isWebGL2 ? 2 : 1;
-}
-
-export function getExtensions(gl, exts = []) {
-
+  return gl.isWebGL2;
 }
 
 export function setClearColor(gl, v) {
