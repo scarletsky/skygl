@@ -1,9 +1,8 @@
 import { shaderChunks } from './shader-chunks.mjs';
 import {
   parseGLSL,
-  compileVertexShader,
-  compileFragmentShader,
   addLineNumbers,
+  createShader,
   createProgram,
   getProgramAttributes,
   getProgramUniforms,
@@ -37,8 +36,8 @@ export class Shader {
     const vertexShaderSource = this.getVertexShaderSource();
     const fragmentShaderSource = this.getFragmentShaderSource();
 
-    this.glVertexShader = compileVertexShader(gl, vertexShaderSource);
-    this.glFragmentShader = compileFragmentShader(gl, fragmentShaderSource);
+    this.glVertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+    this.glFragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
   }
 
   link(gl) {

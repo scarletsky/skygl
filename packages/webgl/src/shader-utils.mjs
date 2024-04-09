@@ -40,23 +40,11 @@ export function addLineNumbers(src) {
   return lines.join('\n');
 }
 
-export function createShader(gl, vertexShaderSource, fragmentShaderSource, options) {
-
-}
-
-export function compileShader(gl, type, source) {
+export function createShader(gl, type, source) {
   const shader = gl.createShader(type);
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
   return shader;
-}
-
-export function compileVertexShader(gl, source) {
-  return compileShader(gl, gl.VERTEX_SHADER, source);
-}
-
-export function compileFragmentShader(gl, source) {
-  return compileShader(gl, gl.FRAGMENT_SHADER, source);
 }
 
 export function createProgram(gl, glVertexShader, glFragmentShader) {
@@ -100,18 +88,24 @@ export function getProgramAttributes(gl, glProgram) {
   return attributes;
 }
 
+export function isUniformArray(name) {
+  return name.endsWith('[0]');
+}
+
 export function getProgramUniforms(gl, glProgram) {
   const uniforms = {};
   const numUniforms = gl.getProgramParameter(glProgram, gl.ACTIVE_UNIFORMS);
   let name, type, size;
   let info, location, setter;
+  let array;
   for (let i = 0; i < numUniforms; i++) {
     info = gl.getActiveUniform(glProgram, i);
     name = info.name;
     type = info.type;
     size = info.size;
+    array = isUniformArray(name);
     location = gl.getUniformLocation(glProgram, name);
-    setter = getUniformSetter(gl, name, type, location);
+    setter = getUniformSetter(gl, name, type, location, array);
 
     uniforms[name] = {
       type,
@@ -119,14 +113,17 @@ export function getProgramUniforms(gl, glProgram) {
       location,
       value: null,
       setter,
+      array,
     };
   }
 
   return uniforms;
 }
 
-export function getUniformSetter(gl, name, type, location) {
-  const isArray = name.endsWith('[0]');
+export function getUniformSetter(gl, name, type, location, isArray) {
+
+  if (isArray === undefined) isArray = isUniformArray(name);
+
   switch (type) {
     case gl.FLOAT:        return isArray ? setUniformFloatArray(gl, location) : setUniformFloat(gl, location);
     case gl.FLOAT_VEC4:   return isArray ? setUniformFloatVec4Array(gl, location) : setUniformFloatVec4(gl, location);
@@ -147,8 +144,8 @@ export function getUniformSetter(gl, name, type, location) {
 
 // NOTE: uniform setters
 export function setUniformFloat(gl, location) {
-  return function (v0) {
-    gl.uniform1f(location, v0);
+  return function (v) {
+    gl.uniform1f(location, v);
   }
 }
 
@@ -159,8 +156,8 @@ export function setUniformFloatArray(gl, location) {
 }
 
 export function setUniformFloatVec2(gl, location) {
-  return function (v0, v1) {
-    gl.uniform2f(location, v0, v1);
+  return function (v) {
+    gl.uniform2f(location, v[0], v[1]);
   }
 }
 
@@ -171,8 +168,8 @@ export function setUniformFloatVec2Array(gl, location) {
 }
 
 export function setUniformFloatVec3(gl, location) {
-  return function (v0, v1, v2) {
-    gl.uniform3f(location, v0, v1, v2);
+  return function (v) {
+    gl.uniform3f(location, v[0], v[1], v[2]);
   }
 }
 
@@ -183,8 +180,8 @@ export function setUniformFloatVec3Array(gl, location) {
 }
 
 export function setUniformFloatVec4(gl, location) {
-  return function (v0, v1, v2, v3) {
-    gl.uniform4f(location, v0, v1, v2, v3);
+  return function (v) {
+    gl.uniform4f(location, v[0], v[1], v[2], v[3]);
   }
 }
 
@@ -196,8 +193,8 @@ export function setUniformFloatVec4Array(gl, location) {
 
 
 export function setUniformInt(gl, location) {
-  return function (v0) {
-    gl.uniform1i(location, v0);
+  return function (v) {
+    gl.uniform1i(location, v);
   }
 }
 
@@ -208,8 +205,8 @@ export function setUniformIntArray(gl, location) {
 }
 
 export function setUniformIntVec2(gl, location) {
-  return function (v0, v1) {
-    gl.uniform2i(location, v0, v1);
+  return function (v) {
+    gl.uniform2i(location, v[0], v[1]);
   }
 }
 
@@ -220,8 +217,8 @@ export function setUniformIntVec2Array(gl, location) {
 }
 
 export function setUniformIntVec3(gl, location) {
-  return function (v0, v1, v2) {
-    gl.uniform3i(location, v0, v1, v2);
+  return function (v) {
+    gl.uniform3i(location, v[0], v[1], v[2]);
   }
 }
 
@@ -232,8 +229,8 @@ export function setUniformIntVec3Array(gl, location) {
 }
 
 export function setUniformIntVec4(gl, location) {
-  return function (v0, v1, v2, v3) {
-    gl.uniform4i(location, v0, v1, v2, v3);
+  return function (v) {
+    gl.uniform4i(location, v[0], v[1], v[2], v[3]);
   }
 }
 
