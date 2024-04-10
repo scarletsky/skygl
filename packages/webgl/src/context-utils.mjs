@@ -31,8 +31,21 @@ export const glState = {
   unpackFlipY: false,
   unpackPremultiplyAlpha: false,
   unpackColorSpaceConversion: false,
+
+  // NOTE: bindings
+  arrayBuffer: null,
+  elementArrayBuffer: null,
+
   // NOTE: caps
 };
+
+export function isWebGL2(gl) {
+  if (gl.isWebGL2) return true;
+  if (gl.isWebGL2 === undefined) {
+    gl.isWebGL2 = !!gl.texStorage2D;
+  }
+  return gl.isWebGL2;
+}
 
 export function getContext(canvas, tryWebGL2 = true, options = {}) {
   if (!(canvas instanceof HTMLCanvasElement)) {
@@ -54,12 +67,16 @@ export function getContext(canvas, tryWebGL2 = true, options = {}) {
   return gl;
 }
 
-export function isWebGL2(gl) {
-  if (gl.isWebGL2) return true;
-  if (gl.isWebGL2 === undefined) {
-    gl.isWebGL2 = !!gl.texStorage2D;
+export function getClearColor(gl, force = false) {
+  const { clearColor } = glState;
+  if (force) {
+    const v = gl.getParameter(gl.COLOR_CLEAR_VALUE);
+    clearColor[0] = v[0];
+    clearColor[1] = v[1];
+    clearColor[2] = v[2];
+    clearColor[3] = v[3];
   }
-  return gl.isWebGL2;
+  return clearColor;
 }
 
 export function setClearColor(gl, v) {
@@ -81,6 +98,13 @@ export function setClearColor(gl, v) {
   return true;
 }
 
+export function getClearDepth(gl, force = false) {
+  if (force) {
+    glState.clearDepth = gl.getParameter(gl.DEPTH_CLEAR_VALUE);
+  }
+  return glState.clearDepth;
+}
+
 export function setClearDepth(gl, v) {
   if (glState.clearDepth === v) return false;
   gl.clearDepth(v);
@@ -88,11 +112,25 @@ export function setClearDepth(gl, v) {
   return true;
 }
 
+export function getClearStencil(gl, force = false) {
+  if (force) {
+    glState.clearStencil = gl.getParameter(gl.STENCIL_CLEAR_VALUE);
+  }
+  return glState.clearStencil;
+}
+
 export function setClearStencil(gl, v) {
   if (glState.clearStencil === v) return false;
   gl.clearStencil(v);
   glState.clearStencil = v;
   return true;
+}
+
+export function getBlend(gl, force = false) {
+  if (force) {
+    glState.blend = gl.isEnabled(gl.BLEND);
+  }
+  return glState.blend;
 }
 
 export function setBlend(gl, v) {
@@ -106,6 +144,10 @@ export function setBlend(gl, v) {
 
   glState.blend = v;
   return true;
+}
+
+export function getBlendFunc(gl, force = false) {
+
 }
 
 export function setBlendFunc(gl, v) {
@@ -149,6 +191,18 @@ export function setBlendEquationSeparate(gl, v) {
   return true;
 }
 
+export function getBlendColor(gl, force = false) {
+  const { blendColor } = glState;
+  if (force) {
+    const v = gl.getParameter(gl.BLEND_COLOR);
+    blendColor[0] = v[0];
+    blendColor[1] = v[1];
+    blendColor[2] = v[2];
+    blendColor[3] = v[3];
+  }
+  return blendColor;
+}
+
 export function setBlendColor(gl, v) {
   const { blendColor } = glState;
 
@@ -166,6 +220,18 @@ export function setBlendColor(gl, v) {
   blendColor[3] = v[3];
 
   return true;
+}
+
+export function getColorMask(gl, force = false) {
+  const { colorMask } = glState;
+  if (force) {
+    const v = gl.getParameter(gl.COLOR_WRITEMASK);
+    colorMask[0] = v[0];
+    colorMask[1] = v[1];
+    colorMask[2] = v[2];
+    colorMask[3] = v[3];
+  }
+  return colorMask;
 }
 
 export function setColorMask(gl, v) {
@@ -187,6 +253,13 @@ export function setColorMask(gl, v) {
   return true;
 }
 
+export function getFrontFace(gl, force = false) {
+  if (force) {
+    glState.frontFace = gl.getParameter(gl.FRONT_FACE);
+  }
+  return glState.frontFace;
+}
+
 export function setFrontFace(gl, v) {
   if (glState.frontFace === v) return false;
 
@@ -194,6 +267,13 @@ export function setFrontFace(gl, v) {
   glState.frontFace = v;
 
   return true;
+}
+
+export function getFullFace(gl, force = false) {
+  if (force) {
+    glState.cullFace = gl.isEnabled(gl.CULL_FACE);
+  }
+  return glState.cullFace;
 }
 
 export function setCullFace(gl, v) {
@@ -210,6 +290,13 @@ export function setCullFace(gl, v) {
   return true;
 }
 
+export function getCullFaceMode(gl, force = false) {
+  if (force) {
+    glState.cullFaceMode = gl.getParameter(gl.CULL_FACE_MODE);
+  }
+  return glState.cullFaceMode;
+}
+
 export function setCullFaceMode(gl, v) {
   if (glState.cullFaceMode === v) return false;
 
@@ -218,6 +305,13 @@ export function setCullFaceMode(gl, v) {
   glState.cullFaceMode = v;
 
   return true;
+}
+
+export function getDepthTest(gl, force = false) {
+  if (force) {
+    glState.depthTest = gl.isEnabled(gl.DEPTH_TEST);
+  }
+  return glState.depthTest;
 }
 
 export function setDepthTest(gl, v) {
@@ -234,6 +328,13 @@ export function setDepthTest(gl, v) {
   return true;
 }
 
+export function getDepthMask(gl, force = false) {
+  if (force) {
+    glState.depthMask = gl.getParameter(gl.DEPTH_WRITEMASK);
+  }
+  return glState.depthMask;
+}
+
 export function setDepthMask(gl, v) {
   if (glState.depthMask === v) return false;
 
@@ -243,6 +344,13 @@ export function setDepthMask(gl, v) {
   return true;
 }
 
+export function getDepthFunc(gl, force = false) {
+  if (force) {
+    glState.depthFunc = gl.getParameter(gl.DEPTH_FUNC);
+  }
+  return glState.depthFunc;
+}
+
 export function setDepthFunc(gl, v) {
   if (glState.depthFunc === v) return false;
 
@@ -250,6 +358,16 @@ export function setDepthFunc(gl, v) {
   glState.depthFunc = v;
 
   return true;
+}
+
+export function getDepthRange(gl, force = false) {
+  const { depthRange } = glState;
+  if (force) {
+    const v = gl.getParameter(gl.DEPTH_RANGE);
+    depthRange[0] = v[0];
+    depthRange[1] = v[1];
+  }
+  return depthRange;
 }
 
 export function setDepthRange(gl, v) {
@@ -266,6 +384,13 @@ export function setDepthRange(gl, v) {
   return true;
 }
 
+export function getStencilTest(gl, force = false) {
+  if (force) {
+    glState.stencilTest = gl.isEnabled(gl.STENCIL_TEST);
+  }
+  return glState.stencilTest;
+}
+
 export function setStencilTest(gl, v) {
   if (glState.stencilTest === v) return false;
 
@@ -278,6 +403,13 @@ export function setStencilTest(gl, v) {
   glState.stencilTest = v;
 
   return true;
+}
+
+export function getStencilFunc(gl, force = false) {
+  if (force) {
+    glState.stencilFunc = gl.getParameter(gl.STENCIL_FUNC);
+  }
+  return glState.stencilFunc;
 }
 
 export function setStencilFunc(gl, v) {
@@ -333,6 +465,13 @@ export function setStencilOpSeparate(gl, v) {
 
 }
 
+export function getScissorTest(gl, force = false) {
+  if (force) {
+    glState.scissorTest = gl.getParameter(gl.SCISSOR_TEST);
+  }
+  return glState.scissorTest;
+}
+
 export function setScissorTest(gl, v) {
   if (glState.scissorTest === v) return false;
 
@@ -345,6 +484,18 @@ export function setScissorTest(gl, v) {
   glState.scissorTest = v;
 
   return true;
+}
+
+export function getScissor(gl, force = false) {
+  const { scissor } = glState;
+  if (force) {
+    const v = gl.getParameter(gl.SCISSOR_BOX);
+    scissor[0] = v[0];
+    scissor[1] = v[1];
+    scissor[2] = v[2];
+    scissor[3] = v[3];
+  }
+  return scissor;
 }
 
 export function setScissor(gl, v) {
@@ -365,6 +516,18 @@ export function setScissor(gl, v) {
   return true;
 }
 
+export function getViewport(gl, force = false) {
+  const { viewport } = glState;
+  if (force) {
+    const v = gl.getParameter(gl.VIEWPORT);
+    viewport[0] = v[0];
+    viewport[1] = v[1];
+    viewport[2] = v[2];
+    viewport[3] = v[3];
+  }
+  return viewport;
+}
+
 export function setViewport(gl, v) {
    const { viewport } = glState;
 
@@ -383,6 +546,13 @@ export function setViewport(gl, v) {
   return true;
 }
 
+export function getPackAlignment(gl, force = false) {
+  if (force) {
+    glState.packAlignment = gl.getParameter(gl.PACK_ALIGNMENT);
+  }
+  return glState.packAlignment;
+}
+
 export function setPackAlignment(gl, v) {
   if (glState.packAlignment === v) return false;
 
@@ -390,6 +560,13 @@ export function setPackAlignment(gl, v) {
   glState.packAlignment = v;
 
   return true;
+}
+
+export function getUnpackAlignment(gl, force = false) {
+  if (force) {
+    glState.unpackAlignment = gl.getParameter(gl.UNPACK_ALIGNMENT);
+  }
+  return glState.unpackAlignment;
 }
 
 export function setUnpackAlignment(gl, v) {
@@ -401,6 +578,13 @@ export function setUnpackAlignment(gl, v) {
   return true;
 }
 
+export function getUnpackFlipY(gl, force = false) {
+  if (force) {
+    glState.unpackFlipY = gl.getParameter(gl.UNPACK_FLIP_Y_WEBGL);
+  }
+  return glState.unpackFlipY;
+}
+
 export function setUnpackFlipY(gl, v) {
   if (glState.unpackFlipY === v) return false;
 
@@ -410,6 +594,13 @@ export function setUnpackFlipY(gl, v) {
   return true;
 }
 
+export function getUnpackPremultiplyAlpha(gl, force = false) {
+  if (force) {
+    glState.unpackPremultiplyAlpha = gl.getParameter(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL);
+  }
+  return glState.unpackPremultiplyAlpha;
+}
+
 export function setUnpackPremultiplyAlpha(gl, v) {
   if (glState.unpackPremultiplyAlpha === v) return false;
 
@@ -417,6 +608,13 @@ export function setUnpackPremultiplyAlpha(gl, v) {
   glState.unpackPremultiplyAlpha = v;
 
   return true;
+}
+
+export function getUnpackColorSpaceConversion(gl, force = false) {
+  if (force) {
+    glState.unpackColorSpaceConversion = gl.getParameter(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL);
+  }
+  return glState.unpackColorSpaceConversion;
 }
 
 export function setUnpackColorSpaceConversion(gl, v) {
