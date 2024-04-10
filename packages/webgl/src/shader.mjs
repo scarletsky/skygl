@@ -2,10 +2,10 @@ import { shaderChunks } from './shader-chunks.mjs';
 import {
   parseGLSL,
   addLineNumbers,
-  createShader,
-  createProgram,
-  getProgramAttributes,
-  getProgramUniforms,
+  createGLShader,
+  createGLProgram,
+  getGLProgramAttributes,
+  getGLProgramUniforms,
 } from './shader-utils.mjs';
 
 export class Shader {
@@ -36,14 +36,14 @@ export class Shader {
     const vertexShaderSource = this.getVertexShaderSource();
     const fragmentShaderSource = this.getFragmentShaderSource();
 
-    this.glVertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-    this.glFragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+    this.glVertexShader = createGLShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+    this.glFragmentShader = createGLShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
   }
 
   link(gl) {
     if (this.glProgram) return this;
 
-    this.glProgram = createProgram(gl, this.glVertexShader, this.glFragmentShader);
+    this.glProgram = createGLProgram(gl, this.glVertexShader, this.glFragmentShader);
 
     return this;
   }
@@ -68,8 +68,8 @@ export class Shader {
       return false;
     }
 
-    this.attributes = getProgramAttributes(gl, glProgram);
-    this.uniforms = getProgramUniforms(gl, glProgram);
+    this.attributes = getGLProgramAttributes(gl, glProgram);
+    this.uniforms = getGLProgramUniforms(gl, glProgram);
 
     this.ready = true;
 

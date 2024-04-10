@@ -40,14 +40,14 @@ export function addLineNumbers(src) {
   return lines.join('\n');
 }
 
-export function createShader(gl, type, source) {
+export function createGLShader(gl, type, source) {
   const shader = gl.createShader(type);
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
   return shader;
 }
 
-export function createProgram(gl, glVertexShader, glFragmentShader) {
+export function createGLProgram(gl, glVertexShader, glFragmentShader) {
   const program = gl.createProgram();
   gl.attachShader(program, glVertexShader);
   gl.attachShader(program, glFragmentShader);
@@ -55,15 +55,15 @@ export function createProgram(gl, glVertexShader, glFragmentShader) {
   return program;
 }
 
-export function getProgramLinkStatus(gl, glProgram) {
+export function getGLProgramLinkStatus(gl, glProgram) {
   return gl.getProgramParameter(glProgram, gl.LINK_STATUS);
 }
 
-export function getProgramLinkStatusKHR(gl, glProgram) {
+export function getGLProgramLinkStatusKHR(gl, glProgram) {
 
 }
 
-export function getProgramAttributes(gl, glProgram) {
+export function getGLProgramAttributes(gl, glProgram) {
   const attributes = [];
   const numAttributes = gl.getProgramParameter(glProgram, gl.ACTIVE_ATTRIBUTES);
 
@@ -88,11 +88,7 @@ export function getProgramAttributes(gl, glProgram) {
   return attributes;
 }
 
-export function isUniformArray(name) {
-  return name.endsWith('[0]');
-}
-
-export function getProgramUniforms(gl, glProgram) {
+export function getGLProgramUniforms(gl, glProgram) {
   const uniforms = {};
   const numUniforms = gl.getProgramParameter(glProgram, gl.ACTIVE_UNIFORMS);
   let name, type, size;
@@ -118,6 +114,10 @@ export function getProgramUniforms(gl, glProgram) {
   }
 
   return uniforms;
+}
+
+export function isUniformArray(name) {
+  return name.endsWith('[0]');
 }
 
 export function getUniformSetter(gl, name, type, location, isArray) {
