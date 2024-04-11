@@ -3,7 +3,7 @@ import { shaderChunks } from './shader-chunks.mjs';
 const includePattern = /#include <(.+)>/g;
 
 export function parseLine(code = '', chunks = shaderChunks, includedSet = new Set()) {
-  return code.replace(includePattern, function (match, chunkName) {
+  return code.replace(includePattern, function (_match, chunkName) {
     // NOTE: replace the duplicated `#include`
     if (includedSet.has(chunkName)) return '';
 
@@ -26,7 +26,6 @@ export function parseGLSL(code = '', chunks = shaderChunks, includedSet = new Se
   return parsedLines.join('\n');
 }
 
-
 export function addLineNumbers(src) {
   if (!src) return '';
 
@@ -47,6 +46,10 @@ export function createGLShader(gl, type, source) {
   return shader;
 }
 
+export function getGLShaderCompileStatus(gl, glShader) {
+  return gl.getShaderParameter(glShader, gl.COMPILE_STATUS);
+}
+
 export function createGLProgram(gl, glVertexShader, glFragmentShader) {
   const program = gl.createProgram();
   gl.attachShader(program, glVertexShader);
@@ -60,7 +63,19 @@ export function getGLProgramLinkStatus(gl, glProgram) {
 }
 
 export function getGLProgramLinkStatusKHR(gl, glProgram) {
+  const { COMPLETION_STATUS_KHR } = gl.extParallelShaderCompile;
+  return new Promise(resolve => {
+    function checkAsync() {
+      const complete = gl.getProgramParameter(glProgram, COMPLETION_STATUS_KHR);
 
+      if (!complete) {
+        requestAnimationFrame(checkAsync);
+      } else {
+        resolve(getGLProgramLinkStatus(gl, glProgram));
+      }
+    }
+    checkAsync();
+  });
 }
 
 export function getGLProgramAttributes(gl, glProgram) {
@@ -121,7 +136,6 @@ export function isUniformArray(name) {
 }
 
 export function getUniformSetter(gl, name, type, location, isArray) {
-
   if (isArray === undefined) isArray = isUniformArray(name);
 
   switch (type) {
@@ -141,117 +155,206 @@ export function getUniformSetter(gl, name, type, location, isArray) {
   }
 }
 
+// NOTE: attribute setters
+export function setAttributeFloat(gl, location) {
+  return function (v0) {
+    gl.vertexAttrib1f(location, v0);
+  }
+}
+
+export function setAttributeFloat2(gl, location) {
+  return function (v0, v1) {
+    gl.vertexAttrib2f(location, v0, v1);
+  }
+}
+
+export function setAttributeFloat3(gl, location) {
+  return function (v0, v1, v2) {
+    gl.vertexAttrib3f(location, v0, v1, v2);
+  }
+}
+
+export function setAttributeFloat4(gl, location) {
+  return function (v0, v1, v2, v3) {
+    gl.vertexAttrib4f(location, v0, v1, v2, v3);
+  }
+}
+
+export function setAttributePointer(gl, location) {
+  return function (p) {
+    gl.vertexAttribPointer(location, p.size, p.type, p.normalized, p.stride, p.offset);
+  }
+}
+
 
 // NOTE: uniform setters
+
+// NOTE:
+//   glsl: uniform float x;
+//   js:   x = 1.0;
 export function setUniformFloat(gl, location) {
   return function (v) {
     gl.uniform1f(location, v);
   }
 }
 
+// NOTE:
+//   glsl: uniform float x[2];
+//   js:   x = [1.0, 2.0];
 export function setUniformFloatArray(gl, location) {
   return function (v) {
     gl.uniform1fv(location, v);
   }
 }
 
+// NOTE:
+//   glsl: uniform vec2 x;
+//   js:   x = [1.0, 2.0];
 export function setUniformFloatVec2(gl, location) {
   return function (v) {
     gl.uniform2f(location, v[0], v[1]);
   }
 }
 
+// NOTE:
+//   glsl: uniform vec2 x[2];
+//   js:   x = [ [1.0, 2.0], [3.0, 4.0] ];
 export function setUniformFloatVec2Array(gl, location) {
   return function (v) {
     gl.uniform2fv(location, v);
   }
 }
 
+// NOTE:
+//   glsl: uniform vec3 x;
+//   js:   x = [1.0, 2.0, 3.0];
 export function setUniformFloatVec3(gl, location) {
   return function (v) {
     gl.uniform3f(location, v[0], v[1], v[2]);
   }
 }
 
+// NOTE:
+//   glsl: uniform vec3 x[2]
+//   js:   x = [ [1.0, 2.0, 3.0], [4.0, 5.0, 6.0] ]
 export function setUniformFloatVec3Array(gl, location) {
   return function (v) {
     gl.uniform3fv(location, v);
   }
 }
 
+// NOTE:
+//   glsl: uniform vec4 x
+//   js:   x = [1.0, 2.0, 3.0, 4.0]
 export function setUniformFloatVec4(gl, location) {
   return function (v) {
     gl.uniform4f(location, v[0], v[1], v[2], v[3]);
   }
 }
 
+// NOTE:
+//   glsl: uniform vec4 x[2];
+//   js:   x = [ [1.0, 2.0, 3.0, 4.0], [5.0, 6.0, 7.0, 8.0] ];
 export function setUniformFloatVec4Array(gl, location) {
   return function (v) {
     gl.uniform4fv(location, v);
   }
 }
 
-
+// NOTE:
+//   glsl: uniform int x;
+//   js:   x = 1;
 export function setUniformInt(gl, location) {
   return function (v) {
     gl.uniform1i(location, v);
   }
 }
 
+// NOTE:
+//   glsl: uniform int x[2];
+//   js:   x = [1, 2];
 export function setUniformIntArray(gl, location) {
   return function (v) {
     gl.uniform1iv(location, v);
   }
 }
 
+// NOTE:
+//   glsl: uniform ivec2 x;
+//   js:   x = [1, 2];
 export function setUniformIntVec2(gl, location) {
   return function (v) {
     gl.uniform2i(location, v[0], v[1]);
   }
 }
 
+// NOTE:
+//   glsl: uniform ivec2 x[2];
+//   js:   x = [ [1, 2], [3, 4] ];
 export function setUniformIntVec2Array(gl, location) {
   return function (v) {
     gl.uniform2iv(location, v);
   }
 }
 
+// NOTE:
+//   glsl: uniform ivec3 x;
+//   js:   x = [1, 2, 3];
 export function setUniformIntVec3(gl, location) {
   return function (v) {
     gl.uniform3i(location, v[0], v[1], v[2]);
   }
 }
 
+// NOTE:
+//   glsl: uniform ivec3 x[2];
+//   js:   x = [ [1, 2, 3], [4, 5, 6] ];
 export function setUniformIntVec3Array(gl, location) {
   return function (v) {
     gl.uniform3iv(location, v);
   }
 }
 
+// NOTE:
+//   glsl: uniform ivec4 x;
+//   js:   x = [1, 2, 3, 4];
 export function setUniformIntVec4(gl, location) {
   return function (v) {
     gl.uniform4i(location, v[0], v[1], v[2], v[3]);
   }
 }
 
+// NOTE:
+//   glsl: uniform ivec4 x[2];
+//   js:   x = [ [1, 2, 3, 4], [5, 6, 7, 8] ];
 export function setUniformIntVec4Array(gl, location) {
   return function (v) {
     gl.uniform4iv(location, v);
   }
 }
 
+// NOTE:
+//   glsl: uniform mat2 x;
+//   js:   x = [1, 2, 3, 4];
 export function setUniformMat2(gl, location) {
   return function (v) {
     gl.uniformMatrix2fv(location, false, v);
   }
 }
 
+
+// NOTE:
+//   glsl: uniform mat3 x;
+//   js:   x = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 export function setUniformMat3(gl, location) {
   return function (v) {
     gl.uniformMatrix3fv(location, false, v);
   }
 }
 
+// NOTE:
+//   glsl: uniform mat4 x;
+//   js:   x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 export function setUniformMat4(gl, location) {
   return function (v) {
     gl.uniformMatrix4fv(location, false, v);
