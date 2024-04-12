@@ -6,6 +6,7 @@ import {
   createGLProgram,
   getGLProgramAttributes,
   getGLProgramUniforms,
+  getGLShaderCompileStatus,
   getGLProgramLinkStatus,
   getGLProgramLinkStatusKHR,
 } from './program-utils.mjs';
@@ -22,70 +23,31 @@ export class Program {
     this.extensions = options.extensions || {};
     this.attributes = [];
     this.uniforms = {};
-    this.ready = false;
-    this.linked = false;
+    this.ok = false;
+    this.linkStatus = 0;
     this.glVertexShader = null;
     this.glFragmentShader = null;
     this.glProgram = null;
   }
 
   getVertexShaderSource() {
-    return parseGLSL(this.vertexShader, shaderChunks);
+    return getProgramVertexShaderSource(null, this, shaderChunks);
   }
 
   getFragmentShaderSource() {
-    return parseGLSL(this.fragmentShader, shaderChunks);
+    return getProgramFragmentShaderSource(null, this, shaderChunks);
   }
 
   compile(gl = this.gl) {
-    const vertexShaderSource = this.getVertexShaderSource();
-    const fragmentShaderSource = this.getFragmentShaderSource();
-
-    this.glVertexShader = createGLShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-    this.glFragmentShader = createGLShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+    return compileProgram(gl, this);
   }
 
   link(gl = this.gl) {
-    if (this.glProgram) return this;
-
-    this.glProgram = createGLProgram(gl, this.glVertexShader, this.glFragmentShader);
-
-    return this;
+    return linkProgram(gl, this);
   }
 
   async waitUntilLinked(gl = this.gl) {
-    if (this.linked) return true;
-
-    let linked = false;
-
-    const { glVertexShader, glFragmentShader, glProgram } = this;
-
-    if (!gl.getShaderParameter(glVertexShader, gl.COMPILE_STATUS)) {
-      console.error("Failed to compile vertex shader:\n\n" + addLineNumbers(this.getVertexShaderSource()) + "\n\n" + gl.getShaderInfoLog(glVertexShader));
-      return false;
-    }
-
-    if (!gl.getShaderParameter(glFragmentShader, gl.COMPILE_STATUS)) {
-      console.error("Failed to compile fragment shader:\n\n" + addLineNumbers(this.getFragmentShaderSource()) + "\n\n" + gl.getShaderInfoLog(glFragmentShader));
-      return false;
-    }
-
-    if (getExtParallelShaderCompile(gl)) {
-      linked = await getGLProgramLinkStatusKHR(gl, glProgram);
-    } else {
-      linked = getGLProgramLinkStatus(gl, glProgram);
-    }
-
-    if (!linked) {
-      console.error("Failed to link shader program. Error: " + gl.getProgramInfoLog(glProgram));
-    } else {
-      this.attributes = getGLProgramAttributes(gl, glProgram);
-      this.uniforms = getGLProgramUniforms(gl, glProgram);
-    }
-
-    this.linked = linked;
-
-    return linked;
+    return waitUntilProgramLinked(gl, this);
   }
 }
 
@@ -95,16 +57,38 @@ export function createProgram(gl, vertexShader, fragmentShader, options = {}) {
   return new Program({ gl, vertexShader, fragmentShader, ...options });
 }
 
+export function getProgramVertexShaderSource(_gl, program, shaderChunks) {
+  return parseGLSL(program.vertexShader, shaderChunks);
+}
+
+export function getProgramFragmentShaderSource(_gl, program, shaderChunks) {
+  return parseGLSL(program.fragmentShader, shaderChunks);
+}
+
 export function compileProgram(gl, program) {
-  return program.compile(gl);
+  if (program.ok) return program;
+  if (program.glVertexShader && program.glFragmentShader) return program;
+
+  const vertexShaderSource = getProgramVertexShaderSource(gl, program, shaderChunks);
+  const fragmentShaderSource = getProgramFragmentShaderSource(gl, program, shaderChunks);
+
+  program.glVertexShader = createGLShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+  program.glFragmentShader = createGLShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+
+  return program;
 }
 
 export function compilePrograms(gl, programs = []) {
-  return programs.map(program => program.compile(gl));
+  return programs.map(program => compileProgram(gl, program));
 }
 
 export function linkProgram(gl, program) {
-  return program.link(gl);
+  if (program.ok) return program;
+  if (program.glProgram) return program;
+
+  program.glProgram = createGLProgram(gl, program.glVertexShader, program.glFragmentShader);
+
+  return program;
 }
 
 export function linkPrograms(gl, programs = []) {
@@ -117,11 +101,43 @@ export function compileAndLinkProgram(gl, program) {
   return program;
 }
 
-// NOTE: alias
-// export const Shader = Program;
-// export const createShader = createProgram;
-// export const compileShader = compileProgram;
-// export const compileShaders = compilePrograms;
-// export const linkShader = linkProgram;
-// export const linkShaders = linkPrograms;
-// export const compileAndLinkShader = compileAndLinkProgram;
+export async function waitUntilProgramLinked(gl, program) {
+  if (program.ok) return program;
+
+  compileAndLinkProgram(gl, program);
+
+  let linked = false;
+  const { glVertexShader, glFragmentShader, glProgram } = program;
+
+  if (!getGLShaderCompileStatus(gl, glVertexShader)) {
+    console.error("Failed to compile vertex shader:\n\n");
+    console.error(addLineNumbers(program.getVertexShaderSource()) + "\n\n");
+    console.error(gl.getShaderInfoLog(glVertexShader));
+    return false;
+  }
+
+  if (!getGLShaderCompileStatus(gl, glFragmentShader)) {
+    console.error("Failed to compile fragment shader:\n\n");
+    console.error(addLineNumbers(program.getFragmentShaderSource()) + "\n\n");
+    console.error(gl.getShaderInfoLog(glFragmentShader));
+    return false;
+  }
+
+  if (getExtParallelShaderCompile(gl)) {
+    linked = await getGLProgramLinkStatusKHR(gl, glProgram);
+  } else {
+    linked = getGLProgramLinkStatus(gl, glProgram);
+  }
+
+  if (!linked) {
+    console.error("Failed to link shader program. Error: ");
+    console.error(gl.getProgramInfoLog(glProgram));
+  } else {
+    program.attributes = getGLProgramAttributes(gl, glProgram);
+    program.uniforms = getGLProgramUniforms(gl, glProgram);
+  }
+
+  program.ok = linked;
+
+  return program;
+}

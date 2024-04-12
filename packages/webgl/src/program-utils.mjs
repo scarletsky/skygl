@@ -63,10 +63,15 @@ export function getGLProgramLinkStatus(gl, glProgram) {
 }
 
 export function getGLProgramLinkStatusKHR(gl, glProgram) {
+  let complete;
   const { COMPLETION_STATUS_KHR } = gl.extParallelShaderCompile;
+
+  complete = gl.getProgramParameter(glProgram, COMPLETION_STATUS_KHR);
+  if (complete) return Promise.resolve(complete);
+
   return new Promise(resolve => {
     function checkAsync() {
-      const complete = gl.getProgramParameter(glProgram, COMPLETION_STATUS_KHR);
+      complete = gl.getProgramParameter(glProgram, COMPLETION_STATUS_KHR);
 
       if (!complete) {
         requestAnimationFrame(checkAsync);
@@ -90,6 +95,7 @@ export function getGLProgramAttributes(gl, glProgram) {
     type = info.type;
     size = info.size;
     location = gl.getAttribLocation(glProgram, name);
+    setter = setAttributePointer(gl, location);
 
     attributes.push({
       name,
@@ -129,6 +135,23 @@ export function getGLProgramUniforms(gl, glProgram) {
   }
 
   return uniforms;
+}
+
+export function setGLProgramAttribute(gl, attribute) {
+
+}
+
+export function setGLProgramUniform(gl, uniform) {
+  uniform.setter(uniform.value);
+}
+
+export function getAttributeSetter(gl, type, location) {
+  switch (type) {
+    case gl.FLOAT: return setAttributeFloat(gl, location);
+    case gl.FLOAT_VEC4: return setAttributeFloat4(gl, location);
+    case gl.FLOAT_VEC3: return setAttributeFloat3(gl, location);
+    case gl.FLOAT_VEC2: return setAttributeFloat2(gl, location);
+  }
 }
 
 export function isUniformArray(name) {
