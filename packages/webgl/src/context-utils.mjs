@@ -1,3 +1,11 @@
+import {
+  ARRAY_BUFFER,
+  ELEMENT_ARRAY_BUFFER,
+  TEXTURE_2D,
+  TEXTURE_2D_ARRAY,
+  TEXTURE_3D,
+  TEXTURE_CUBE_MAP
+} from './constants.mjs';
 import { getExtensions } from './extension-utils.mjs';
 
 export const glState = {
@@ -19,8 +27,13 @@ export const glState = {
   depthFunc: 0,
   depthRange: [0, 1],
   stencilTest: false,
-  stencilFunc: [false, false, false],
+  stencilFunc: 0,
+  stencilRef: 0,
   stencilMask: 0xFF,
+  stencilBackFunc: 0,
+  stencilBackRef: 0,
+  stencilBackMask: 0xFF,
+  stencilBits: 0,
   stencilOp: [0, 0, 0],
   scissorTest: false,
   scissor: [0, 0, 300, 150],
@@ -32,11 +45,16 @@ export const glState = {
   unpackPremultiplyAlpha: false,
   unpackColorSpaceConversion: false,
 
-  // NOTE: bindings
-  arrayBuffer: null,
-  elementArrayBuffer: null,
-
   // NOTE: caps
+
+  // NOTE: bindings
+  program: null,
+  [ARRAY_BUFFER]: null,
+  [ELEMENT_ARRAY_BUFFER]: null,
+  [TEXTURE_2D]: null,
+  [TEXTURE_CUBE_MAP]: null,
+  [TEXTURE_3D]: null,
+  [TEXTURE_2D_ARRAY]: null,
 };
 
 export function isWebGL2(gl) {
@@ -622,6 +640,25 @@ export function setUnpackColorSpaceConversion(gl, v) {
 
   gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, v);
   glState.unpackColorSpaceConversion = v;
+
+  return true;
+}
+
+export function bindProgram(gl, program) {
+  if (glState.program === program) return false;
+
+  gl.useProgram(program.glProgram);
+  glState.program = program;
+
+  return true;
+}
+
+export function bindBuffer(gl, buffer) {
+  const target = buffer.target;
+  if (glState[target] === buffer) return false;
+
+  gl.bindBuffer(target, buffer.glBuffer);
+  glState[target] = buffer;
 
   return true;
 }
