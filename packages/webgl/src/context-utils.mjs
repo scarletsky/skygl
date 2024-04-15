@@ -57,14 +57,6 @@ export const glState = {
   [TEXTURE_2D_ARRAY]: null,
 };
 
-export function isWebGL2(gl) {
-  if (gl.isWebGL2) return true;
-  if (gl.isWebGL2 === undefined) {
-    gl.isWebGL2 = !!gl.texStorage2D;
-  }
-  return gl.isWebGL2;
-}
-
 export function getContext(canvas, tryWebGL2 = true, options = {}) {
   if (!(canvas instanceof HTMLCanvasElement)) {
     throw new Error('Invalid HTMLCanvasElement.');

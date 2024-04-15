@@ -1,4 +1,4 @@
-import { isWebGL2 } from './context-utils.mjs';
+import { isWebGL2 } from './utils.mjs';
 
 export function getExtensions(gl) {
   getExtDepthTexture(gl);
