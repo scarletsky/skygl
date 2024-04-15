@@ -10,6 +10,7 @@ import {
   getGLProgramLinkStatus,
   getGLProgramLinkStatusKHR,
 } from './program-utils.mjs';
+import { bindBuffer } from './context-utils.mjs';
 import { getExtParallelShaderCompile } from './extension-utils.mjs';
 
 export class Program {
@@ -48,6 +49,14 @@ export class Program {
 
   async waitUntilLinked(gl = this.gl) {
     return waitUntilProgramLinked(gl, this);
+  }
+
+  setUniform(name, value) {
+    return setProgramUniform(this.gl, this, name, value);
+  }
+
+  setUniforms(data = {}) {
+    return setProgramUniforms(_gl, this, data);
   }
 }
 
@@ -140,4 +149,50 @@ export async function waitUntilProgramLinked(gl, program) {
   program.ok = linked;
 
   return program;
+}
+
+export function setProgramUniform(_gl, program, name, nextValue) {
+  const uniform = program.uniforms[name];
+
+  if (!uniform) return false;
+  if (uniform.value === nextValue) return false;
+
+  uniform.nextValue = nextValue;
+
+  return true;
+}
+
+export function setProgramUniforms(_gl, program, data = {}) {
+  for (let name in data) {
+    const nextValue = data[name];
+    setProgramUniform(_gl, program, name, nextValue);
+  }
+  return true;
+}
+
+export function bindProgramAttributes(_gl, program, attributes) {
+  for (let attrib of program.attributes) {
+    const attrData = attributes[attrib.name];
+
+    bindBuffer(attrData);
+    gl.enableVertexAttribArray(attrib.location);
+    attrib.setter(attrData);
+  }
+
+  return true;
+}
+
+export function bindProgramUniforms(_gl, program) {
+  const { uniforms } = program;
+
+  for (let name in uniforms) {
+    const uniform = uniforms[name];
+
+    if (uniform.nextValue !== uniform.value) {
+      uniform.nextValue = uniform.value;
+      uniform.setter(uniform.nextValue);
+    }
+  }
+
+  return true;
 }

@@ -129,6 +129,7 @@ export function getGLProgramUniforms(gl, glProgram) {
       size,
       location,
       value: null,
+      nextValue: null,
       setter,
       array,
     };
