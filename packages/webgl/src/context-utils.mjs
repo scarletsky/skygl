@@ -38,7 +38,11 @@ export const glState = {
   scissorTest: false,
   scissor: [0, 0, 300, 150],
   viewport: [0, 0, 300, 150],
+  polygonOffsetFill: false,
+  polygonOffsetFactor: 0,
+  polygonOffsetUnits: 0,
 
+  // NOTE: pixelstorei
   packAlignment: 4,
   unpackAlignment: 4,
   unpackFlipY: false,
@@ -553,6 +557,72 @@ export function setViewport(gl, v) {
   viewport[2] = v[2];
   viewport[3] = v[3];
 
+  return true;
+}
+
+export function getPolygonOffsetFill(gl, force = false) {
+  if (force) {
+    glState.polygonOffsetFill = gl.getParameter(gl.POLYGON_OFFSET_FILL);
+  }
+  return glState.polygonOffsetFill;
+}
+
+export function setPolygonOffsetFill(gl, v) {
+  if (glState.polygonOffsetFill === v) return false;
+
+  if (v) {
+    gl.enable(gl.POLYGON_OFFSET_FILL);
+  } else {
+    gl.disable(gl.POLYGON_OFFSET_FILL);
+  }
+  glState.polygonOffsetFill = v;
+  return true;
+}
+
+export function getPolyfillOffsetFactor(gl, force = false) {
+  if (force) {
+    glState.polygonOffsetFactor = gl.getParameter(gl.POLYGON_OFFSET_FACTOR);
+  }
+  return glState.polygonOffsetFactor;
+}
+
+export function setPolyfillOffsetFactor(gl, v) {
+  if (glState.polygonOffsetFactor === v) return false;
+
+  gl.polygonOffset(v, glState.polygonOffsetUnits);
+  glState.polygonOffsetFactor = v;
+  return true;
+}
+
+export function getPolyfillOffsetUnits(gl, force = false) {
+  if (force) {
+    glState.polygonOffsetUnits = gl.getParameter(gl.POLYGON_OFFSET_UNITS);
+  }
+  return glState.polygonOffsetUnits;
+}
+
+export function setPolyfillOffsetUnits(gl, v) {
+  if (glState.polygonOffsetUnits === v) return false;
+
+  gl.polygonOffset(glState.polygonOffsetFactor, v);
+  glState.polygonOffsetUnits = v;
+  return true;
+}
+
+export function getPolygonOffset(gl, force = false) {
+  return [
+    getPolyfillOffsetFactor(gl, force),
+    getPolyfillOffsetUnits(gl, force),
+  ];
+}
+
+export function setPolyfillOffset(gl, v) {
+  if (glState.polygonOffsetFactor === v[0] &&
+      glState.polygonOffsetUnits === v[1]) return false;
+
+  gl.polygonOffset(v[0], v[1]);
+  glState.polygonOffsetFactor = v[0];
+  glState.polygonOffsetUnits = v[1];
   return true;
 }
 
