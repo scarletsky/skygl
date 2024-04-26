@@ -40,6 +40,9 @@ export const UNSIGNED_INT_SAMPLER_3D       = 0x8DD3;
 export const UNSIGNED_INT_SAMPLER_CUBE     = 0x8DD4;
 export const UNSIGNED_INT_SAMPLER_2D_ARRAY = 0x8DD7;
 
+// NOTE: primitives
+export const TRIANGLES                      = 0x0004;
+
 // NOTE: buffers
 export const ARRAY_BUFFER                   = 0x8892;
 export const ELEMENT_ARRAY_BUFFER           = 0x8893;

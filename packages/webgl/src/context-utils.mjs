@@ -1,11 +1,3 @@
-import {
-  ARRAY_BUFFER,
-  ELEMENT_ARRAY_BUFFER,
-  TEXTURE_2D,
-  TEXTURE_2D_ARRAY,
-  TEXTURE_3D,
-  TEXTURE_CUBE_MAP
-} from './constants.mjs';
 import { getExtensions } from './extension-utils.mjs';
 import { glState } from './state.mjs';
 
