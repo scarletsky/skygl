@@ -138,11 +138,11 @@ export function getGLProgramUniforms(gl, glProgram) {
   return uniforms;
 }
 
-export function setGLProgramAttribute(gl, attribute) {
+export function setGLProgramAttribute(_gl, attribute) {
 
 }
 
-export function setGLProgramUniform(gl, uniform) {
+export function setGLProgramUniform(_gl, uniform) {
   uniform.setter(uniform.value);
 }
 
