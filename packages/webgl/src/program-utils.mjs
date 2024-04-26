@@ -83,7 +83,7 @@ export function getGLProgramLinkStatusKHR(gl, glProgram) {
   });
 }
 
-export function getGLProgramAttributes(gl, glProgram) {
+export function getGLProgramVertexAttribs(gl, glProgram) {
   const attributes = [];
   const numAttributes = gl.getProgramParameter(glProgram, gl.ACTIVE_ATTRIBUTES);
 
@@ -138,7 +138,7 @@ export function getGLProgramUniforms(gl, glProgram) {
   return uniforms;
 }
 
-export function setGLProgramAttribute(_gl, attribute) {
+export function setGLProgramVertexAttrib(_gl, attribute) {
 
 }
 
@@ -146,7 +146,7 @@ export function setGLProgramUniform(_gl, uniform) {
   uniform.setter(uniform.value);
 }
 
-export function getAttributeSetter(gl, type, location) {
+export function getVertexAttribSetter(gl, type, location) {
   switch (type) {
     case gl.FLOAT: return setAttributeFloat(gl, location);
     case gl.FLOAT_VEC4: return setAttributeFloat4(gl, location);

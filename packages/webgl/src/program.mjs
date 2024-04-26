@@ -4,7 +4,7 @@ import {
   addLineNumbers,
   createGLShader,
   createGLProgram,
-  getGLProgramAttributes,
+  getGLProgramVertexAttribs,
   getGLProgramUniforms,
   getGLShaderCompileStatus,
   getGLProgramLinkStatus,
@@ -64,6 +64,25 @@ Program.prototype.isProgram = true;
 
 export function createProgram(gl, vertexShader, fragmentShader, options = {}) {
   return new Program({ gl, vertexShader, fragmentShader, ...options });
+}
+
+export function deleteProgram(gl, program) {
+  if (!program.glProgram) return false;
+
+  if (program.glVertexShader) {
+    gl.detachShader(program.glProgram, program.glVertexShader);
+    program.glVertexShader = null;
+  }
+
+  if (program.glFragmentShader) {
+    gl.detachShader(program.glProgram, program.glFragmentShader);
+    program.glFragmentShader = null;
+  }
+
+  gl.deleteProgram(program.glProgram);
+  program.glProgram = null;
+
+  return true;
 }
 
 export function getProgramVertexShaderSource(_gl, program, shaderChunks) {
@@ -142,7 +161,7 @@ export async function waitUntilProgramLinked(gl, program) {
     console.error("Failed to link shader program. Error: ");
     console.error(gl.getProgramInfoLog(glProgram));
   } else {
-    program.attributes = getGLProgramAttributes(gl, glProgram);
+    program.attributes = getGLProgramVertexAttribs(gl, glProgram);
     program.uniforms = getGLProgramUniforms(gl, glProgram);
   }
 
@@ -170,13 +189,13 @@ export function setProgramUniforms(_gl, program, data = {}) {
   return true;
 }
 
-export function bindProgramAttributes(_gl, program, attributes) {
+export function bindProgramVertexAttribs(gl, program, vertexAttribs) {
   for (let attrib of program.attributes) {
-    const attrData = attributes[attrib.name];
+    const buffer = vertexAttribs[attrib.name];
 
-    bindBuffer(attrData);
+    bindBuffer(gl, buffer);
     gl.enableVertexAttribArray(attrib.location);
-    attrib.setter(attrData);
+    attrib.setter(buffer);
   }
 
   return true;
