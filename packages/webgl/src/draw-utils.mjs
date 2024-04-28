@@ -1,7 +1,8 @@
 import { createBuffer } from './buffer.mjs';
-import { ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, TRIANGLES } from './constants.mjs';
+import { ELEMENT_ARRAY_BUFFER, TRIANGLES } from './constants.mjs';
 import { bindProgram, bindBuffer } from './context-utils.mjs';
 import { bindProgramVertexAttribs, bindProgramUniforms } from './program.mjs';
+import { createVertexAttrib } from './vertex-attrib-utils.mjs';
 
 export function createDrawObject(gl, attributes = {}, indices = null, options = {}) {
   let newIndices = null;
@@ -9,8 +10,8 @@ export function createDrawObject(gl, attributes = {}, indices = null, options = 
 
   for (let attr in attributes) {
     const data = attributes[attr];
-    const buffer = createBuffer(gl, ARRAY_BUFFER, data);
-    newAttributes[attr] = buffer;
+    const attrib = createVertexAttrib(gl, data);
+    newAttributes[attrib.name] = attrib;
   }
 
   if (indices) {
@@ -36,10 +37,9 @@ export function draw(gl, program, object) {
     // NOTE: for `gl.drawArrays`,
     first, count,
     // NOTE: for `gl.drawElements`,
-    type, offset,
+    type, offset, indices,
     vertexAttribs,
     vertexArray,
-    indices,
   } = object;
 
   bindProgram(gl, program);

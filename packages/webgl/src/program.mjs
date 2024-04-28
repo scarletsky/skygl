@@ -190,12 +190,12 @@ export function setProgramUniforms(_gl, program, data = {}) {
 }
 
 export function bindProgramVertexAttribs(gl, program, vertexAttribs) {
-  for (let attrib of program.attributes) {
-    const buffer = vertexAttribs[attrib.name];
+  for (let programAttrib of program.attributes) {
+    const vertexAttrib = vertexAttribs[programAttrib.name];
 
-    bindBuffer(gl, buffer);
-    gl.enableVertexAttribArray(attrib.location);
-    attrib.setter(buffer);
+    bindBuffer(gl, vertexAttrib.buffer);
+    gl.enableVertexAttribArray(programAttrib.location);
+    programAttrib.setter(vertexAttrib);
   }
 
   return true;
@@ -207,9 +207,9 @@ export function bindProgramUniforms(_gl, program) {
   for (let name in uniforms) {
     const uniform = uniforms[name];
 
-    if (uniform.nextValue !== uniform.value) {
-      uniform.nextValue = uniform.value;
-      uniform.setter(uniform.nextValue);
+    if (uniform.value !== uniform.nextValue) {
+      uniform.value = uniform.nextValue;
+      uniform.setter(uniform.value);
     }
   }
 

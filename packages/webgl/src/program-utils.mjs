@@ -206,7 +206,7 @@ export function setAttributeFloat4(gl, location) {
 
 export function setAttributePointer(gl, location) {
   return function (p) {
-    gl.vertexAttribPointer(location, p.size, p.type, p.normalized, p.stride, p.offset);
+    gl.vertexAttribPointer(location, p.numComponents || p.size, p.type, p.normalized, p.stride, p.offset);
   }
 }
 
