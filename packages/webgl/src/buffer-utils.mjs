@@ -15,3 +15,8 @@ export function setGLBufferSubData(gl, glBuffer, target, offset, data, shouldBin
   gl.bufferSubData(target, offset, data)
   return glBuffer;
 }
+
+export function getGLBufferParameter(gl, glBuffer, target, pname, shouldBindBuffer = true) {
+  if (shouldBindBuffer) gl.bindBuffer(target, glBuffer);
+  return gl.getBufferParameter(target, pname);
+}

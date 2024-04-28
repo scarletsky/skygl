@@ -2,6 +2,7 @@ import { STATIC_DRAW } from './constants.mjs';
 import { bindBuffer } from './context-utils.mjs';
 import {
   createGLBuffer,
+  getGLBufferParameter,
   setGLBufferData,
   setGLBufferSubData
 } from './buffer-utils.mjs';
@@ -47,7 +48,7 @@ export function setBufferData(gl, buffer, data) {
   }
 
   bindBuffer(gl, buffer);
-  setGLBufferData(gl, buffer.glBuffer, buffer.target, (buffer.data || buffer.size), buffer.usage, false);
+  setGLBufferData(gl, buffer.glBuffer, buffer.target, (buffer.data || buffer.byteLength), buffer.usage, false);
 
   return true;
 }
@@ -61,6 +62,13 @@ export function setBufferSubData(_gl, buffer, offset, data) {
   setGLBufferSubData(gl, buffer.glBuffer, buffer.target, offset, data, false);
 
   return true;
+}
+
+export function getBufferParameter(gl, buffer, pname) {
+  bindBuffer(gl, buffer);
+  const parameter = getGLBufferParameter(gl, buffer.glBuffer, buffer.target, pname, false);
+  bindBuffer(gl, null);
+  return parameter;
 }
 
 export function toInterleavedBuffer(buffers) {
