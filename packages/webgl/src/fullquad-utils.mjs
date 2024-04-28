@@ -2,6 +2,16 @@ import { createDrawObject, draw } from './draw-utils.mjs';
 
 let fullQuad = null;
 
+export const fullQuadVertexShader = `
+attribute vec2 POSITION;
+varying vec2 vUv;
+
+void main() {
+  gl_Position = vec4(POSITION * 2.0 - 1.0, 0.0, 1.0);
+  vUv = POSITION;
+}
+`;
+
 export function getFullQuad(gl) {
   if (!fullQuad) {
     fullQuad = createFullQuad(gl);
@@ -13,7 +23,6 @@ export function getFullQuad(gl) {
 export function createFullQuad(gl) {
   return createDrawObject(gl, {
     POSITION: {
-      name: 'POSITION',
       numComponents: 2,
       data: new Uint8Array([0, 0, 2, 0, 0, 2])
     }

@@ -28,15 +28,6 @@
   <canvas id="app"></canvas>
   <script>
   const canvas = document.getElementById('app');
-  const vertexShader = `
-    attribute vec2 POSITION;
-    varying vec2 vUv;
-
-    void main() {
-      gl_Position = vec4(POSITION * 2.0 - 1.0, 0.0, 1.0);
-      vUv = POSITION;
-    }
-  `;
   const fragmentShader = `
     precision highp float;
 
@@ -47,7 +38,7 @@
     }
   `;
   const gl = skygl.getContext(canvas);
-  const program = skygl.createProgram(gl, vertexShader, fragmentShader);
+  const program = skygl.createProgram(gl, skygl.fullQuadVertexShader, fragmentShader);
   skygl.setCanvasResolution(canvas, window.devicePixelRatio);
   skygl.setViewport(gl, [0, 0, canvas.width, canvas.height]);
   console.time('linked');

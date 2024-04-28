@@ -10,6 +10,11 @@ export function createDrawObject(gl, attributes = {}, indices = null, options = 
 
   for (let attr in attributes) {
     const data = attributes[attr];
+
+    if (!data.name) {
+      data.name = attr;
+    }
+
     const attrib = createVertexAttrib(gl, data);
     newAttributes[attrib.name] = attrib;
   }
