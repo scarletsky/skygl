@@ -56,6 +56,3 @@ export function draw(gl, program, object) {
   return true;
 }
 
-export function drawFullQuad(gl, program) {
-
-}

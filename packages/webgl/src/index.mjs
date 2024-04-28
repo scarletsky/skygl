@@ -5,6 +5,7 @@ export * from './extension-utils.mjs';
 export * from './canvas-utils.mjs';
 export * from './program-utils.mjs';
 export * from './draw-utils.mjs';
+export * from './fullquad-utils.mjs'
 export * from './buffer.mjs';
 export * from './program.mjs';
 export * from './shader-chunks.mjs';
