@@ -20,8 +20,8 @@ export class Buffer {
     setBufferData(this.gl, this, options.data);
   }
 
-  setData(data) {
-    return setBufferData(this.gl, this, data);
+  setData(dataOrSize) {
+    return setBufferData(this.gl, this, dataOrSize);
   }
 }
 
@@ -40,15 +40,13 @@ export function deleteBuffer(gl, buffer) {
   return true;
 }
 
-export function setBufferData(gl, buffer, data) {
-  if (buffer.data !== data) buffer.data = data;
-
+export function setBufferData(gl, buffer, dataOrSize) {
   if (!buffer.glBuffer) {
     buffer.glBuffer = createGLBuffer(gl);
   }
 
   bindBuffer(gl, buffer);
-  setGLBufferData(gl, buffer.glBuffer, buffer.target, (buffer.data || buffer.byteLength), buffer.usage, false);
+  setGLBufferData(gl, buffer.glBuffer, buffer.target, dataOrSize, buffer.usage, false);
 
   return true;
 }
