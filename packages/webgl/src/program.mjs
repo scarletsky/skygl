@@ -10,7 +10,7 @@ import {
   getGLProgramLinkStatus,
   getGLProgramLinkStatusKHR,
 } from './program-utils.mjs';
-import { bindBuffer } from './context-utils.mjs';
+import { bindBuffer, bindVertexArray } from './context-utils.mjs';
 import { getExtParallelShaderCompile } from './extension-utils.mjs';
 
 export class Program {
@@ -197,6 +197,17 @@ export function bindProgramVertexAttribs(gl, program, vertexAttribs) {
     gl.enableVertexAttribArray(programAttrib.location);
     programAttrib.setter(vertexAttrib);
   }
+
+  return true;
+}
+
+export function bindProgramVertexArray(gl, program, vertexArray, vertexAttribs) {
+  bindVertexArray(gl, vertexArray);
+
+  if (vertexArray.ok) return true;
+
+  bindProgramVertexAttribs(gl, program, vertexAttribs);
+  vertexArray.ok = true;
 
   return true;
 }

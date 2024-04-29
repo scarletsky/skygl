@@ -1,7 +1,8 @@
 import { createBuffer } from './buffer.mjs';
 import { ELEMENT_ARRAY_BUFFER, TRIANGLES } from './constants.mjs';
 import { bindProgram, bindBuffer } from './context-utils.mjs';
-import { bindProgramVertexAttribs, bindProgramUniforms } from './program.mjs';
+import { bindProgramVertexAttribs, bindProgramUniforms, bindProgramVertexArray } from './program.mjs';
+import { createVertexArray } from './vertex-array-utils.mjs';
 import { createVertexAttrib } from './vertex-attrib-utils.mjs';
 
 export function createDrawObject(gl, attributes = {}, indices = null, options = {}) {
@@ -24,17 +25,19 @@ export function createDrawObject(gl, attributes = {}, indices = null, options = 
   }
 
   return {
-    first: options.first || 0,
     mode: options.mode || TRIANGLES,
+    // NOTE: for `gl.drawArrays`,
+    first: options.first || 0,
     count: options.count || 0,
+    // NOTE: for `gl.drawElements`,
     offset: options.offset || 0,
+    indices: newIndices,
     vertexAttribs: newAttributes,
     vertexArray: null,
-    indices: newIndices,
   };
 }
 
-export function draw(gl, program, object) {
+export function draw(gl, program, object, options = {}) {
   if (!program.ok) return false;
 
   const {
@@ -44,11 +47,28 @@ export function draw(gl, program, object) {
     // NOTE: for `gl.drawElements`,
     type, offset, indices,
     vertexAttribs,
-    vertexArray,
   } = object;
 
   bindProgram(gl, program);
-  bindProgramVertexAttribs(gl, program, vertexAttribs);
+
+  if (options.tryVertexArray) {
+
+    if (!object.vertexArray) {
+      object.vertexArray = createVertexArray(gl);
+    }
+
+    const { vertexArray } = object;
+
+    if (vertexArray.glVertexArray) {
+      bindProgramVertexArray(gl, program, vertexArray, vertexAttribs);
+    } else {
+      bindProgramVertexAttribs(gl, program, vertexAttribs);
+    }
+
+  } else {
+    bindProgramVertexAttribs(gl, program, vertexAttribs);
+  }
+
   bindProgramUniforms(gl, program);
 
   if (indices) {

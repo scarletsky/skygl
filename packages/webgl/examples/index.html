@@ -58,7 +58,7 @@
     console.timeEnd('linked');
 
     program.setUniform('uColor', new Float32Array([1, 1, 1]));
-    skygl.draw(gl, program, triangle);
+    skygl.draw(gl, program, triangle, { tryVertexArray: true });
   });
   </script>
 </body>

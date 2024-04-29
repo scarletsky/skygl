@@ -52,6 +52,7 @@ export const glState = {
 
   // NOTE: bindings
   program: null,
+  vertexArray: null,
   [ARRAY_BUFFER]: null,
   [ELEMENT_ARRAY_BUFFER]: null,
   [TEXTURE_2D]: null,

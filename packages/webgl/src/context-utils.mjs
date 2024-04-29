@@ -1,5 +1,6 @@
 import { getExtensions } from './extension-utils.mjs';
 import { glState } from './state.mjs';
+import { isWebGL2 } from './utils.mjs';
 
 export function getContext(canvas, tryWebGL2 = true, options = {}) {
   if (!(canvas instanceof HTMLCanvasElement)) {
@@ -661,6 +662,20 @@ export function bindBuffer(gl, buffer) {
 
   gl.bindBuffer(target, buffer.glBuffer);
   glState[target] = buffer;
+
+  return true;
+}
+
+export function bindVertexArray(gl, vertexArray) {
+  if (glState.vertexArray === vertexArray) return false;
+
+  if (isWebGL2(gl)) {
+    gl.bindVertexArray(vertexArray.glVertexArray);
+  } else if (gl.extVertexArrayObject) {
+    gl.extVertexArrayObject.bindVertexArrayOES(vertexArray.glVertexArray);
+  }
+
+  glState.vertexArray = vertexArray;
 
   return true;
 }
