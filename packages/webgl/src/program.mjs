@@ -199,8 +199,20 @@ export async function waitUntilProgramLinked(gl, program) {
     console.error(gl.getProgramInfoLog(glProgram));
     program.status[2] = PROGRAM_STATUS_ERROR;
   } else {
+
+  // NOTE: uniforms setted before program linked
+    const uniforms = getGLProgramUniforms(gl, glProgram);
+
+    for (let name in uniforms) {
+      const u = program.uniforms[name];
+
+      if (u && u.nextValue !== undefined) {
+        uniforms[name].nextValue = u.nextValue;
+      }
+    }
+
     program.attributes = getGLProgramVertexAttribs(gl, glProgram);
-    program.uniforms = getGLProgramUniforms(gl, glProgram);
+    program.uniforms = uniforms;
     program.status[2] = PROGRAM_STATUS_DONE;
   }
 
@@ -212,10 +224,12 @@ export async function waitUntilProgramLinked(gl, program) {
 export function setProgramUniform(_gl, program, name, nextValue) {
   const uniform = program.uniforms[name];
 
-  if (!uniform) return false;
-  if (uniform.value === nextValue) return false;
-
-  uniform.nextValue = nextValue;
+  if (!uniform) {
+    program.uniforms[name] = { nextValue };
+  } else {
+    if (uniform.value === nextValue) return false;
+    uniform.nextValue = nextValue;
+  }
 
   return true;
 }
