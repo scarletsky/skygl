@@ -26,6 +26,7 @@ export function deleteVertexArray(gl, vertexArray) {
   }
 
   vertexArray.glVertexArray = null;
+  vertexArray.ok = false;
 
   return true;
 }
