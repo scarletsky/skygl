@@ -54,12 +54,18 @@
   program.setUniform('uColor', new Float32Array([1, 1, 1]));
 
   skygl.setCanvasResolution(canvas, window.devicePixelRatio);
-  skygl.setViewport(gl, [0, 0, canvas.width, canvas.height]);
   console.time('linked');
   skygl.waitUntilProgramLinked(gl, program).then(() => {
     console.timeEnd('linked');
-    skygl.draw(gl, program, triangle, { tryVertexArray: true });
+    render();
   });
+
+  function render() {
+    skygl.setViewport(gl, [0, 0, canvas.width, canvas.height]);
+    skygl.draw(gl, program, triangle, { tryVertexArray: true });
+  }
+
+  skygl.addCanvasResizeListener(canvas, render);
   </script>
 </body>
 </html>
