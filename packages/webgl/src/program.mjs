@@ -18,8 +18,8 @@ const PROGRAM_STATUS_DONE = 2;
 const PROGRAM_STATUS_ERROR = -1;
 
 export class Program {
-  constructor(options = {}) {
-    this.gl = options.gl || null;
+  constructor(gl, options = {}) {
+    this.gl = gl || null;
     this.vertexShader = options.vertexShader || '';
     this.fragmentShader = options.fragmentShader || '';
     this.version = '300'
@@ -72,8 +72,8 @@ export class Program {
 
 Program.prototype.isProgram = true;
 
-export function createProgram(gl, vertexShader, fragmentShader, options = {}) {
-  return new Program({ gl, vertexShader, fragmentShader, ...options });
+export function createProgram(gl, options = {}) {
+  return new Program(gl, options);
 }
 
 export function deleteProgram(gl, program) {
