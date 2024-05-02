@@ -8,8 +8,8 @@ import {
 } from './buffer-utils.mjs';
 
 export class Buffer {
-  constructor(options = {}) {
-    this.gl = options.gl || null;
+  constructor(gl, options = {}) {
+    this.gl = gl || null;
     this.target = options.target;
     this.usage = options.usage || STATIC_DRAW;
     this.data = null;
@@ -27,8 +27,8 @@ export class Buffer {
 
 Buffer.prototype.isBuffer = true;
 
-export function createBuffer(gl, target, data, options = {}) {
-  return new Buffer({ gl, target, data, ...options });
+export function createBuffer(gl, options = {}) {
+  return new Buffer(gl, options);
 }
 
 export function deleteBuffer(gl, buffer) {

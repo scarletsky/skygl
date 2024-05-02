@@ -8,7 +8,7 @@ export function createVertexAttrib(gl, data) {
   const normalized = data.normalized || false;
   const numComponents = getVertexAttribNumComponents(data);
   const type = getVertexAttribType(data);
-  const buffer = createBuffer(gl, ARRAY_BUFFER, data.data);
+  const buffer = createBuffer(gl, { target: ARRAY_BUFFER, data: data.data });
 
   return {
     name,

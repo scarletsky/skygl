@@ -21,7 +21,7 @@ export function createDrawObject(gl, attributes = {}, indices = null, options = 
   }
 
   if (indices) {
-    newIndices = createBuffer(gl, ELEMENT_ARRAY_BUFFER, indices);
+    newIndices = createBuffer(gl, { target: ELEMENT_ARRAY_BUFFER, data: indices });
   }
 
   return {
