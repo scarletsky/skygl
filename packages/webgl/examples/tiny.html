@@ -33,11 +33,11 @@
 
     varying vec2 vUv;
 
-    uniform vec2 resolution;
-    uniform float time;
+    uniform float uTime;
 
     void main() {
       vec2 uv = vUv;
+      float time = uTime;
       float color = 0.0;
       // lifted from glslsandbox.com
       color += sin( uv.x * cos( time / 3.0 ) * 60.0 ) + cos( uv.y * cos( time / 2.80 ) * 10.0 );
@@ -53,7 +53,6 @@
      vertexShader: skygl.fullQuadVertexShader,
      fragmentShader
   });
-  skygl.setCanvasResolution(canvas, window.devicePixelRatio);
 
   console.time('linked');
   skygl.waitUntilProgramLinked(gl, program).then(() => {
@@ -62,8 +61,9 @@
   });
 
   function render(time) {
-    program.setUniform('time', time * 0.001);
+    skygl.setCanvasPixelRatio(canvas, window.devicePixelRatio);
     skygl.setViewport(gl, [0, 0, canvas.width, canvas.height]);
+    skygl.setProgramUniform(gl, program, 'uTime', time / 1000.0);
     skygl.drawFullQuad(gl, program);
 
     requestAnimationFrame(render);

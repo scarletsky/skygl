@@ -38,14 +38,23 @@
     }
   `;
   const gl = skygl.getContext(canvas);
-  const program = skygl.createProgram(gl, skygl.fullQuadVertexShader, fragmentShader);
-  skygl.setCanvasResolution(canvas, window.devicePixelRatio);
-  skygl.setViewport(gl, [0, 0, canvas.width, canvas.height]);
+  const program = skygl.createProgram(gl, {
+     vertexShader: skygl.fullQuadVertexShader,
+     fragmentShader
+   });
   console.time('linked');
   skygl.waitUntilProgramLinked(gl, program).then(() => {
     console.timeEnd('linked');
-    skygl.drawFullQuad(gl, program);
+    render();
   });
+
+  function render() {
+    skygl.setCanvasPixelRatio(canvas, window.devicePixelRatio);
+    skygl.setViewport(gl, [0, 0, canvas.width, canvas.height]);
+    skygl.drawFullQuad(gl, program);
+  }
+
+  skygl.addCanvasResizeListener(canvas, render);
   </script>
 </body>
 </html>

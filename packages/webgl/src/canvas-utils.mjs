@@ -1,14 +1,10 @@
-export function setCanvasSize(canvas, width, height) {
-
-}
-
 // NOTE: Alias `devicePixelRatio`
-export const CANVAS_RESOLUTIONS = new Map();
-export function setCanvasResolution(canvas, resolution = 1) {
-  CANVAS_RESOLUTIONS.set(canvas, resolution);
+export const CANVAS_PIXEL_RATIOS = new Map();
+export function setCanvasPixelRatio(canvas, pixelRatio = 1) {
+  CANVAS_PIXEL_RATIOS.set(canvas, pixelRatio);
 
-  const width  = canvas.clientWidth  * resolution | 0;
-  const height = canvas.clientHeight * resolution | 0;
+  const width  = canvas.clientWidth  * pixelRatio | 0;
+  const height = canvas.clientHeight * pixelRatio | 0;
 
   if (canvas.width === width && canvas.height === height) return false;
 
@@ -36,10 +32,10 @@ export function addCanvasResizeListener(canvas, callback) {
       for (let entry of entries) {
         const newWidth = entry.contentRect.width;
         const newHeight = entry.contentRect.height;
-        const resolution = CANVAS_RESOLUTIONS.get(canvas) || 1;
+        const pixelRatio = CANVAS_PIXEL_RATIOS.get(canvas) || 1;
 
-        canvas.width = newWidth * resolution;
-        canvas.height = newHeight * resolution;
+        canvas.width = newWidth * pixelRatio;
+        canvas.height = newHeight * pixelRatio;
 
         for (let callback of callbacks) {
           callback(canvas);
