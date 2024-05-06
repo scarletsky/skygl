@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="renderer" content="webkit" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+  <title>Hello</title>
+  <style type="text/css" media="screen">
+  html, body {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+  body {
+    overflow: hidden;
+    background: black;
+  }
+  canvas {
+    width: 100%;
+    height: 100%;
+  }
+  </style>
+  <script type="text/javascript" src="./bundle.iife.js"></script>
+</head>
+<body>
+  <canvas id="app"></canvas>
+  <script>
+  const canvas = document.getElementById('app');
+  const fragmentShader = `
+    precision highp float;
+
+    varying vec2 vUv;
+
+    uniform vec2 resolution;
+    uniform float time;
+
+    void main() {
+      vec2 uv = vUv;
+      float color = 0.0;
+      // lifted from glslsandbox.com
+      color += sin( uv.x * cos( time / 3.0 ) * 60.0 ) + cos( uv.y * cos( time / 2.80 ) * 10.0 );
+      color += sin( uv.y * sin( time / 2.0 ) * 40.0 ) + cos( uv.x * sin( time / 1.70 ) * 40.0 );
+      color += sin( uv.x * sin( time / 1.0 ) * 10.0 ) + sin( uv.y * sin( time / 3.50 ) * 80.0 );
+      color *= sin( time / 10.0 ) * 0.5;
+
+      gl_FragColor = vec4( vec3( color * 0.5, sin( color + time / 2.5 ) * 0.75, color ), 1.0 );
+    }
+  `;
+  const gl = skygl.getContext(canvas);
+  const program = skygl.createProgram(gl, {
+     vertexShader: skygl.fullQuadVertexShader,
+     fragmentShader
+  });
+  skygl.setCanvasResolution(canvas, window.devicePixelRatio);
+
+  console.time('linked');
+  skygl.waitUntilProgramLinked(gl, program).then(() => {
+    console.timeEnd('linked');
+    render();
+  });
+
+  function render(time) {
+    program.setUniform('time', time * 0.001);
+    skygl.setViewport(gl, [0, 0, canvas.width, canvas.height]);
+    skygl.drawFullQuad(gl, program);
+
+    requestAnimationFrame(render);
+  }
+  </script>
+</body>
+
+</html>
